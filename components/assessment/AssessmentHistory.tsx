@@ -9,9 +9,6 @@ import {
   FileText, 
   Loader2 
 } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 import { api } from "@/lib/api";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 import { FullAssessmentResult } from "@/types";
@@ -48,38 +45,40 @@ export function AssessmentHistory({ studentId }: AssessmentHistoryProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 p-6 text-sm text-slate-500">
-        <Loader2 className="h-4 w-4 animate-spin text-emerald-600" />
-        <span>Loading assessment history...</span>
+      <div className="flex items-center gap-2 p-6 text-sm font-bold text-black neo-box bg-[#FFFDF9]">
+        <Loader2 className="h-4 w-4 animate-spin text-black" />
+        <span>Loading assessment chronological history...</span>
       </div>
     );
   }
 
   if (error || history.length === 0) {
     return (
-      <Card className="p-6 text-center space-y-2 bg-slate-50 dark:bg-slate-900 border-dashed">
-        <History className="h-8 w-8 text-slate-400 mx-auto" />
-        <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300">No Assessment History</h4>
-        <p className="text-xs text-slate-500">
-          This is the candidate&apos;s initial assessment run. Future evaluations will be recorded here.
+      <div className="neo-box p-6 text-center space-y-2 bg-[#FFFDF9]">
+        <History className="h-8 w-8 text-black mx-auto stroke-[2.5]" />
+        <h4 className="text-sm font-black uppercase tracking-tight text-black">Initial Assessment Run</h4>
+        <p className="text-xs font-bold text-black/70">
+          This is the candidate&apos;s initial assessment run. Future evaluations will be recorded in this audit timeline.
         </p>
-      </Card>
+      </div>
     );
   }
 
   return (
-    <Card className="p-6 sm:p-8 space-y-6 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
-      <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+    <div className="neo-box p-6 sm:p-8 space-y-6 bg-[#FFFDF9]">
+      <div className="flex items-center justify-between pb-4 border-b-2 border-black">
         <div className="flex items-center gap-2">
-          <History className="h-5 w-5 text-emerald-600" />
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-            Assessment Evaluation History ({history.length})
+          <History className="h-6 w-6 text-black stroke-[2.5]" />
+          <h3 className="text-xl font-black uppercase tracking-tight text-black">
+            Evaluation Timeline ({history.length})
           </h3>
         </div>
-        <span className="text-xs text-slate-400">Chronological snapshot log</span>
+        <span className="text-xs font-mono font-bold bg-[#FEF08A] px-2 py-0.5 border border-black">
+          Chronological Audit Log
+        </span>
       </div>
 
-      <div className="relative pl-6 border-l-2 border-slate-200 dark:border-slate-800 space-y-6">
+      <div className="relative pl-6 border-l-3 border-black space-y-6">
         {history.map((item, idx) => {
           const isLatest = idx === 0;
           const score = item.readiness_score || 80;
@@ -88,27 +87,31 @@ export function AssessmentHistory({ studentId }: AssessmentHistoryProps) {
             <div key={item.id} className="relative group">
               {/* Timeline Bullet Node */}
               <div
-                className={`absolute -left-[31px] top-1.5 w-4 h-4 rounded-full border-2 bg-white dark:bg-slate-900 ${
-                  isLatest ? "border-emerald-600 bg-emerald-500" : "border-slate-400"
+                className={`absolute -left-[31px] top-2 w-4 h-4 border-2 border-black ${
+                  isLatest ? "bg-[#86EFAC]" : "bg-white"
                 }`}
               />
 
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800 transition-all hover:bg-slate-100/80 dark:hover:bg-slate-800">
+              <div className="p-4 bg-white border-2 border-black shadow-[3px_3px_0px_#000000] transition-all hover:bg-[#FFFDF9]">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <span className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                      <FileText className="h-4 w-4 text-emerald-600" />
+                    <span className="text-sm font-black uppercase text-black flex items-center gap-1.5">
+                      <FileText className="h-4 w-4 text-black stroke-[2.5]" />
                       Run #{item.id}
                     </span>
-                    {isLatest && <Badge variant="success">LATEST ACTIVE</Badge>}
-                    <Badge variant="default" className="capitalize">
+                    {isLatest && (
+                      <span className="bg-[#86EFAC] text-black border border-black px-2 py-0.5 text-[10px] font-black uppercase">
+                        Active Run
+                      </span>
+                    )}
+                    <span className="bg-[#BAE6FD] text-black border border-black px-2 py-0.5 text-[10px] font-black uppercase">
                       {item.readiness_band}
-                    </Badge>
+                    </span>
                   </div>
 
-                  <div className="flex items-center gap-3 text-xs text-slate-500">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3.5 w-3.5" />
+                  <div className="flex items-center gap-3 text-xs font-bold text-black">
+                    <span className="flex items-center gap-1 font-mono">
+                      <Calendar className="h-3.5 w-3.5 stroke-[2.5]" />
                       {item.created_at
                         ? new Date(item.created_at).toLocaleDateString("en-IN", {
                             day: "numeric",
@@ -118,36 +121,36 @@ export function AssessmentHistory({ studentId }: AssessmentHistoryProps) {
                         : "Recent"}
                     </span>
                     <Link href={`/assessment/${item.id}/report`}>
-                      <Button variant="ghost" size="sm" rightIcon={<ArrowRight className="h-3.5 w-3.5" />}>
-                        View Report
-                      </Button>
+                      <button className="neo-btn bg-[#FEF08A] text-black text-[11px] font-black uppercase py-1 px-2.5 flex items-center gap-1">
+                        View Dossier <ArrowRight className="h-3.5 w-3.5 stroke-[3]" />
+                      </button>
                     </Link>
                   </div>
                 </div>
 
                 {/* Key Metrics Summary */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs border-t border-slate-200/60 dark:border-slate-700/50">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs border-t border-black/20">
                   <div>
-                    <span className="text-slate-500 block text-[10px]">Readiness Score</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-white text-sm">
+                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">Score</span>
+                    <span className="font-mono font-black text-black text-sm">
                       {score.toFixed(0)}/100
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block text-[10px]">Study Budget</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-white">
+                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">Budget</span>
+                    <span className="font-mono font-bold text-black">
                       {formatCurrency(item.total_cost_inr)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block text-[10px]">Funding Gap</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-white">
+                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">Gap</span>
+                    <span className="font-mono font-bold text-black">
                       {formatCurrency(item.funding_gap_inr)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block text-[10px]">Co-Borrower FOIR</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-white">
+                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">FOIR</span>
+                    <span className="font-mono font-bold text-black">
                       {formatPercent(item.foir_percentage)}
                     </span>
                   </div>
@@ -157,6 +160,6 @@ export function AssessmentHistory({ studentId }: AssessmentHistoryProps) {
           );
         })}
       </div>
-    </Card>
+    </div>
   );
 }
