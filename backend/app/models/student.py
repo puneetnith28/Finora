@@ -1,11 +1,15 @@
 """Student domain model."""
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, Integer, String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+
+if TYPE_CHECKING:
+    from app.models.study_plan import StudyPlan
 
 
 class Student(Base):
@@ -27,6 +31,11 @@ class Student(Base):
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
+    )
+
+    # Relationships
+    study_plan: Mapped["StudyPlan | None"] = relationship(
+        "StudyPlan", back_populates="student", cascade="all, delete-orphan", uselist=False
     )
 
     def __repr__(self) -> str:
