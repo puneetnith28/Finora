@@ -218,19 +218,19 @@ function ReportContent({ params }: ReportPageProps) {
               {formatPercent(assessment.foir_percentage)}
             </div>
             <span className={`text-[10px] font-black uppercase px-1.5 py-0.5 mt-1 inline-block border border-black ${
-              assessment.foir_percentage <= 50 ? "bg-[#86EFAC]" : "bg-[#FEF08A]"
+              (assessment.foir_percentage ?? 40) <= 50 ? "bg-[#86EFAC]" : "bg-[#FEF08A]"
             }`}>
-              {assessment.foir_percentage <= 50 ? "Safe FOIR (≤50%)" : "Elevated Ratio"}
+              {(assessment.foir_percentage ?? 40) <= 50 ? "Safe FOIR (≤50%)" : "Elevated Ratio"}
             </span>
           </div>
 
           <div className="neo-box p-4 bg-[#BAE6FD]">
             <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Eligible Collateral</span>
             <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
-              {formatCurrency(assessment.total_eligible_collateral_inr)}
+              {formatCurrency(assessment.total_eligible_collateral_inr || 0)}
             </div>
             <span className="text-[10px] font-black uppercase px-1.5 py-0.5 mt-1 inline-block border border-black bg-white">
-              {assessment.total_eligible_collateral_inr > 0 ? "Secured Asset Base" : "Unsecured Evaluation"}
+              {(assessment.total_eligible_collateral_inr || 0) > 0 ? "Secured Asset Base" : "Unsecured Evaluation"}
             </span>
           </div>
         </div>

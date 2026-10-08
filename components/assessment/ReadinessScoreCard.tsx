@@ -19,43 +19,61 @@ interface ReadinessScoreCardProps {
 }
 
 export function ReadinessScoreCard({ assessment }: ReadinessScoreCardProps) {
-  const score = assessment.readiness_score || 82;
-  const band = assessment.readiness_band || "Good";
+  const score = typeof assessment?.readiness_score === "number" ? assessment.readiness_score : 82;
+  const band = assessment?.readiness_band || "Good";
+
+  const foirVal = typeof assessment?.foir_percentage === "number" 
+    ? assessment.foir_percentage 
+    : (assessment?.foir_percentage ? parseFloat(String(assessment.foir_percentage)) : 40);
+
+  const totalCostVal = typeof assessment?.total_cost_inr === "number"
+    ? assessment.total_cost_inr
+    : (assessment?.total_cost_inr ? parseFloat(String(assessment.total_cost_inr)) : 0);
+
+  const totalFundingVal = typeof assessment?.total_funding_inr === "number"
+    ? assessment.total_funding_inr
+    : (assessment?.total_funding_inr ? parseFloat(String(assessment.total_funding_inr)) : 0);
+
+  const collateralVal = typeof assessment?.total_eligible_collateral_inr === "number"
+    ? assessment.total_eligible_collateral_inr
+    : (assessment?.total_eligible_collateral_inr ? parseFloat(String(assessment.total_eligible_collateral_inr)) : 0);
+
+  const ltvVal = typeof assessment?.ltv_percentage === "number"
+    ? assessment.ltv_percentage
+    : (assessment?.ltv_percentage ? parseFloat(String(assessment.ltv_percentage)) : null);
 
   const fundingCoverage =
-    assessment.total_cost_inr > 0
+    totalCostVal > 0
       ? Math.min(
           100,
           Math.max(
             15,
-            Math.round(
-              ((assessment.total_funding_inr || 0) / assessment.total_cost_inr) * 100
-            )
+            Math.round((totalFundingVal / totalCostVal) * 100)
           )
         )
       : 80;
 
   const foirScore =
-    assessment.foir_percentage <= 35
+    foirVal <= 35
       ? 95
-      : assessment.foir_percentage <= 50
+      : foirVal <= 50
       ? 80
-      : assessment.foir_percentage <= 65
+      : foirVal <= 65
       ? 55
       : 30;
 
   const collateralScore =
-    assessment.total_eligible_collateral_inr > 0
-      ? assessment.ltv_percentage && assessment.ltv_percentage <= 70
+    collateralVal > 0
+      ? ltvVal && ltvVal <= 70
         ? 95
         : 75
       : 45;
 
-  const totalMatches = assessment.lender_matches?.length || 1;
+  const totalMatches = assessment?.lender_matches?.length || 1;
   const eligibleMatches =
-    assessment.lender_matches?.filter((m) => m.outcome_state === "eligible").length || 0;
+    assessment?.lender_matches?.filter((m) => m.outcome_state === "eligible").length || 0;
   const conditionalMatches =
-    assessment.lender_matches?.filter((m) => m.outcome_state === "conditional").length || 0;
+    assessment?.lender_matches?.filter((m) => m.outcome_state === "conditional").length || 0;
   const lenderScore = Math.min(
     100,
     Math.round(((eligibleMatches * 1.0 + conditionalMatches * 0.5) / totalMatches) * 100)
@@ -69,7 +87,7 @@ export function ReadinessScoreCard({ assessment }: ReadinessScoreCardProps) {
       label: "01 / FINANCIAL & INCOME HEADROOM",
       score: foirScore,
       icon: ShieldCheck,
-      desc: `FOIR is ${assessment.foir_percentage.toFixed(1)}% (${
+      desc: `FOIR is ${foirVal.toFixed(1)}% (${
         foirScore >= 80 ? "Healthy capacity" : "High debt ratio"
       })`,
       action:
@@ -94,8 +112,8 @@ export function ReadinessScoreCard({ assessment }: ReadinessScoreCardProps) {
       score: collateralScore,
       icon: Landmark,
       desc:
-        assessment.total_eligible_collateral_inr > 0
-          ? `₹${(assessment.total_eligible_collateral_inr / 100000).toFixed(1)}L in unencumbered property & securities`
+        collateralVal > 0
+          ? `₹${(collateralVal / 100000).toFixed(1)}L in unencumbered property & securities`
           : "No collateral pledged (unsecured route)",
       action:
         collateralScore < 70
@@ -160,68 +178,65 @@ export function ReadinessScoreCard({ assessment }: ReadinessScoreCardProps) {
         </div>
       </div>
 
-      {/* 5-Dimensional Breakdown */}
-      <div className="space-y-4">
-        <h3 className="text-xs font-black uppercase tracking-wider text-black">
-          5 CORE READINESS PILLARS
-        </h3>
+      {/* 5-Dimensional Matrix Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {dimensions.map((dim) => {
+          const Icon = dim.icon;
+          const isHigh = dim.score >= 80;
+          const isMid = dim.score >= 60 && dim.score < 80;
 
-        <div className="grid grid-cols-1 gap-4">
-          {dimensions.map((dim) => (
+          return (
             <div
               key={dim.id}
-              className="neo-box p-4 bg-[#FAF8F5] space-y-2"
+              className={`p-4 border-2 border-black flex flex-col justify-between space-y-3 transition-all ${
+                isHigh
+                  ? "bg-[#F0FDF4] shadow-[3px_3px_0px_0px_#86EFAC]"
+                  : isMid
+                  ? "bg-[#FEFCE8] shadow-[3px_3px_0px_0px_#FEF08A]"
+                  : "bg-[#FFF1F2] shadow-[3px_3px_0px_0px_#FECDD3]"
+              }`}
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                <div>
-                  <span className="text-xs font-black uppercase text-black">
+              <div>
+                <div className="flex items-center justify-between gap-2 pb-2 border-b border-black/10">
+                  <span className="text-[10px] font-black text-black tracking-wider uppercase flex items-center gap-1.5">
+                    <Icon className="w-3.5 h-3.5 stroke-[2.5]" />
                     {dim.label}
                   </span>
-                  <p className="text-[11px] font-bold text-neutral-600">{dim.desc}</p>
+                  <span className="font-mono font-black text-xs text-black bg-white px-1.5 py-0.5 border border-black">
+                    {dim.score}/100
+                  </span>
                 </div>
-                <span className="text-sm font-mono font-black text-black">
-                  {dim.score}%
+
+                {/* Score Progress Bar */}
+                <div className="h-2 w-full bg-white border border-black mt-2 overflow-hidden">
+                  <div
+                    className={`h-full ${
+                      isHigh
+                        ? "bg-[#86EFAC]"
+                        : isMid
+                        ? "bg-[#FEF08A]"
+                        : "bg-[#FECDD3]"
+                    }`}
+                    style={{ width: `${dim.score}%` }}
+                  />
+                </div>
+
+                <p className="text-xs font-bold text-black mt-2 leading-tight">
+                  {dim.desc}
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-black/10">
+                <span className="text-[9px] font-black uppercase tracking-wider text-black/60 block">
+                  Prescribed Action:
                 </span>
-              </div>
-
-              {/* Progress Bar Track */}
-              <div className="w-full h-3 border-2 border-black bg-white overflow-hidden">
-                <div
-                  className={`h-full border-r-2 border-black ${
-                    dim.score >= 80 ? "bg-[#86EFAC]" : dim.score >= 55 ? "bg-[#FEF08A]" : "bg-[#F472B6]"
-                  }`}
-                  style={{ width: `${dim.score}%` }}
-                />
-              </div>
-
-              <div className="flex items-start gap-1 text-[11px] font-bold text-neutral-800 pt-0.5">
-                <ArrowUpRight className="h-3.5 w-3.5 text-black shrink-0 mt-0.5" />
-                <span>{dim.action}</span>
+                <p className="text-[11px] font-medium text-black/90 mt-0.5 leading-snug">
+                  {dim.action}
+                </p>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Improvement Advice */}
-      <div className="neo-box-yellow p-4 space-y-1 text-xs font-bold shadow-[3px_3px_0px_0px_#000000]">
-        <div className="flex items-center gap-1.5 font-black text-black uppercase mb-1">
-          <Sparkles className="h-4 w-4" />
-          <span>FASTEST PATH TO BOOST READINESS:</span>
-        </div>
-        <p className="text-neutral-900 leading-snug">
-          Lowering your requested loan amount by 10% or adding a co-borrower earning ₹40,000+/month
-          will decrease your FOIR from {assessment.foir_percentage.toFixed(1)}% to under 40%,
-          potentially raising your overall readiness score to 90+.
-        </p>
-      </div>
-
-      {/* Regulatory Disclaimer */}
-      <div className="p-3 bg-[#FAF8F5] border-2 border-black text-[11px] font-bold text-neutral-700 flex items-start gap-2">
-        <Info className="h-4 w-4 text-black shrink-0 mt-0.5" />
-        <span>
-          <strong>Advisory Notice:</strong> Finora Readiness Score is an educational and advisory metric evaluated against standard public underwriting criteria. It does not guarantee sanction by any financial institution.
-        </span>
+          );
+        })}
       </div>
     </div>
   );
