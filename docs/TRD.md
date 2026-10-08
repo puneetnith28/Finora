@@ -1,11 +1,13 @@
 # Finora — Technical Requirements Document
 
 ## 1. Project Overview
+
 Finora is an education-loan assessment and financial-readiness platform for students planning higher education. It collects a student's study plan, education costs, available funding, financial profile, assets, liabilities, collateral, and supporting documents, then deterministically calculates funding gap, net worth, EMI, FOIR, collateral value, and LTV. It evaluates the profile against configurable demo lender criteria and produces explainable lender matches and a financial-readiness report.
 
 Finora is an **assessment and readiness tool, not a loan approval or guarantee service**.
 
 ## 2. Product Goals
+
 - Help students understand the true cost of their study plan.
 - Calculate how much funding is actually required.
 - Give students a clear picture of financial strength and gaps.
@@ -17,6 +19,7 @@ Finora is an **assessment and readiness tool, not a loan approval or guarantee s
 - Produce a professional readiness report that can be reviewed or shared.
 
 ## 3. Technical Goals
+
 - Full end-to-end workflow from student profile to assessment and report.
 - Financial calculations performed server-side and reproducibly.
 - Lender criteria stored as data rather than hard-coded into UI components.
@@ -27,7 +30,9 @@ Finora is an **assessment and readiness tool, not a loan approval or guarantee s
 - Clear loading, validation, empty, success, and error states.
 
 ## 4. Proposed Tech Stack
+
 ### Frontend
+
 - Next.js
 - TypeScript
 - Tailwind CSS
@@ -36,26 +41,31 @@ Finora is an **assessment and readiness tool, not a loan approval or guarantee s
 - Recharts or equivalent charting library
 
 ### Backend
+
 - FastAPI
 - Python
 - Pydantic
 - SQLAlchemy
 
 ### Database
+
 - SQLite for the MVP/local development.
 - SQLAlchemy keeps the persistence layer portable to PostgreSQL for production deployment if required.
 
 ### Documents
+
 - Local file storage for MVP.
 - Provider-agnostic extraction adapter for PDF/text/OCR.
 - Optional OCR/AI provider integrations must remain behind an interface.
 
 ### Authentication
+
 - MVP may use a simple authenticated user model if required by deployment scope.
 - All protected operations must be authorized server-side.
 - Demo mode must never expose real credentials or secrets.
 
 ### Deployment
+
 - Frontend: Vercel or equivalent.
 - Backend: Render/Railway/Fly.io or equivalent Python host.
 - Database: SQLite for demo environments where persistent disk is available; PostgreSQL for production environments where required.
@@ -63,7 +73,9 @@ Finora is an **assessment and readiness tool, not a loan approval or guarantee s
 ## 5. Core Functional Requirements
 
 ### 5.1 Student Profile
+
 User can create/update:
+
 - Name
 - Email
 - Phone (optional)
@@ -72,7 +84,9 @@ User can create/update:
 - Co-applicant/family context where applicable
 
 ### 5.2 Study Plan
+
 User can enter:
+
 - Destination country
 - University/institution
 - Course/program
@@ -87,7 +101,9 @@ System calculates:
 `Total Study Cost = Tuition + Living + Travel + Insurance + Other`
 
 ### 5.3 Funding Sources
+
 User can enter:
+
 - Personal savings
 - Scholarships
 - Fees already paid
@@ -100,7 +116,9 @@ System calculates:
 `Funding Gap = max(Total Study Cost - Available Funding, 0)`
 
 ### 5.4 Financial Profile
+
 User can enter:
+
 - Monthly gross income
 - Monthly net income
 - Existing EMIs
@@ -112,7 +130,9 @@ System calculates:
 `Net Worth = Total Assets - Total Liabilities`
 
 ### 5.5 Loan / EMI Assessment
+
 User can enter or select:
+
 - Requested loan amount
 - Interest rate
 - Tenure
@@ -120,13 +140,16 @@ User can enter or select:
 System calculates proposed EMI using a standard amortization formula.
 
 ### 5.6 FOIR
+
 Finora calculates:
 `FOIR = (Existing EMI + Proposed EMI) / Monthly Net Income × 100`
 
 FOIR thresholds are lender-specific and must not be treated as a universal industry rule.
 
 ### 5.7 Collateral
+
 User can add:
+
 - Property
 - Fixed deposit / eligible financial asset
 - Other configured collateral type
@@ -137,12 +160,15 @@ User can add:
 System calculates eligible collateral value using configurable lender rules.
 
 ### 5.8 LTV
+
 `LTV = Requested Loan Amount / Eligible Collateral Value × 100`
 
 The lender's configured LTV limit determines the assessment outcome.
 
 ### 5.9 Documents
+
 Supported document categories include:
+
 - Admission letter
 - Scholarship proof
 - ITR
@@ -153,6 +179,7 @@ Supported document categories include:
 - Other supporting document
 
 Each document has:
+
 - Type
 - File metadata
 - Upload status
@@ -162,14 +189,18 @@ Each document has:
 - Discrepancy flags where applicable
 
 ### 5.10 Document Readiness
+
 Finora identifies:
+
 - Missing required documents
 - Documents with extraction failure
 - Documents with suspicious/incomplete evidence
 - Meaningful differences between entered financial values and extracted values
 
 ### 5.11 Lender Assessment
+
 Each lender has configurable criteria such as:
+
 - Maximum FOIR
 - Maximum LTV
 - Minimum income
@@ -180,6 +211,7 @@ Each lender has configurable criteria such as:
 - Other deterministic rules
 
 Assessment result states:
+
 - `potential_match`
 - `needs_review`
 - `not_a_match`
@@ -187,7 +219,9 @@ Assessment result states:
 Every result must contain reasons and failed/passed rule details.
 
 ### 5.12 Readiness Report
+
 Report includes:
+
 - Study cost breakdown
 - Available funding
 - Funding gap
@@ -204,7 +238,9 @@ Report includes:
 Report must never say that a loan is guaranteed or approved.
 
 ### 5.13 FOIR Simulator
+
 User can adjust:
+
 - Loan amount
 - Interest rate
 - Tenure
@@ -214,7 +250,9 @@ User can adjust:
 The simulator recalculates EMI and FOIR without changing the saved assessment until the user explicitly saves a scenario.
 
 ## 6. Data Model
+
 Core entities:
+
 - User
 - Student
 - StudyPlan
@@ -236,7 +274,9 @@ Core entities:
 Historical assessments should be immutable/versioned so a new lender-rule version does not silently rewrite a previous result.
 
 ## 7. API Requirements
+
 Minimum API surface:
+
 - `GET /health`
 - `GET /health/db`
 - `POST /api/students`
@@ -259,12 +299,15 @@ Minimum API surface:
 All request bodies must be validated server-side.
 
 ## 8. Non-Functional Requirements
+
 ### Performance
+
 - Initial dashboard should feel responsive on normal broadband.
 - Financial calculations should return quickly because they are deterministic.
 - Large document processing must show progress/loading states.
 
 ### Security
+
 - Never expose secrets in client-side code.
 - Validate uploaded file type and size server-side.
 - Sanitize filenames and prevent path traversal.
@@ -272,6 +315,7 @@ All request bodies must be validated server-side.
 - Do not expose raw database or stack-trace errors.
 
 ### Accessibility
+
 - Proper labels for inputs.
 - Keyboard-accessible controls.
 - Visible focus states.
@@ -280,12 +324,15 @@ All request bodies must be validated server-side.
 - Adequate contrast.
 
 ### Responsiveness
+
 - Mobile first.
 - Support small mobile, large mobile, tablet, laptop, and desktop.
 - No horizontal overflow.
 
 ## 9. Integrations
+
 Optional integrations:
+
 - OCR/document extraction provider.
 - PDF report generation.
 - Analytics/error monitoring if deployment requires them.
@@ -293,6 +340,7 @@ Optional integrations:
 The product must remain runnable without paid AI services.
 
 ## 10. Financial Decision Rules
+
 1. Financial calculations live in backend services.
 2. Lender rules are data-driven.
 3. No universal FOIR threshold.
@@ -305,7 +353,9 @@ The product must remain runnable without paid AI services.
 10. Finora must not represent an assessment as guaranteed approval.
 
 ## 11. UI Direction
+
 The visual system should take inspiration from the supplied Orville, CampusEvac, and Hacktoberfest references:
+
 - Strong editorial hero section.
 - Large, confident typography.
 - Clear numbered journey.
@@ -319,6 +369,7 @@ The visual system should take inspiration from the supplied Orville, CampusEvac,
 The references are design inspiration, not assets to copy verbatim. Finora must retain its own brand, content, illustrations, icons, and product language.
 
 ## 12. Constraints
+
 - Keep the architecture understandable for a hiring-assignment reviewer.
 - Avoid unnecessary microservices.
 - Avoid Kubernetes.
@@ -330,7 +381,9 @@ The references are design inspiration, not assets to copy verbatim. Finora must 
 - Do not present demo criteria as real bank policy.
 
 ## 13. Definition of Done
+
 Finora is technically complete when a fresh reviewer can:
+
 1. Clone the repository.
 2. Install dependencies.
 3. Configure environment variables from the example file.
@@ -348,4 +401,3 @@ Finora is technically complete when a fresh reviewer can:
 15. Use the FOIR simulator.
 16. Generate/view a readiness report.
 17. Complete the journey without developer intervention.
-

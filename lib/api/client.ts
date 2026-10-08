@@ -42,7 +42,10 @@ class ApiClient {
     this.defaultTimeoutMs = defaultTimeoutMs;
   }
 
-  private buildUrl(endpoint: string, params?: Record<string, string | number | boolean | undefined | null>): string {
+  private buildUrl(
+    endpoint: string,
+    params?: Record<string, string | number | boolean | undefined | null>
+  ): string {
     const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
     const url = new URL(`${this.baseUrl}${cleanEndpoint}`);
 
@@ -138,7 +141,11 @@ class ApiClient {
     return this.request<T>(endpoint, { ...options, method: "GET" });
   }
 
-  public post<T>(endpoint: string, body?: unknown, options?: Omit<ApiClientOptions, "method" | "body">): Promise<T> {
+  public post<T>(
+    endpoint: string,
+    body?: unknown,
+    options?: Omit<ApiClientOptions, "method" | "body">
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "POST",
@@ -146,7 +153,11 @@ class ApiClient {
     });
   }
 
-  public put<T>(endpoint: string, body?: unknown, options?: Omit<ApiClientOptions, "method" | "body">): Promise<T> {
+  public put<T>(
+    endpoint: string,
+    body?: unknown,
+    options?: Omit<ApiClientOptions, "method" | "body">
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "PUT",
@@ -154,7 +165,11 @@ class ApiClient {
     });
   }
 
-  public patch<T>(endpoint: string, body?: unknown, options?: Omit<ApiClientOptions, "method" | "body">): Promise<T> {
+  public patch<T>(
+    endpoint: string,
+    body?: unknown,
+    options?: Omit<ApiClientOptions, "method" | "body">
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "PATCH",
@@ -162,11 +177,18 @@ class ApiClient {
     });
   }
 
-  public delete<T>(endpoint: string, options?: Omit<ApiClientOptions, "method" | "body">): Promise<T> {
+  public delete<T>(
+    endpoint: string,
+    options?: Omit<ApiClientOptions, "method" | "body">
+  ): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: "DELETE" });
   }
 
-  public upload<T>(endpoint: string, formData: FormData, options?: Omit<ApiClientOptions, "method" | "body">): Promise<T> {
+  public upload<T>(
+    endpoint: string,
+    formData: FormData,
+    options?: Omit<ApiClientOptions, "method" | "body">
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "POST",

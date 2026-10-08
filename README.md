@@ -39,11 +39,13 @@ Finora/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js >= 18
 - Python >= 3.10
 - Docker & Docker Compose (optional)
 
 ### Environment Setup
+
 Copy `.env.example` to `.env` in the root/backend/frontend directories as needed.
 
 ---

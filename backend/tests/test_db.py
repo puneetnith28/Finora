@@ -1,10 +1,11 @@
 """Tests for SQLite configuration and session management."""
 import pytest
-from sqlalchemy import text, Integer, String, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey, Integer, String, text
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Mapped, mapped_column
+
 from app.db.base import Base
-from app.db.session import engine, SessionLocal, get_db
+from app.db.session import SessionLocal, engine, get_db
 
 
 class ParentTestModel(Base):

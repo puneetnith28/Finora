@@ -45,8 +45,8 @@ export const HealthStatus: React.FC = () => {
             health.backend === "healthy"
               ? "bg-emerald-400 animate-pulse"
               : health.backend === "checking"
-              ? "bg-amber-400 animate-pulse"
-              : "bg-rose-500"
+                ? "bg-amber-400 animate-pulse"
+                : "bg-rose-500"
           }`}
         />
         <span>API: {health.backend}</span>
@@ -58,8 +58,8 @@ export const HealthStatus: React.FC = () => {
             health.database === "healthy"
               ? "bg-emerald-400 animate-pulse"
               : health.database === "checking"
-              ? "bg-amber-400 animate-pulse"
-              : "bg-rose-500"
+                ? "bg-amber-400 animate-pulse"
+                : "bg-rose-500"
           }`}
         />
         <span>DB: {health.database}</span>

@@ -2,6 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+
 from app.core.config import settings
 from app.db.session import get_db
 
@@ -35,4 +36,4 @@ def get_db_health(db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"Database connection failed: {str(exc)}",
-        )
+        ) from exc

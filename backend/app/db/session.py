@@ -1,6 +1,7 @@
 """Database engine and session management."""
 from sqlalchemy import create_engine, event
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker
+
 from app.core.config import settings
 
 # For SQLite, ensure check_same_thread is False and enable foreign keys

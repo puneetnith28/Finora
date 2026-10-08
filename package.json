@@ -6,7 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "type-check": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run type-check && npm run lint",
+    "lint:backend": "./.venv/bin/ruff check backend",
+    "format:backend": "./.venv/bin/ruff format backend",
+    "test:backend": "./.venv/bin/pytest backend/tests",
+    "quality": "npm run type-check && npm run lint && npm run lint:backend && npm run test:backend"
   },
   "dependencies": {
     "next": "16.4.0",
@@ -20,6 +28,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.0",
+    "prettier": "^3.9.9",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
