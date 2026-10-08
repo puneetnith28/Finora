@@ -1,5 +1,13 @@
 """Services package for Finora business logic and financial calculations."""
 
+from app.services.collateral_calculator import (
+    COLLATERAL_HAIRCUT_FACTORS,
+    OWNERSHIP_ELIGIBILITY_FACTORS,
+    CollateralItemInput,
+    CollateralValuationItemResult,
+    CollateralValuationResult,
+    calculate_collateral_value,
+)
 from app.services.currency_service import (
     DEFAULT_EXCHANGE_RATES,
     CurrencyConversionRequest,
@@ -45,6 +53,10 @@ from app.services.study_cost_calculator import (
 __all__ = [
     "AmortizationYear",
     "AssetSummaryItem",
+    "COLLATERAL_HAIRCUT_FACTORS",
+    "CollateralItemInput",
+    "CollateralValuationItemResult",
+    "CollateralValuationResult",
     "CurrencyConversionRequest",
     "CurrencyConversionResult",
     "DEFAULT_EXCHANGE_RATES",
@@ -59,9 +71,11 @@ __all__ = [
     "LiabilitySummaryItem",
     "NetWorthCalculationInput",
     "NetWorthCalculationResult",
+    "OWNERSHIP_ELIGIBILITY_FACTORS",
     "StudyCostBreakdown",
     "StudyCostResult",
     "calculate_available_funding",
+    "calculate_collateral_value",
     "calculate_emi",
     "calculate_foir",
     "calculate_funding_gap",
