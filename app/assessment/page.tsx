@@ -72,31 +72,22 @@ function AssessmentContent() {
 
       let res: { id: number };
 
-      const createOrUpdateByEmail = async (): Promise<{ id: number }> => {
-        try {
-          return await api.post<{ id: number }>("/api/students", payload);
-        } catch (postErr: unknown) {
-          if (postErr instanceof ApiClientError && postErr.status === 409) {
-            const allStudents = await api.get<Array<{ id: number; email: string }>>("/api/students");
-            const existing = allStudents.find(
-              (s) => s.email.toLowerCase() === payload.email.toLowerCase()
-            );
-            if (existing) {
-              return await api.put<{ id: number }>(`/api/students/${existing.id}`, payload);
-            }
-          }
-          throw postErr;
-        }
-      };
+      // Find if student with this email already exists in database
+      const allStudents = await api.get<Array<{ id: number; email: string }>>("/api/students");
+      const existing = allStudents.find(
+        (s) => s.email.toLowerCase() === payload.email.toLowerCase()
+      );
 
-      if (studentId) {
+      if (existing) {
+        res = await api.put<{ id: number }>(`/api/students/${existing.id}`, payload);
+      } else if (studentId) {
         try {
           res = await api.put<{ id: number }>(`/api/students/${studentId}`, payload);
         } catch {
-          res = await createOrUpdateByEmail();
+          res = await api.post<{ id: number }>("/api/students", payload);
         }
       } else {
-        res = await createOrUpdateByEmail();
+        res = await api.post<{ id: number }>("/api/students", payload);
       }
 
       setStudentId(res.id);

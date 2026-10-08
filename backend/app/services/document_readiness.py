@@ -67,7 +67,9 @@ def evaluate_student_document_readiness(
     financial_profile = db.scalar(
         select(FinancialProfile).where(FinancialProfile.student_id == student_id)
     )
-    has_income = financial_profile is not None and financial_profile.monthly_income_inr > 0
+    has_income = financial_profile is not None and (
+        getattr(financial_profile, "monthly_income", None) or getattr(financial_profile, "monthly_income_inr", 0)
+    ) > 0
 
     collaterals = list(
         db.scalars(select(Collateral).where(Collateral.student_id == student_id)).all()
