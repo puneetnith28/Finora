@@ -16,7 +16,8 @@ import { type FundingSourceItem } from "@/lib/validations/funding";
 import { type FinancialProfileFormData } from "@/lib/validations/financial_profile";
 import { type CollateralItem } from "@/lib/validations/collateral";
 import { api, ApiClientError } from "@/lib/api";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { Check, AlertTriangle, Loader2 } from "lucide-react";
+import { NeoBadge } from "@/components/ui/NeoPrimitives";
 
 function AssessmentContent() {
   const searchParams = useSearchParams();
@@ -55,7 +56,6 @@ function AssessmentContent() {
     setAlert(null);
     try {
       setStudent(data);
-      // Call API
       let res: { id: number };
       if (studentId) {
         res = await api.put<{ id: number }>(`/api/students/${studentId}`, data);
@@ -63,7 +63,7 @@ function AssessmentContent() {
         res = await api.post<{ id: number }>("/api/students", data);
       }
       setStudentId(res.id);
-      showAlert("success", "Student profile saved successfully.");
+      showAlert("success", "Student profile recorded in database.");
       setCurrentStep(2);
       setMaxStepUnlocked((prev) => Math.max(prev, 2));
     } catch (err: unknown) {
@@ -86,7 +86,7 @@ function AssessmentContent() {
     try {
       setStudyPlan(data);
       await api.post(`/api/students/${studentId}/study-plan`, data);
-      showAlert("success", "Study plan and cost breakdown saved.");
+      showAlert("success", "Study plan and cost breakdown recorded.");
       setCurrentStep(3);
       setMaxStepUnlocked((prev) => Math.max(prev, 3));
     } catch (err: unknown) {
@@ -108,7 +108,6 @@ function AssessmentContent() {
     setAlert(null);
     try {
       setFundingSources(sources);
-      // Save each funding source to the student
       for (const src of sources) {
         await api.post(`/api/students/${studentId}/funding-sources`, {
           source_type: src.source_type,
@@ -119,7 +118,7 @@ function AssessmentContent() {
           verified: src.verified,
         });
       }
-      showAlert("success", "Funding sources and self-contribution saved.");
+      showAlert("success", "Funding sources and self-contributions recorded.");
       setCurrentStep(4);
       setMaxStepUnlocked((prev) => Math.max(prev, 4));
     } catch (err: unknown) {
@@ -150,17 +149,15 @@ function AssessmentContent() {
         cibil_score: data.cibil_score,
       });
 
-      // Save assets
       for (const asset of data.assets) {
         await api.post(`/api/students/${studentId}/assets`, asset);
       }
 
-      // Save liabilities
       for (const liability of data.liabilities) {
         await api.post(`/api/students/${studentId}/liabilities`, liability);
       }
 
-      showAlert("success", "Financial profile, assets, and debts saved.");
+      showAlert("success", "Financial profile, assets, and debts recorded.");
       setCurrentStep(5);
       setMaxStepUnlocked((prev) => Math.max(prev, 5));
     } catch (err: unknown) {
@@ -185,7 +182,7 @@ function AssessmentContent() {
       for (const item of items) {
         await api.post(`/api/students/${studentId}/collaterals`, item);
       }
-      showAlert("success", "Pledged security and collateral saved.");
+      showAlert("success", "Pledged security and collateral recorded.");
       setCurrentStep(6);
       setMaxStepUnlocked((prev) => Math.max(prev, 6));
     } catch (err: unknown) {
@@ -210,7 +207,7 @@ function AssessmentContent() {
         student_id: studentId,
       });
       setAssessmentResult(res);
-      showAlert("success", "Assessment completed successfully with full rule audit.");
+      showAlert("success", "Deterministic assessment executed with full audit trail.");
     } catch (err: unknown) {
       const message = err instanceof ApiClientError ? err.message : "Failed to execute assessment.";
       showAlert("error", message);
@@ -231,123 +228,128 @@ function AssessmentContent() {
   const fundingGapInr = Math.max(0, totalCostInr - totalFundingInr);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      {/* Alert Banner */}
-      {alert && (
-        <div
-          className={`mb-6 p-4 rounded-2xl flex items-center justify-between gap-3 text-sm font-medium ${
-            alert.type === "success"
-              ? "bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200"
-              : "bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800 text-rose-900 dark:text-rose-200"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            {alert.type === "success" ? (
-              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-            ) : (
-              <AlertCircle className="h-5 w-5 text-rose-600" />
-            )}
-            <span>{alert.message}</span>
-          </div>
-          <button
-            onClick={() => setAlert(null)}
-            className="text-xs uppercase font-bold opacity-70 hover:opacity-100"
+    <div className="w-full bg-[#FEF3C7] min-h-screen py-10 sm:py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Alert Banner */}
+        {alert && (
+          <div
+            className={`p-4 border-2 border-black flex items-center justify-between gap-3 text-xs font-black shadow-[4px_4px_0px_0px_#000000] ${
+              alert.type === "success"
+                ? "bg-[#86EFAC] text-black"
+                : "bg-[#F472B6] text-black"
+            }`}
           >
-            Dismiss
-          </button>
-        </div>
-      )}
-
-      {/* Render Assessment Results if ready, else render multi-step flow */}
-      {assessmentResult ? (
-        <AssessmentResults
-          assessment={assessmentResult}
-          onReset={() => {
-            setAssessmentResult(null);
-            setCurrentStep(1);
-          }}
-        />
-      ) : (
-        <>
-          <div className="mb-6">
-            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Education Loan Readiness Assessment
-            </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-              Complete the 6 steps below to evaluate your profile against all lender underwriting matrices.
-            </p>
+            <div className="flex items-center gap-2">
+              {alert.type === "success" ? (
+                <Check className="h-4 w-4 stroke-[3]" />
+              ) : (
+                <AlertTriangle className="h-4 w-4 stroke-[3]" />
+              )}
+              <span className="uppercase">{alert.message}</span>
+            </div>
+            <button
+              onClick={() => setAlert(null)}
+              className="text-xs uppercase font-black underline cursor-pointer"
+            >
+              DISMISS
+            </button>
           </div>
+        )}
 
-          <StepNavigation
-            currentStep={currentStep}
-            onStepClick={(step) => setCurrentStep(step)}
-            maxStepUnlocked={maxStepUnlocked}
+        {/* Render Assessment Results if ready, else render multi-step flow */}
+        {assessmentResult ? (
+          <AssessmentResults
+            assessment={assessmentResult}
+            onReset={() => {
+              setAssessmentResult(null);
+              setCurrentStep(1);
+            }}
           />
+        ) : (
+          <>
+            <div className="space-y-2">
+              <NeoBadge variant="pink" rotate="left">
+                6-STEP UNDERWRITING ENGINE
+              </NeoBadge>
+              <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-black">
+                LOAN READINESS ASSESSMENT
+              </h1>
+              <p className="text-xs sm:text-sm font-bold text-neutral-800 max-w-2xl">
+                Complete the 6 steps below to evaluate your candidate profile against all lender underwriting matrices.
+              </p>
+            </div>
 
-          <div className="mt-8">
-            {currentStep === 1 && (
-              <StudentProfileForm
-                initialData={student || undefined}
-                onSubmit={handleStudentSubmit}
-                isLoading={isLoading}
-              />
-            )}
+            <StepNavigation
+              currentStep={currentStep}
+              onStepClick={(step) => setCurrentStep(step)}
+              maxStepUnlocked={maxStepUnlocked}
+            />
 
-            {currentStep === 2 && (
-              <StudyPlanForm
-                initialData={studyPlan || undefined}
-                onSubmit={handleStudyPlanSubmit}
-                onBack={() => setCurrentStep(1)}
-                isLoading={isLoading}
-              />
-            )}
+            <div>
+              {currentStep === 1 && (
+                <StudentProfileForm
+                  initialData={student || undefined}
+                  onSubmit={handleStudentSubmit}
+                  isLoading={isLoading}
+                />
+              )}
 
-            {currentStep === 3 && (
-              <FundingForm
-                totalCostInr={totalCostInr || 4500000}
-                initialSources={fundingSources}
-                onSubmit={handleFundingSubmit}
-                onBack={() => setCurrentStep(2)}
-                isLoading={isLoading}
-              />
-            )}
+              {currentStep === 2 && (
+                <StudyPlanForm
+                  initialData={studyPlan || undefined}
+                  onSubmit={handleStudyPlanSubmit}
+                  onBack={() => setCurrentStep(1)}
+                  isLoading={isLoading}
+                />
+              )}
 
-            {currentStep === 4 && (
-              <FinancialProfileForm
-                fundingGapInr={fundingGapInr || 3500000}
-                initialData={financialProfile || undefined}
-                onSubmit={handleFinancialProfileSubmit}
-                onBack={() => setCurrentStep(3)}
-                isLoading={isLoading}
-              />
-            )}
+              {currentStep === 3 && (
+                <FundingForm
+                  totalCostInr={totalCostInr || 4500000}
+                  initialSources={fundingSources}
+                  onSubmit={handleFundingSubmit}
+                  onBack={() => setCurrentStep(2)}
+                  isLoading={isLoading}
+                />
+              )}
 
-            {currentStep === 5 && (
-              <CollateralForm
-                requestedLoanInr={fundingGapInr || 3500000}
-                initialCollaterals={collaterals}
-                onSubmit={handleCollateralSubmit}
-                onBack={() => setCurrentStep(4)}
-                isLoading={isLoading}
-              />
-            )}
+              {currentStep === 4 && (
+                <FinancialProfileForm
+                  fundingGapInr={fundingGapInr || 3500000}
+                  initialData={financialProfile || undefined}
+                  onSubmit={handleFinancialProfileSubmit}
+                  onBack={() => setCurrentStep(3)}
+                  isLoading={isLoading}
+                />
+              )}
 
-            {currentStep === 6 && (
-              <AssessmentReview
-                student={student}
-                studyPlan={studyPlan}
-                fundingSources={fundingSources}
-                financialProfile={financialProfile}
-                collaterals={collaterals}
-                onEditSection={(step) => setCurrentStep(step)}
-                onRunAssessment={handleRunAssessment}
-                onBack={() => setCurrentStep(5)}
-                isLoading={isLoading}
-              />
-            )}
-          </div>
-        </>
-      )}
+              {currentStep === 5 && (
+                <CollateralForm
+                  requestedLoanInr={fundingGapInr || 3500000}
+                  initialCollaterals={collaterals}
+                  onSubmit={handleCollateralSubmit}
+                  onBack={() => setCurrentStep(4)}
+                  isLoading={isLoading}
+                />
+              )}
+
+              {currentStep === 6 && (
+                <AssessmentReview
+                  student={student}
+                  studyPlan={studyPlan}
+                  fundingSources={fundingSources}
+                  financialProfile={financialProfile}
+                  collaterals={collaterals}
+                  onEditSection={(step) => setCurrentStep(step)}
+                  onRunAssessment={handleRunAssessment}
+                  onBack={() => setCurrentStep(5)}
+                  isLoading={isLoading}
+                />
+              )}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -357,8 +359,8 @@ export default function AssessmentPage() {
     <Suspense
       fallback={
         <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3">
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
-          <p className="text-sm text-slate-500 font-medium">Loading Finora Assessment Engine...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-black" />
+          <p className="text-xs font-black uppercase text-black">Loading Finora Assessment Engine...</p>
         </div>
       }
     >
