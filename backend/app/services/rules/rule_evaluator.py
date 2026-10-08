@@ -17,6 +17,7 @@ class RuleEvaluationResult(BaseModel):
     reason: str
     severity: str
     weight: Decimal
+    description: str | None = None
 
 
 def evaluate_single_rule(
@@ -166,4 +167,5 @@ def evaluate_single_rule(
         reason=reason,
         severity=rule.severity.value,
         weight=rule.weight,
+        description=rule.description,
     )

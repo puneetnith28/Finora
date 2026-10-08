@@ -164,3 +164,54 @@ def test_lender_evaluation_needs_review() -> None:
     assert result.outcome_state == LenderOutcomeState.NEEDS_REVIEW
     assert len(result.review_triggers) == 1
     assert len(result.failed_hard_constraints) == 0
+    assert result.failed_rules_count == 1
+    assert result.review_triggers[0].rule_type == "document_required"
+    assert "Salary slips and KYC mandatory" in result.review_triggers[0].description
+
+
+def test_lender_evaluation_collateral_hard_constraint() -> None:
+    study_cost = StudyCostBreakdown(
+        tuition_fee=Decimal("60000.00"),
+        duration_months=24,
+        currency="USD",
+    )
+    fin_summary = run_full_financial_engine(
+        ComprehensiveFinancialInput(
+            study_cost=study_cost,
+            requested_loan_amount_inr=Decimal("6000000.00"),
+        )
+    )
+    context = CandidateAssessmentContext(
+        target_country="USA",
+        has_collateral=False,
+        financial_summary=fin_summary,
+    )
+
+    lender = LenderProfile(
+        id=4,
+        name="Demo Secured-Only Bank",
+        criteria=[
+            RuleDefinition(
+                rule_type=RuleType.COLLATERAL_REQUIRED,
+                operator=RuleOperator.REQUIRED,
+                severity=RuleSeverity.HARD_CONSTRAINT,
+                description="Secured collateral mandatory for loans above 40L",
+            ),
+            RuleDefinition(
+                rule_type=RuleType.MAXIMUM_FOIR,
+                operator=RuleOperator.LTE,
+                expected_numeric=Decimal("0.50"),
+                severity=RuleSeverity.REVIEW,
+            ),
+        ],
+    )
+
+    result = evaluate_lender(lender, context)
+    assert result.outcome_state == LenderOutcomeState.NOT_A_MATCH
+    assert len(result.failed_hard_constraints) == 1
+    assert result.failed_hard_constraints[0].rule_type == "collateral_required"
+    # Even if review rule fails or passes, hard constraint dictates NOT_A_MATCH
+    assert not result.failed_hard_constraints[0].passed
+    assert result.failed_hard_constraints[0].actual_value == "False"
+    assert result.disclaimer == "Indicative assessment based on provided data. Not a guaranteed sanction or formal loan offer."
+
