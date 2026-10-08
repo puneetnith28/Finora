@@ -2,21 +2,15 @@
 
 import React, { useState } from "react";
 import { 
-  CheckCircle2, 
-  XCircle, 
-  AlertTriangle, 
-  Building2, 
   Download, 
   RotateCcw, 
-  ChevronDown, 
-  ChevronUp,
   Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
 import { StatCard } from "@/components/ui/StatCard";
 import { formatCurrency, formatPercent } from "@/lib/utils";
+import { ExplainableLenderCard } from "@/components/assessment/ExplainableLenderCard";
+import { LenderMatch } from "@/types";
 
 export interface LenderMatchResult {
   lender_id: number;
@@ -71,11 +65,6 @@ export interface AssessmentResultsProps {
 
 export function AssessmentResults({ assessment, onReset }: AssessmentResultsProps) {
   const [filter, setFilter] = useState<"all" | "eligible" | "conditional" | "ineligible">("all");
-  const [expandedLenders, setExpandedLenders] = useState<Record<number, boolean>>({});
-
-  const toggleLender = (id: number) => {
-    setExpandedLenders((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   const filteredMatches = assessment.lender_matches.filter((m) => {
     if (filter === "all") return true;
@@ -245,166 +234,54 @@ export function AssessmentResults({ assessment, onReset }: AssessmentResultsProp
         {/* Lender Match Cards Grid */}
         <div className="grid grid-cols-1 gap-6">
           {filteredMatches.map((lender) => {
-            const isExpanded = expandedLenders[lender.lender_id] ?? false;
-            const isEligible = lender.outcome_state === "eligible";
-            const isConditional = lender.outcome_state === "conditional";
-            const isIneligible = lender.outcome_state === "ineligible";
+            const normalizedLender: LenderMatch = {
+              lender_id: lender.lender_id,
+              lender_name: lender.lender_name,
+              lender_type: lender.lender_type,
+              outcome_state: lender.outcome_state,
+              match_score:
+                lender.rules_evaluated > 0
+                  ? lender.rules_passed / lender.rules_evaluated
+                  : lender.outcome_state === "eligible"
+                  ? 1.0
+                  : lender.outcome_state === "conditional"
+                  ? 0.75
+                  : 0.3,
+              interest_rate_min: lender.interest_rate_min,
+              interest_rate_max: lender.interest_rate_max,
+              max_loan_amount_inr: lender.max_loan_amount_inr,
+              rules_evaluated: lender.rules_evaluated,
+              rules_passed: lender.rules_passed,
+              rules_failed: lender.rules_failed,
+              failed_rules: lender.failed_rules,
+              passed_rules: lender.passed_rules,
+              conditions: lender.conditions,
+              remedial_suggestions: lender.remedial_actions,
+              evaluated_criteria: [
+                ...(lender.passed_rules || []).map((r) => ({
+                  criterion_name: r.rule_name || r.rule_id || "Rule Check",
+                  passed: true,
+                  required: true,
+                  expected_value: "Eligible Threshold",
+                  actual_value: "Meets Requirement",
+                  explanation: "Candidate profile satisfies this underwriting criterion.",
+                })),
+                ...(lender.failed_rules || []).map((r) => ({
+                  criterion_name: r.rule_name || r.rule_id || "Rule Check",
+                  passed: false,
+                  required: true,
+                  expected_value: r.threshold ? String(r.threshold) : "Standard Criteria",
+                  actual_value: r.actual_value ? String(r.actual_value) : "Current Value",
+                  explanation: r.reason || "Does not satisfy required lender underwriting guideline.",
+                })),
+              ],
+            };
 
             return (
-              <Card
+              <ExplainableLenderCard
                 key={lender.lender_id}
-                className={`border-l-4 transition-all ${
-                  isEligible
-                    ? "border-l-emerald-600"
-                    : isConditional
-                    ? "border-l-amber-500"
-                    : isIneligible
-                    ? "border-l-rose-500"
-                    : "border-l-blue-500"
-                }`}
-              >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 shrink-0">
-                      <Building2 className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2.5 flex-wrap">
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                          {lender.lender_name}
-                        </h3>
-                        <Badge
-                          variant={
-                            isEligible
-                              ? "success"
-                              : isConditional
-                              ? "warning"
-                              : isIneligible
-                              ? "danger"
-                              : "info"
-                          }
-                        >
-                          {lender.outcome_state.toUpperCase().replace("_", " ")}
-                        </Badge>
-                      </div>
-                      <span className="text-xs text-slate-500 uppercase font-semibold tracking-wider">
-                        {lender.lender_type.replace("_", " ")}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-6 text-xs">
-                    <div>
-                      <span className="text-slate-500 block">Indicative Rate</span>
-                      <span className="font-mono font-bold text-slate-900 dark:text-white text-sm">
-                        {lender.interest_rate_min?.toFixed(2)}% - {lender.interest_rate_max?.toFixed(2)}%
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-slate-500 block">Max Sanction</span>
-                      <span className="font-mono font-bold text-slate-900 dark:text-white text-sm">
-                        {formatCurrency(lender.max_loan_amount_inr)}
-                      </span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleLender(lender.lender_id)}
-                      rightIcon={
-                        isExpanded ? (
-                          <ChevronUp className="h-4 w-4" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4" />
-                        )
-                      }
-                    >
-                      {isExpanded ? "Hide Audit Rules" : "Inspect Rules"}
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Quick Summary Pill */}
-                <div className="py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-                  <div className="flex items-center gap-4 text-slate-600 dark:text-slate-300 font-medium">
-                    <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                      <CheckCircle2 className="h-4 w-4" />
-                      {lender.rules_passed} Rules Passed
-                    </span>
-                    {lender.rules_failed > 0 && (
-                      <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
-                        <XCircle className="h-4 w-4" />
-                        {lender.rules_failed} Rules Failed
-                      </span>
-                    )}
-                  </div>
-
-                  {lender.conditions && lender.conditions.length > 0 && (
-                    <div className="text-amber-700 dark:text-amber-400 font-semibold flex items-center gap-1">
-                      <AlertTriangle className="h-3.5 w-3.5" />
-                      {lender.conditions[0]}
-                    </div>
-                  )}
-                </div>
-
-                {/* Expanded Rule Engine Audit Trail */}
-                {isExpanded && (
-                  <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
-                    {/* Failed Rules Details */}
-                    {lender.failed_rules && lender.failed_rules.length > 0 && (
-                      <div className="space-y-2">
-                        <h4 className="font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                          <XCircle className="h-4 w-4" />
-                          Failed Rule Underwriting Checks
-                        </h4>
-                        <div className="space-y-2">
-                          {lender.failed_rules.map((rule, idx) => (
-                            <div
-                              key={idx}
-                              className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-900 dark:text-rose-200 space-y-1"
-                            >
-                              <div className="font-bold">{rule.rule_name || rule.rule_id || "Constraint Violation"}</div>
-                              <div className="text-[11px] opacity-90">{rule.reason}</div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Passed Rules Details */}
-                    {lender.passed_rules && lender.passed_rules.length > 0 && (
-                      <div className="space-y-2">
-                        <h4 className="font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                          <CheckCircle2 className="h-4 w-4" />
-                          Passed Underwriting Checks
-                        </h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {lender.passed_rules.map((rule, idx) => (
-                            <div
-                              key={idx}
-                              className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-slate-700 dark:text-slate-300 flex items-center gap-2"
-                            >
-                              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                              <span className="truncate">{rule.rule_name || rule.rule_id}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Remedial Advice */}
-                    {lender.remedial_actions && lender.remedial_actions.length > 0 && (
-                      <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 text-xs">
-                        <div className="font-bold mb-1">Recommended Remedial Action:</div>
-                        <ul className="list-disc list-inside space-y-1 text-[11px]">
-                          {lender.remedial_actions.map((act, idx) => (
-                            <li key={idx}>{act}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </Card>
+                lender={normalizedLender}
+              />
             );
           })}
         </div>
