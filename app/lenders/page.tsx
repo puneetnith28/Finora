@@ -67,67 +67,10 @@ export default function LendersPage() {
           });
           setLenders(normalized);
         } else {
-          throw new Error("No lenders returned");
+          setLenders([]);
         }
       } catch {
-        // Fallback demo lenders
-        setLenders([
-          {
-            id: 1,
-            name: "State Bank of India (Global Ed-Vantage)",
-            lender_type: "public_bank",
-            interest_rate_min: 9.15,
-            interest_rate_max: 10.5,
-            max_loan_amount_inr: 15000000,
-            min_cibil_score: 700,
-            requires_collateral: true,
-            active: true,
-          },
-          {
-            id: 2,
-            name: "HDFC Credila Financial Services",
-            lender_type: "nbfc",
-            interest_rate_min: 10.5,
-            interest_rate_max: 12.75,
-            max_loan_amount_inr: 7500000,
-            min_cibil_score: 680,
-            requires_collateral: false,
-            active: true,
-          },
-          {
-            id: 3,
-            name: "Prodigy Finance (Borderless USD)",
-            lender_type: "international_usd",
-            interest_rate_min: 11.25,
-            interest_rate_max: 14.5,
-            max_loan_amount_inr: 10000000,
-            min_cibil_score: 0,
-            requires_collateral: false,
-            active: true,
-          },
-          {
-            id: 4,
-            name: "Avanse Financial Services",
-            lender_type: "nbfc",
-            interest_rate_min: 11.0,
-            interest_rate_max: 13.5,
-            max_loan_amount_inr: 5000000,
-            min_cibil_score: 680,
-            requires_collateral: false,
-            active: true,
-          },
-          {
-            id: 5,
-            name: "ICICI Bank Education Loan",
-            lender_type: "private_bank",
-            interest_rate_min: 9.85,
-            interest_rate_max: 11.75,
-            max_loan_amount_inr: 10000000,
-            min_cibil_score: 720,
-            requires_collateral: true,
-            active: true,
-          },
-        ]);
+        setLenders([]);
       } finally {
         setLoading(false);
       }
