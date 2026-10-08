@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
+from app.core.errors import register_error_handlers
 from app.routes.api import api_router
 from app.routes.health import router as health_router
 
@@ -23,6 +24,9 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     lifespan=lifespan,
 )
+
+# Register custom error formatting
+register_error_handlers(app)
 
 # Set up CORS
 if settings.BACKEND_CORS_ORIGINS:
