@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { StatCard } from "@/components/ui/StatCard";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 import { ExplainableLenderCard } from "@/components/assessment/ExplainableLenderCard";
+import { ReadinessScoreCard } from "@/components/assessment/ReadinessScoreCard";
 import { LenderMatch } from "@/types";
 
 export interface LenderMatchResult {
@@ -173,6 +174,9 @@ export function AssessmentResults({ assessment, onReset }: AssessmentResultsProp
           }}
         />
       </div>
+
+      {/* 2b. Transparent Multi-Dimensional Readiness Score Indicator */}
+      <ReadinessScoreCard assessment={assessment as unknown as import("@/types").FullAssessmentResult} />
 
       {/* 3. Lender Matching Results & Audit Trail */}
       <div className="space-y-6">
