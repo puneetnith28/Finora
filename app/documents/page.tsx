@@ -18,6 +18,7 @@ import {
   Lock
 } from "lucide-react";
 import { api, ApiClientError } from "@/lib/api";
+import { DiscrepancyViewer } from "@/components/documents/DiscrepancyViewer";
 
 interface ReadinessItem {
   document_type: string;
@@ -256,6 +257,9 @@ export default function DocumentsPage() {
             </div>
           </div>
         )}
+
+        {/* Discrepancy Reconciliation Engine Card */}
+        <DiscrepancyViewer />
 
         {/* Document Items Grid */}
         {loading ? (
