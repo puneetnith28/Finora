@@ -1,8 +1,8 @@
 """Abstract interface and data transfer contracts for document extraction."""
 
 from abc import ABC, abstractmethod
-from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from decimal import Decimal
 from typing import Any
 
@@ -29,7 +29,7 @@ class ExtractedDocumentPayload:
     fields: dict[str, ExtractedField] = field(default_factory=dict)
     confidence_score: float = 1.0
     extracted_at: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
+        default_factory=lambda: datetime.now(UTC).isoformat()
     )
     raw_text_length: int = 0
     metadata: dict[str, Any] = field(default_factory=dict)

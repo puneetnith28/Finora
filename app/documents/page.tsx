@@ -57,63 +57,33 @@ export default function DocumentsPage() {
   const activeStudentId = 1;
 
   const loadReadiness = async () => {
-    setLoading(true);
     try {
       const data = await api.get<ReadinessReport>(`/api/students/${activeStudentId}/documents/readiness`);
       setReport(data);
     } catch {
-      // Fallback preview data for instant offline demonstration
-      setReport({
-        student_id: 1,
-        overall_readiness: "partially_ready",
-        total_required: 4,
-        total_uploaded: 2,
-        total_verified: 2,
-        total_missing: 2,
-        items: [
-          {
-            document_type: "admission_letter",
-            title: "University Admission / Offer Letter",
-            description: "Unconditional or conditional admission letter from destination university.",
-            mandatory: true,
-            status: "verified",
-            file_name: "cmu_admission_offer_2026.pdf",
-            uploaded_at: "2026-03-15T10:30:00Z",
-          },
-          {
-            document_type: "passport",
-            title: "Passport / Government ID Proof",
-            description: "Valid passport copy for KYC and foreign outward remittance verification.",
-            mandatory: true,
-            status: "verified",
-            file_name: "passport_front_back.pdf",
-            uploaded_at: "2026-03-14T12:00:00Z",
-          },
-          {
-            document_type: "itr",
-            title: "Co-Borrower Income Tax Returns (ITR) or Salary Slips",
-            description: "Last 2 years ITR-V with computation of income, or recent 3-6 months pay slips.",
-            mandatory: true,
-            status: "missing",
-            remedial_note: "Required to substantiate co-borrower FOIR and debt servicing ability.",
-          },
-          {
-            document_type: "bank_statement",
-            title: "Co-Borrower 6-Month Bank Statement",
-            description: "Operational bank account statement showing salary credit or business turnover.",
-            mandatory: true,
-            status: "missing",
-            remedial_note: "Required by banks to check average balance and EMI clearing.",
-          },
-        ],
-      });
-    } finally {
-      setLoading(false);
+      // Keep existing report
     }
   };
 
   useEffect(() => {
-    loadReadiness();
+    let isMounted = true;
+    api
+      .get<ReadinessReport>(`/api/students/${activeStudentId}/documents/readiness`)
+      .then((data) => {
+        if (isMounted) {
+          setReport(data);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleFileUpload = async (e: React.FormEvent) => {
@@ -292,7 +262,6 @@ export default function DocumentsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {report?.items.map((item, idx) => {
             const isVerified = item.status === "verified" || item.status === "uploaded";
-            const isMissing = item.status === "missing";
 
             return (
               <Card

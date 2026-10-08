@@ -1,10 +1,7 @@
-"""Document management, safe storage, file validation and retrieval service."""
-
 import os
 import re
 import uuid
 from pathlib import Path
-from typing import BinaryIO
 
 from fastapi import HTTPException, UploadFile, status
 from sqlalchemy import select

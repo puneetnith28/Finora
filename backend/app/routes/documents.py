@@ -1,6 +1,4 @@
-"""Document management and file upload routes."""
-
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, Response, UploadFile, status
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
@@ -128,6 +126,60 @@ def preview_document_file(
     )
 
 
+@router.post(
+    "/documents/{document_id}/extract",
+    summary="Trigger OCR/local extraction on document and persist evidence",
+)
+def extract_document_data(
+    document_id: int,
+    db: Session = Depends(get_db),
+) -> dict:
+    """Extract structured evidence from document and save to DB."""
+    from app.services.ocr.discrepancy_engine import process_document_extraction
+
+    doc = process_document_extraction(db, document_id)
+    import json
+
+    evidence = json.loads(doc.extracted_data_json or "{}")
+    return {
+        "document_id": doc.id,
+        "document_type": doc.document_type.value,
+        "extraction_status": doc.extraction_status.value,
+        "status": doc.status.value,
+        "evidence": evidence,
+    }
+
+
+@router.get(
+    "/students/{student_id}/discrepancies",
+    summary="Evaluate discrepancy between user profile and verified document evidence",
+)
+def check_student_discrepancies(
+    student_id: int,
+    tolerance_percent: float = 10.0,
+    db: Session = Depends(get_db),
+) -> list[dict]:
+    """Compare student-entered income against all uploaded income documents (Salary slips, ITR)."""
+    from app.services.ocr.discrepancy_engine import evaluate_income_discrepancy
+
+    docs = get_student_documents(db, student_id)
+    income_docs = [
+        d for d in docs if d.document_type in (DocumentType.SALARY_SLIP, DocumentType.ITR)
+    ]
+
+    reports = []
+    for doc in income_docs:
+        rep = evaluate_income_discrepancy(
+            db=db,
+            student_id=student_id,
+            document_id=doc.id,
+            tolerance_percent=tolerance_percent,
+        )
+        reports.append(rep.to_dict())
+
+    return reports
+
+
 @router.delete(
     "/documents/{document_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -140,3 +192,4 @@ def remove_document(
     """Delete document physical file and database metadata."""
     delete_document(db, document_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+

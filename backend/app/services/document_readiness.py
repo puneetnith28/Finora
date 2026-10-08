@@ -1,8 +1,5 @@
-"""Document readiness rule engine based on candidate profile and assessment context."""
-
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Any
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -66,7 +63,6 @@ def evaluate_student_document_readiness(
         db.scalars(select(FundingSource).where(FundingSource.student_id == student_id)).all()
     )
     has_scholarship = any(s.source_type.value == "scholarship" for s in funding_sources)
-    has_large_savings = any(s.amount_inr >= 500000 for s in funding_sources)
 
     financial_profile = db.scalar(
         select(FinancialProfile).where(FinancialProfile.student_id == student_id)
@@ -113,7 +109,7 @@ def evaluate_student_document_readiness(
     )
 
     # 3. Income Assessment: Salary Slip or ITR
-    if has_income or True:  # Education loans universally require co-borrower income proof
+    if has_income or financial_profile is None:
         salary_doc = doc_map.get(DocumentType.SALARY_SLIP.value)
         itr_doc = doc_map.get(DocumentType.ITR.value)
         income_doc = itr_doc or salary_doc
