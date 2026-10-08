@@ -22,6 +22,12 @@ from app.services.emi_calculator import (
     EMIResult,
     calculate_emi,
 )
+from app.services.financial_engine import (
+    ComprehensiveFinancialInput,
+    ComprehensiveFinancialSummary,
+    compute_readiness_score,
+    run_full_financial_engine,
+)
 from app.services.foir_calculator import (
     FOIRInput,
     FOIRResult,
@@ -62,6 +68,8 @@ __all__ = [
     "CollateralItemInput",
     "CollateralValuationItemResult",
     "CollateralValuationResult",
+    "ComprehensiveFinancialInput",
+    "ComprehensiveFinancialSummary",
     "CurrencyConversionRequest",
     "CurrencyConversionResult",
     "DEFAULT_EXCHANGE_RATES",
@@ -89,7 +97,9 @@ __all__ = [
     "calculate_ltv",
     "calculate_net_worth",
     "calculate_study_cost",
+    "compute_readiness_score",
     "convert_currency",
     "get_default_exchange_rate",
     "normalize_to_inr",
+    "run_full_financial_engine",
 ]
