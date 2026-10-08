@@ -71,15 +71,34 @@ function AssessmentContent() {
       };
 
       let res: { id: number };
+
+      const createOrUpdateByEmail = async (): Promise<{ id: number }> => {
+        try {
+          return await api.post<{ id: number }>("/api/students", payload);
+        } catch (postErr: unknown) {
+          if (postErr instanceof ApiClientError && postErr.status === 409) {
+            const allStudents = await api.get<Array<{ id: number; email: string }>>("/api/students");
+            const existing = allStudents.find(
+              (s) => s.email.toLowerCase() === payload.email.toLowerCase()
+            );
+            if (existing) {
+              return await api.put<{ id: number }>(`/api/students/${existing.id}`, payload);
+            }
+          }
+          throw postErr;
+        }
+      };
+
       if (studentId) {
         try {
           res = await api.put<{ id: number }>(`/api/students/${studentId}`, payload);
         } catch {
-          res = await api.post<{ id: number }>("/api/students", payload);
+          res = await createOrUpdateByEmail();
         }
       } else {
-        res = await api.post<{ id: number }>("/api/students", payload);
+        res = await createOrUpdateByEmail();
       }
+
       setStudentId(res.id);
       setActiveStudentId(res.id);
       setActiveStudentName(data.full_name);
