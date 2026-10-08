@@ -1,6 +1,6 @@
 """Generic deterministic rule evaluator for lender underwriting criteria."""
 
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from pydantic import BaseModel
@@ -29,8 +29,32 @@ def evaluate_single_rule(
     passed = False
     reason = ""
 
-    # 1. Numeric comparisons (>=, <=, >, <, ==, !=)
-    if op in [
+    # 1. Boolean handling
+    if isinstance(actual_value, bool):
+        actual_bool = actual_value
+        expected_bool = (
+            str(rule.expected_text).lower().strip() in ["true", "1", "yes"]
+            if rule.expected_text is not None
+            else (rule.expected_numeric == 1)
+        )
+        if op == RuleOperator.EQ:
+            passed = actual_bool == expected_bool
+        elif op == RuleOperator.NEQ:
+            passed = actual_bool != expected_bool
+        elif op == RuleOperator.REQUIRED:
+            passed = actual_bool is True
+        else:
+            passed = False
+        actual_str = str(actual_bool)
+        expected_str = f"{op.value} {expected_bool}"
+        reason = (
+            f"Candidate meets requirement ({actual_bool})"
+            if passed
+            else f"Actual value is {actual_bool} (expected {expected_bool})"
+        )
+
+    # 2. Numeric / text comparisons (>=, <=, >, <, ==, !=)
+    elif op in [
         RuleOperator.GTE,
         RuleOperator.LTE,
         RuleOperator.GT,
@@ -95,7 +119,7 @@ def evaluate_single_rule(
 
                 actual_str = str(actual_num)
                 expected_str = f"{op.value} {expected_num}"
-            except (ValueError, TypeError):
+            except (ValueError, TypeError, InvalidOperation):
                 # Fallback to string equality if not numeric
                 actual_str = str(actual_value)
                 expected_str = str(rule.expected_text or "")
