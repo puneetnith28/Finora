@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Calculator, Info } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import { Calculator, Info, Check, AlertTriangle } from "lucide-react";
+import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
+import { formatCurrency, formatPercent } from "@/lib/utils";
 
 interface SimulatorResult {
   loan_amount_inr: number;
@@ -100,60 +101,53 @@ export function FoirSimulator({
     }
   }, [result, onSimulationChange]);
 
-
-  const getBadgeStyle = (badge: string) => {
-    switch (badge) {
-      case "Safe":
-        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-      case "Moderate":
-        return "bg-blue-500/10 text-blue-400 border-blue-500/30";
-      case "Stretched":
-        return "bg-amber-500/10 text-amber-400 border-amber-500/30";
-      default:
-        return "bg-rose-500/10 text-rose-400 border-rose-500/30";
-    }
-  };
-
   return (
-    <div className="rounded-2xl border border-border/80 bg-card p-6 md:p-8 shadow-xl">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
-        <div>
+    <div className="neo-box-lg bg-white p-6 sm:p-8 space-y-8">
+      {/* Header bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b-2 border-black">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-primary/10 text-primary">
-              <Calculator className="h-5 w-5" />
-            </span>
-            <h2 className="text-xl font-bold text-foreground">Interactive FOIR & EMI Simulator</h2>
+            <NeoBadge variant="pink" rotate="left">
+              REAL-TIME STRESS TEST
+            </NeoBadge>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Simulate education loan terms and see live impact on monthly debt capacity and FOIR.
+          <h2 className="text-2xl sm:text-3xl font-black text-black uppercase tracking-tight">
+            INTERACTIVE FOIR & EMI SIMULATOR
+          </h2>
+          <p className="text-xs sm:text-sm font-bold text-neutral-700">
+            Simulate loan sizing, interest slabs, and co-borrower income to test lender rule impacts.
           </p>
         </div>
+
         {result && (
-          <div className="flex items-center gap-3">
-            <span className="text-xs uppercase font-semibold tracking-wider text-muted-foreground">
-              Risk Assessment
-            </span>
-            <span
-              className={`px-3 py-1.5 rounded-full text-xs font-bold border ${getBadgeStyle(
-                result.status_badge
-              )}`}
+          <div className="flex items-center gap-2">
+            <NeoBadge
+              variant={
+                result.status_badge === "Safe"
+                  ? "mint"
+                  : result.status_badge === "Moderate"
+                  ? "cyan"
+                  : result.status_badge === "Stretched"
+                  ? "yellow"
+                  : "pink"
+              }
             >
-              {result.status_badge} ({result.foir_percentage}%)
-            </span>
+              {result.status_badge.toUpperCase()} ({result.foir_percentage}%)
+            </NeoBadge>
           </div>
         )}
       </div>
 
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Controls Column */}
         <div className="lg:col-span-7 space-y-6">
           {/* Loan Amount Slider */}
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="text-sm font-semibold text-foreground">
+          <div className="neo-box p-4 bg-[#FAF8F5] space-y-2">
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-black uppercase tracking-wider text-black">
                 Required Loan Amount
               </label>
-              <span className="text-base font-bold font-mono text-primary">
+              <span className="text-sm font-black font-mono text-black border-2 border-black bg-[#FEF08A] px-2 py-0.5">
                 {formatCurrency(loanAmount)}
               </span>
             </div>
@@ -164,9 +158,9 @@ export function FoirSimulator({
               step={50000}
               value={loanAmount}
               onChange={(e) => setLoanAmount(Number(e.target.value))}
-              className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+              className="w-full h-3 border-2 border-black bg-white appearance-none cursor-pointer accent-black"
             />
-            <div className="flex justify-between text-[11px] text-muted-foreground mt-1">
+            <div className="flex justify-between text-[10px] font-mono font-bold text-neutral-600">
               <span>₹2 Lakhs</span>
               <span>₹50 Lakhs</span>
               <span>₹1.5 Crores</span>
@@ -174,12 +168,12 @@ export function FoirSimulator({
           </div>
 
           {/* Interest Rate Slider */}
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="text-sm font-semibold text-foreground">
-                Expected Interest Rate (p.a.)
+          <div className="neo-box p-4 bg-[#FAF8F5] space-y-2">
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-black uppercase tracking-wider text-black">
+                Interest Rate (p.a.)
               </label>
-              <span className="text-base font-bold font-mono text-primary">
+              <span className="text-sm font-black font-mono text-black border-2 border-black bg-[#BAE6FD] px-2 py-0.5">
                 {interestRate.toFixed(2)}%
               </span>
             </div>
@@ -190,23 +184,23 @@ export function FoirSimulator({
               step={0.25}
               value={interestRate}
               onChange={(e) => setInterestRate(Number(e.target.value))}
-              className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+              className="w-full h-3 border-2 border-black bg-white appearance-none cursor-pointer accent-black"
             />
-            <div className="flex justify-between text-[11px] text-muted-foreground mt-1">
-              <span>7.5% (PSU Concession)</span>
+            <div className="flex justify-between text-[10px] font-mono font-bold text-neutral-600">
+              <span>7.5% (PSU Slabs)</span>
               <span>11.0% (Private)</span>
-              <span>16.5% (Unsecured NBFC)</span>
+              <span>16.5% (NBFC Unsecured)</span>
             </div>
           </div>
 
           {/* Loan Tenure Slider */}
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="text-sm font-semibold text-foreground">
+          <div className="neo-box p-4 bg-[#FAF8F5] space-y-2">
+            <div className="flex justify-between items-center">
+              <label className="text-xs font-black uppercase tracking-wider text-black">
                 Repayment Tenure
               </label>
-              <span className="text-base font-bold font-mono text-primary">
-                {tenureYears} Years ({tenureMonths} Months)
+              <span className="text-sm font-black font-mono text-black border-2 border-black bg-[#86EFAC] px-2 py-0.5">
+                {tenureYears} Years ({tenureMonths} Mo)
               </span>
             </div>
             <input
@@ -216,96 +210,88 @@ export function FoirSimulator({
               step={1}
               value={tenureYears}
               onChange={(e) => setTenureYears(Number(e.target.value))}
-              className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+              className="w-full h-3 border-2 border-black bg-white appearance-none cursor-pointer accent-black"
             />
-            <div className="flex justify-between text-[11px] text-muted-foreground mt-1">
+            <div className="flex justify-between text-[10px] font-mono font-bold text-neutral-600">
               <span>3 Years</span>
               <span>7 Years</span>
               <span>15 Years</span>
             </div>
           </div>
 
-          {/* Monthly Income Input */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1.5">
-                Co-borrower Monthly Net Income (₹)
-              </label>
-              <input
-                type="number"
-                min={0}
-                step={5000}
-                value={monthlyIncome}
-                onChange={(e) => setMonthlyIncome(Math.max(0, Number(e.target.value)))}
-                className="w-full rounded-xl border border-input bg-background/50 px-3.5 py-2.5 text-sm font-mono focus:border-primary focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1.5">
-                Existing Monthly Loan EMIs (₹)
-              </label>
-              <input
-                type="number"
-                min={0}
-                step={1000}
-                value={existingObligations}
-                onChange={(e) => setExistingObligations(Math.max(0, Number(e.target.value)))}
-                className="w-full rounded-xl border border-input bg-background/50 px-3.5 py-2.5 text-sm font-mono focus:border-primary focus:outline-none"
-              />
-            </div>
+          {/* Monthly Income & Debt Inputs */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <NeoInput
+              label="Monthly Net Income (₹)"
+              type="number"
+              min={0}
+              step={5000}
+              value={monthlyIncome}
+              onChange={(e) => setMonthlyIncome(Math.max(0, Number(e.target.value)))}
+            />
+
+            <NeoInput
+              label="Existing Monthly EMIs (₹)"
+              type="number"
+              min={0}
+              step={1000}
+              value={existingObligations}
+              onChange={(e) => setExistingObligations(Math.max(0, Number(e.target.value)))}
+            />
           </div>
         </div>
 
         {/* Live Metrics Receipt Column */}
-        <div className="lg:col-span-5 flex flex-col justify-between rounded-xl bg-secondary/30 p-6 border border-border">
+        <div className="lg:col-span-5 flex flex-col justify-between neo-box bg-[#FAF8F5] p-6 space-y-5">
           {result && (
             <div className="space-y-4">
-              <h3 className="text-xs uppercase tracking-wider font-bold text-muted-foreground">
-                Calculated Metrics Receipt
-              </h3>
+              <div className="flex items-center gap-2 pb-3 border-b-2 border-black">
+                <Calculator className="h-4 w-4 text-black" />
+                <h3 className="font-black text-xs uppercase tracking-wider text-black">
+                  CALCULATED METRICS RECEIPT
+                </h3>
+              </div>
 
-              <div className="space-y-3 divide-y divide-border/60">
-                <div className="flex justify-between items-center pt-2">
-                  <span className="text-sm text-muted-foreground">Simulated Loan EMI</span>
-                  <span className="text-base font-bold font-mono text-primary">
-                    {formatCurrency(result.simulated_emi_inr)}
-                    <span className="text-xs text-muted-foreground font-normal">/mo</span>
+              <div className="space-y-2.5 text-xs font-bold">
+                <div className="flex justify-between items-center py-1 border-b border-black">
+                  <span className="text-neutral-600">Simulated Loan EMI</span>
+                  <span className="font-mono text-black font-black text-sm">
+                    {formatCurrency(result.simulated_emi_inr)}/mo
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center pt-3">
-                  <span className="text-sm text-muted-foreground">Total Monthly Obligations</span>
-                  <span className="text-sm font-bold font-mono text-foreground">
-                    {formatCurrency(result.total_monthly_obligations_inr)}
-                    <span className="text-xs text-muted-foreground font-normal">/mo</span>
+                <div className="flex justify-between items-center py-1 border-b border-black">
+                  <span className="text-neutral-600">Total Monthly Debt</span>
+                  <span className="font-mono text-black">
+                    {formatCurrency(result.total_monthly_obligations_inr)}/mo
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center pt-3">
-                  <span className="text-sm text-muted-foreground">Calculated FOIR Ratio</span>
-                  <span className="text-sm font-bold font-mono text-foreground">
+                <div className="flex justify-between items-center py-1 border-b border-black">
+                  <span className="text-neutral-600">Calculated FOIR</span>
+                  <span className="font-mono text-black font-black">
                     {result.foir_percentage}%
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center pt-3">
-                  <span className="text-sm text-muted-foreground">Max Affordable EMI (50% cap)</span>
-                  <span className="text-sm font-bold font-mono text-emerald-400">
+                <div className="flex justify-between items-center py-1 border-b border-black">
+                  <span className="text-neutral-600">Max Affordable EMI (50% Cap)</span>
+                  <span className="font-mono text-black">
                     {formatCurrency(result.max_affordable_emi_inr)}
                   </span>
                 </div>
               </div>
 
               {/* Suggestions */}
-              <div className="mt-6 pt-4 border-t border-border">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground mb-2">
-                  <Info className="h-3.5 w-3.5 text-primary" />
-                  <span>Affordability Recommendations:</span>
+              <div className="p-3 bg-[#FEF08A] border-2 border-black space-y-1 text-xs font-bold shadow-[2px_2px_0px_0px_#000000]">
+                <div className="flex items-center gap-1 font-black text-black uppercase mb-1">
+                  <Info className="h-3.5 w-3.5" />
+                  <span>AFFORDABILITY ADVICE:</span>
                 </div>
-                <ul className="space-y-1.5 text-xs text-muted-foreground">
+                <ul className="space-y-1 text-[11px] text-neutral-900">
                   {result.remedial_suggestions.map((s, idx) => (
                     <li key={idx} className="flex items-start gap-1.5">
-                      <span className="text-primary mt-0.5">•</span>
+                      <span>•</span>
                       <span>{s}</span>
                     </li>
                   ))}
@@ -317,14 +303,15 @@ export function FoirSimulator({
       </div>
 
       {/* Real-time Lender Impact Simulation Grid */}
-      <div className="mt-10 border-t border-border pt-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-          <div>
-            <h3 className="text-base font-bold text-foreground">Live Lender Impact Simulation</h3>
-            <p className="text-xs text-muted-foreground">
-              See how changing your requested loan amount, tenure, and FOIR transitions your eligibility across active lenders in real time.
-            </p>
-          </div>
+      <div className="pt-8 border-t-2 border-black space-y-4">
+        <div>
+          <NeoBadge variant="cyan">LIVE LENDER IMPACT</NeoBadge>
+          <h3 className="text-xl font-black text-black uppercase tracking-tight mt-1">
+            LENDER ELIGIBILITY TRANSITION MATRIX
+          </h3>
+          <p className="text-xs font-bold text-neutral-700 mt-0.5">
+            See how simulated loan amounts, interest rates, and FOIR ratios change eligibility across active lenders in real time.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -332,7 +319,7 @@ export function FoirSimulator({
             {
               id: 1,
               name: "SBI Global Ed-Vantage",
-              type: "Public Sector (Collateral Mandatory)",
+              type: "Public Sector (Collateral Req)",
               maxFoir: 50,
               maxLoan: 15000000,
               minIncome: 40000,
@@ -355,7 +342,7 @@ export function FoirSimulator({
             },
             {
               id: 4,
-              name: "ICICI Bank Unsecured Global",
+              name: "ICICI Bank Unsecured",
               type: "Private Bank (Merit-Based)",
               maxFoir: 50,
               maxLoan: 4000000,
@@ -395,48 +382,38 @@ export function FoirSimulator({
             return (
               <div
                 key={lender.id}
-                className="flex flex-col justify-between rounded-xl border border-border bg-card/70 p-4 transition-all hover:border-primary/40 hover:shadow-md"
+                className="neo-box p-4 bg-white flex flex-col justify-between space-y-3"
               >
                 <div>
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-sm font-bold text-foreground line-clamp-1">{lender.name}</span>
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${
+                  <div className="flex items-start justify-between gap-1 mb-1">
+                    <span className="text-xs font-black text-black uppercase line-clamp-1">{lender.name}</span>
+                    <NeoBadge
+                      variant={
                         simStatus === "Potential Match"
-                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                          ? "mint"
                           : simStatus === "Needs Review"
-                          ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
-                          : "bg-rose-500/10 text-rose-400 border-rose-500/30"
-                      }`}
+                          ? "yellow"
+                          : "pink"
+                      }
                     >
-                      {simStatus}
-                    </span>
+                      {simStatus === "Potential Match" ? "MATCH" : simStatus === "Needs Review" ? "REVIEW" : "FAIL"}
+                    </NeoBadge>
                   </div>
-                  <span className="text-[11px] text-muted-foreground block mt-0.5">{lender.type}</span>
+                  <span className="text-[10px] font-bold text-neutral-600 block">{lender.type}</span>
 
-                  <div className="mt-3 pt-3 border-t border-border/60 space-y-1.5 text-xs">
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Baseline:</span>
-                      <span className="font-medium text-foreground">{baseStatus}</span>
+                  <div className="mt-2.5 pt-2.5 border-t-2 border-black space-y-1 text-[11px] font-bold">
+                    <div className="flex justify-between">
+                      <span className="text-neutral-600">Baseline:</span>
+                      <span className="text-black">{baseStatus}</span>
                     </div>
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Transition:</span>
-                      <span
-                        className={`font-semibold ${
-                          delta === "Upgraded"
-                            ? "text-emerald-400"
-                            : delta === "Downgraded"
-                            ? "text-rose-400"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {delta}
-                      </span>
+                    <div className="flex justify-between">
+                      <span className="text-neutral-600">Transition:</span>
+                      <span className="text-black font-black uppercase">{delta}</span>
                     </div>
                   </div>
                 </div>
 
-                <p className="mt-3 text-[11px] text-muted-foreground bg-secondary/40 p-2 rounded-lg border border-border/40">
+                <p className="text-[10px] font-bold text-neutral-800 bg-[#FAF8F5] p-2 border border-black">
                   {reason}
                 </p>
               </div>
@@ -447,4 +424,3 @@ export function FoirSimulator({
     </div>
   );
 }
-

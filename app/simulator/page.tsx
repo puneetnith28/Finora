@@ -1,8 +1,7 @@
 import React from "react";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { FoirSimulator } from "@/components/simulator/FoirSimulator";
-import { Sparkles, ShieldCheck, ArrowRight } from "lucide-react";
+import { Sparkles, ShieldCheck, ArrowUpRight } from "lucide-react";
+import { NeoBadge, NeoButton } from "@/components/ui/NeoPrimitives";
 import Link from "next/link";
 
 export const metadata = {
@@ -13,72 +12,67 @@ export const metadata = {
 
 export default function SimulatorPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <Navbar />
-
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
-        <div className="mb-8 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-3">
+    <div className="w-full bg-[#FEF3C7] min-h-screen py-10 sm:py-16 px-4 sm:px-6 lg:px-8">
+      <main className="max-w-6xl mx-auto w-full space-y-8">
+        <div className="space-y-3">
+          <NeoBadge variant="pink" rotate="left">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Real-Time Debt Affordability Engine</span>
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-foreground">
-            Loan EMI & FOIR Simulator
+            <span>REAL-TIME DEBT AFFORDABILITY ENGINE</span>
+          </NeoBadge>
+          <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-black">
+            LOAN EMI & FOIR SIMULATOR
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Adjust loan amounts, interest rates, and household income to see instant debt burden
+          <p className="text-xs sm:text-sm font-bold text-neutral-800 max-w-2xl leading-relaxed">
+            Adjust loan amounts, interest slabs, and household income to see instant debt burden
             metrics, maximum sanction headroom, and lender threshold compliance.
           </p>
         </div>
 
         <FoirSimulator />
 
-        {/* Informational Callout */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-5 rounded-xl border border-border bg-card/60">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-400" />
-              What is FOIR?
+        {/* Informational Callout Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+          <div className="neo-box p-5 bg-white space-y-2">
+            <h3 className="text-xs font-black uppercase text-black flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4" />
+              <span>WHAT IS FOIR?</span>
             </h3>
-            <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs font-bold text-neutral-700 leading-relaxed">
               Fixed Obligation to Income Ratio (FOIR) measures what percentage of the co-borrower’s monthly
               income goes toward all debt obligations including the new education loan EMI.
             </p>
           </div>
 
-          <div className="p-5 rounded-xl border border-border bg-card/60">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-blue-400" />
-              Lender Benchmarks
+          <div className="neo-box p-5 bg-white space-y-2">
+            <h3 className="text-xs font-black uppercase text-black flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4" />
+              <span>LENDER BENCHMARKS</span>
             </h3>
-            <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs font-bold text-neutral-700 leading-relaxed">
               Leading PSU lenders and private banks cap FOIR between <strong>40% to 50%</strong>.
               Higher FOIR (&gt; 50%) requires additional collateral, longer tenure, or co-borrower additions.
             </p>
           </div>
 
-          <div className="p-5 rounded-xl border border-border bg-card/60">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-primary" />
-              Ready for Full Assessment?
+          <div className="neo-box-yellow p-5 space-y-3">
+            <h3 className="text-xs font-black uppercase text-black flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4" />
+              <span>RUN FULL ASSESSMENT</span>
             </h3>
-            <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs font-bold text-neutral-900 leading-relaxed">
               Run a complete, 360° financial eligibility assessment matching against real lender rules.
             </p>
-            <div className="mt-3">
-              <Link
-                href="/assessment"
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
-              >
-                <span>Start Assessment</span>
-                <ArrowRight className="h-3.5 w-3.5" />
+            <div>
+              <Link href="/assessment">
+                <NeoButton variant="black" size="sm">
+                  <span>START ASSESSMENT</span>
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </NeoButton>
               </Link>
             </div>
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }
