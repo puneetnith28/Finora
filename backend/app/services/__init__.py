@@ -37,6 +37,11 @@ from app.services.funding_gap_calculator import (
     FundingGapResult,
     calculate_funding_gap,
 )
+from app.services.ltv_calculator import (
+    LTVInput,
+    LTVResult,
+    calculate_ltv,
+)
 from app.services.net_worth_calculator import (
     AssetSummaryItem,
     LiabilitySummaryItem,
@@ -68,6 +73,8 @@ __all__ = [
     "FundingGapInput",
     "FundingGapResult",
     "FundingItem",
+    "LTVInput",
+    "LTVResult",
     "LiabilitySummaryItem",
     "NetWorthCalculationInput",
     "NetWorthCalculationResult",
@@ -79,6 +86,7 @@ __all__ = [
     "calculate_emi",
     "calculate_foir",
     "calculate_funding_gap",
+    "calculate_ltv",
     "calculate_net_worth",
     "calculate_study_cost",
     "convert_currency",
