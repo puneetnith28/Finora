@@ -62,20 +62,8 @@ export function FaqSection() {
   };
 
   return (
-    <div className="w-full">
-      {/* Top Mint Green Header Banner */}
-      <div className="w-full bg-[#86EFAC] border-b-2 border-black py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto space-y-2">
-          <NeoBadge variant="white">HOW IT WORKS</NeoBadge>
-          <h2 className="text-3xl sm:text-5xl font-black text-black uppercase tracking-tight">
-            FROM REPORT TO INSPECT.
-          </h2>
-        </div>
-      </div>
-
-      {/* Main FAQ Accordion Body */}
-      <div className="w-full bg-[#FFFDF9] border-b-2 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+    <section className="w-full bg-[#FFFDF9] border-b-2 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Title */}
           <div className="lg:col-span-4 space-y-3">
             <NeoBadge variant="cyan">A FEW HONEST ANSWERS</NeoBadge>
@@ -115,9 +103,8 @@ export function FaqSection() {
                 </div>
               );
             })}
-          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
