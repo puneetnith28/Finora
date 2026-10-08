@@ -21,6 +21,7 @@ from app.routes.financial_profiles import (
 )
 from app.routes.funding import funding_item_router, student_funding_router
 from app.routes.lenders import router as lenders_router
+from app.routes.simulator import router as simulator_router
 from app.routes.students import router as students_router
 from app.routes.study_plans import router as study_plans_router
 
@@ -38,9 +39,11 @@ api_router.include_router(collateral_item_router)
 api_router.include_router(collaterals_item_plural_router)
 api_router.include_router(documents_router)
 api_router.include_router(lenders_router)
+api_router.include_router(simulator_router)
 api_router.include_router(student_assessment_router)
 api_router.include_router(student_assessment_singular_router)
 api_router.include_router(assessment_item_router)
+
 
 
 

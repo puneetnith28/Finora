@@ -7,6 +7,7 @@ import {
   GraduationCap, 
   Building2, 
   FileText, 
+  Calculator,
   Menu, 
   X, 
   Sparkles,
@@ -25,9 +26,11 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { label: "Overview", href: "/", icon: Sparkles },
   { label: "Assessment Flow", href: "/assessment", icon: GraduationCap },
+  { label: "FOIR Simulator", href: "/simulator", icon: Calculator },
   { label: "Lender Directory", href: "/lenders", icon: Building2 },
   { label: "Document Vault", href: "/documents", icon: FileText },
 ];
+
 
 export function Navbar() {
   const pathname = usePathname();
