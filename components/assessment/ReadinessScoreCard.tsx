@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { NeoBadge } from "@/components/ui/NeoPrimitives";
 import { FullAssessmentResult } from "@/types";
+import { FOIR_THRESHOLDS } from "@/lib/constants/financial";
 
 interface ReadinessScoreCardProps {
   assessment: FullAssessmentResult;
@@ -54,11 +55,11 @@ export function ReadinessScoreCard({ assessment }: ReadinessScoreCardProps) {
       : 80;
 
   const foirScore =
-    foirVal <= 35
+    foirVal <= FOIR_THRESHOLDS.PRIME_MAX
       ? 95
-      : foirVal <= 50
+      : foirVal <= FOIR_THRESHOLDS.STANDARD_MAX
       ? 80
-      : foirVal <= 65
+      : foirVal <= FOIR_THRESHOLDS.ELEVATED_MAX
       ? 55
       : 30;
 

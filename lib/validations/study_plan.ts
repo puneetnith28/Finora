@@ -15,15 +15,8 @@ export const studyPlanSchema = z.object({
 
 export type StudyPlanFormData = z.infer<typeof studyPlanSchema>;
 
-export const DEFAULT_EXCHANGE_RATES: Record<string, number> = {
-  USD: 84.5,
-  EUR: 92.0,
-  GBP: 107.5,
-  CAD: 62.0,
-  AUD: 55.0,
-  SGD: 63.5,
-  INR: 1.0,
-};
+import { DEFAULT_EXCHANGE_RATES } from "@/lib/constants/financial";
+export { DEFAULT_EXCHANGE_RATES };
 
 export interface StudyPlanPreset {
   id: string;

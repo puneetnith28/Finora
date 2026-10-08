@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Calculator, Info, Check, AlertTriangle } from "lucide-react";
 import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
 import { formatCurrency, formatPercent } from "@/lib/utils";
+import { DEFAULT_SIMULATOR_PARAMS, FOIR_THRESHOLDS } from "@/lib/constants/financial";
 
 interface SimulatorResult {
   loan_amount_inr: number;
@@ -30,11 +31,11 @@ interface FoirSimulatorProps {
 }
 
 export function FoirSimulator({
-  initialLoanAmount = 2500000,
-  initialInterestRate = 10.5,
-  initialTenureMonths = 120,
-  initialMonthlyIncome = 120000,
-  initialExistingObligations = 15000,
+  initialLoanAmount = DEFAULT_SIMULATOR_PARAMS.loanAmount,
+  initialInterestRate = DEFAULT_SIMULATOR_PARAMS.interestRate,
+  initialTenureMonths = DEFAULT_SIMULATOR_PARAMS.tenureMonths,
+  initialMonthlyIncome = DEFAULT_SIMULATOR_PARAMS.monthlyIncome,
+  initialExistingObligations = DEFAULT_SIMULATOR_PARAMS.existingObligations,
   onSimulationChange,
 }: FoirSimulatorProps) {
   const [loanAmount, setLoanAmount] = useState<number>(initialLoanAmount);
