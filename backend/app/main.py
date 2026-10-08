@@ -38,7 +38,8 @@ if settings.BACKEND_CORS_ORIGINS:
 app.include_router(health_router)
 app.include_router(health_router, prefix=settings.API_V1_STR)
 
-# Include API v1 Router
+# Include API Routers
+app.include_router(api_router, prefix="/api")
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
