@@ -11,6 +11,7 @@ import { StatCard } from "@/components/ui/StatCard";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 import { ExplainableLenderCard } from "@/components/assessment/ExplainableLenderCard";
 import { ReadinessScoreCard } from "@/components/assessment/ReadinessScoreCard";
+import { FinancialVisuals } from "@/components/assessment/FinancialVisuals";
 import { LenderMatch } from "@/types";
 
 export interface LenderMatchResult {
@@ -177,6 +178,15 @@ export function AssessmentResults({ assessment, onReset }: AssessmentResultsProp
 
       {/* 2b. Transparent Multi-Dimensional Readiness Score Indicator */}
       <ReadinessScoreCard assessment={assessment as unknown as import("@/types").FullAssessmentResult} />
+
+      {/* 2c. Interactive Financial Breakdown Charts */}
+      <FinancialVisuals
+        totalCostInr={assessment.total_cost_inr}
+        totalFundingInr={assessment.total_funding_inr}
+        fundingGapInr={assessment.funding_gap_inr}
+        netWorthInr={assessment.net_worth_inr}
+        totalEligibleCollateralInr={assessment.total_eligible_collateral_inr}
+      />
 
       {/* 3. Lender Matching Results & Audit Trail */}
       <div className="space-y-6">
