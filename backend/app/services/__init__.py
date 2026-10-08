@@ -8,6 +8,12 @@ from app.services.currency_service import (
     get_default_exchange_rate,
     normalize_to_inr,
 )
+from app.services.emi_calculator import (
+    AmortizationYear,
+    EMIInput,
+    EMIResult,
+    calculate_emi,
+)
 from app.services.funding_calculator import (
     FundingCalculationResult,
     FundingItem,
@@ -32,10 +38,13 @@ from app.services.study_cost_calculator import (
 )
 
 __all__ = [
+    "AmortizationYear",
     "AssetSummaryItem",
     "CurrencyConversionRequest",
     "CurrencyConversionResult",
     "DEFAULT_EXCHANGE_RATES",
+    "EMIInput",
+    "EMIResult",
     "FundingCalculationResult",
     "FundingGapInput",
     "FundingGapResult",
@@ -46,6 +55,7 @@ __all__ = [
     "StudyCostBreakdown",
     "StudyCostResult",
     "calculate_available_funding",
+    "calculate_emi",
     "calculate_funding_gap",
     "calculate_net_worth",
     "calculate_study_cost",
