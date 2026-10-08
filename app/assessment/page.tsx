@@ -9,12 +9,15 @@ import { FundingForm } from "@/components/assessment/FundingForm";
 import { FinancialProfileForm } from "@/components/assessment/FinancialProfileForm";
 import { CollateralForm } from "@/components/assessment/CollateralForm";
 import { AssessmentReview } from "@/components/assessment/AssessmentReview";
-import { AssessmentResults, type FullAssessmentResult } from "@/components/assessment/AssessmentResults";
-import { type StudentFormData } from "@/lib/validations/student";
-import { type StudyPlanFormData } from "@/lib/validations/study_plan";
-import { type FundingSourceItem } from "@/lib/validations/funding";
-import { type FinancialProfileFormData } from "@/lib/validations/financial_profile";
-import { type CollateralItem } from "@/lib/validations/collateral";
+import { AssessmentResults } from "@/components/assessment/AssessmentResults";
+import { 
+  type FullAssessmentResult,
+  type StudentFormData,
+  type StudyPlanFormData,
+  type FundingSourceItem,
+  type FinancialProfileFormData,
+  type CollateralItem 
+} from "@/types";
 import { api, ApiClientError } from "@/lib/api";
 import { Check, AlertTriangle, Loader2 } from "lucide-react";
 import { NeoBadge } from "@/components/ui/NeoPrimitives";

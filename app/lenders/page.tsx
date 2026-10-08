@@ -13,39 +13,7 @@ import {
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { api } from "@/lib/api";
-
-interface LenderCriterionResponse {
-  criterion_type: string;
-  threshold_value?: number | null;
-  threshold_text?: string | null;
-  required?: boolean;
-}
-
-interface RawLender {
-  id: number;
-  name: string;
-  description?: string | null;
-  lender_type?: string;
-  interest_rate_min?: number;
-  interest_rate_max?: number;
-  max_loan_amount_inr?: number;
-  min_cibil_score?: number;
-  requires_collateral?: boolean;
-  active?: boolean;
-  criteria?: LenderCriterionResponse[];
-}
-
-interface LenderItem {
-  id: number;
-  name: string;
-  lender_type: string;
-  interest_rate_min: number;
-  interest_rate_max: number;
-  max_loan_amount_inr: number;
-  min_cibil_score: number;
-  requires_collateral: boolean;
-  active: boolean;
-}
+import { LenderItem, LenderCriterion } from "@/types";
 
 export default function LendersPage() {
   const [lenders, setLenders] = useState<LenderItem[]>([]);
@@ -56,9 +24,9 @@ export default function LendersPage() {
   useEffect(() => {
     async function loadLenders() {
       try {
-        const rawData = await api.get<RawLender[]>("/api/lenders");
+        const rawData = await api.get<LenderItem[]>("/api/lenders");
         if (rawData && rawData.length > 0) {
-          const normalized = rawData.map((l, idx) => {
+          const normalized = rawData.map((l: LenderItem, idx: number) => {
             const nameLower = l.name.toLowerCase();
             let derivedType = l.lender_type;
             if (!derivedType) {
@@ -74,15 +42,15 @@ export default function LendersPage() {
             }
 
             // Extract CIBIL criterion if present
-            const cibilCrit = l.criteria?.find((c) => c.criterion_type === "min_cibil");
+            const cibilCrit = l.criteria?.find((c: LenderCriterion) => c.criterion_type === "min_cibil");
             const minCibil = l.min_cibil_score ?? (cibilCrit?.threshold_value ? Number(cibilCrit.threshold_value) : (derivedType === "international_usd" ? 0 : 680));
 
             // Extract max loan if present
-            const maxLoanCrit = l.criteria?.find((c) => c.criterion_type === "max_loan_amount");
+            const maxLoanCrit = l.criteria?.find((c: LenderCriterion) => c.criterion_type === "max_loan_amount");
             const maxLoan = l.max_loan_amount_inr ?? (maxLoanCrit?.threshold_value ? Number(maxLoanCrit.threshold_value) : (derivedType === "public_bank" ? 15000000 : 7500000));
 
             // Collateral requirement
-            const collateralCrit = l.criteria?.find((c) => c.criterion_type === "collateral_required" || c.criterion_type === "min_collateral_ratio");
+            const collateralCrit = l.criteria?.find((c: LenderCriterion) => c.criterion_type === "collateral_required" || c.criterion_type === "min_collateral_ratio");
             const requiresCollateral = l.requires_collateral ?? (collateralCrit?.required ?? (derivedType === "public_bank"));
 
             return {

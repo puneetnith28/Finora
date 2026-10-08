@@ -1,4 +1,10 @@
-// Types for Finora application state and domain models
+// Unified Domain Models and State Types for Finora
+
+export type { StudentFormData, StudentPreset } from "@/lib/validations/student";
+export type { StudyPlanFormData } from "@/lib/validations/study_plan";
+export type { FundingSourceItem, FundingFormData } from "@/lib/validations/funding";
+export type { FinancialProfileFormData, AssetItem, LiabilityItem } from "@/lib/validations/financial_profile";
+export type { CollateralItem, CollateralFormData } from "@/lib/validations/collateral";
 
 export interface ApiResponse<T> {
   data?: T;
@@ -83,13 +89,77 @@ export interface FullAssessmentResult {
   created_at?: string;
 }
 
-export interface Student {
+// Lender Database & Underwriting Criterion Types
+export interface LenderCriterion {
+  id?: number;
+  criterion_type: string;
+  operator?: string;
+  threshold_value?: number | null;
+  threshold_text?: string | null;
+  required?: boolean;
+  weight?: number;
+  configuration_json?: string | null;
+}
+
+export interface LenderItem {
   id: number;
   name: string;
-  email: string;
-  phone?: string;
-  cibil_score?: number;
-  target_country?: string;
-  created_at?: string;
-  updated_at?: string;
+  lender_type: string;
+  interest_rate_min: number;
+  interest_rate_max: number;
+  max_loan_amount_inr: number;
+  min_cibil_score: number;
+  requires_collateral: boolean;
+  active: boolean;
+  description?: string | null;
+  criteria?: LenderCriterion[];
 }
+
+// Document Intelligence & Verification Types
+export interface ReadinessItem {
+  document_type: string;
+  title: string;
+  description: string;
+  mandatory: boolean;
+  status: "missing" | "uploaded" | "processing" | "verified" | "rejected" | "needs_review";
+  uploaded_document_id?: number | null;
+  file_name?: string | null;
+  uploaded_at?: string | null;
+  remedial_note?: string | null;
+}
+
+export interface ReadinessReport {
+  student_id: number;
+  overall_readiness: "ready" | "partially_ready" | "action_required";
+  total_required: number;
+  total_uploaded: number;
+  total_verified: number;
+  total_missing: number;
+  items: ReadinessItem[];
+}
+
+// OCR Discrepancy Reconciliation Types
+export interface DiscrepancyItem {
+  id: string;
+  field_name: string;
+  document_type: string;
+  user_entered_value: string | number;
+  extracted_value: string | number;
+  variance_percentage: number;
+  tolerance_percentage: number;
+  severity: "none" | "minor" | "major";
+  needs_human_review: boolean;
+  confidence_score: number;
+  review_note: string;
+  extraction_method: "pdf_stream" | "tesseract_ocr" | "regex_anchor";
+}
+
+// Currency Exchange Types
+export interface CurrencyRate {
+  currency: string;
+  rate_to_inr: number;
+  source: string;
+  timestamp?: string;
+}
+
+export type CurrencyRatesMap = Record<string, number>;

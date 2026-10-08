@@ -19,28 +19,7 @@ import {
 } from "lucide-react";
 import { api, ApiClientError } from "@/lib/api";
 import { DiscrepancyViewer } from "@/components/documents/DiscrepancyViewer";
-
-interface ReadinessItem {
-  document_type: string;
-  title: string;
-  description: string;
-  mandatory: boolean;
-  status: "missing" | "uploaded" | "processing" | "verified" | "rejected" | "needs_review";
-  uploaded_document_id?: number | null;
-  file_name?: string | null;
-  uploaded_at?: string | null;
-  remedial_note?: string | null;
-}
-
-interface ReadinessReport {
-  student_id: number;
-  overall_readiness: "ready" | "partially_ready" | "action_required";
-  total_required: number;
-  total_uploaded: number;
-  total_verified: number;
-  total_missing: number;
-  items: ReadinessItem[];
-}
+import { ReadinessItem, ReadinessReport } from "@/types";
 
 export default function DocumentsPage() {
   const [report, setReport] = useState<ReadinessReport | null>(null);

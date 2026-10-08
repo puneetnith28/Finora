@@ -13,21 +13,7 @@ import {
   Fingerprint
 } from "lucide-react";
 import { formatCurrency, formatPercent } from "@/lib/utils";
-
-export interface DiscrepancyItem {
-  id: string;
-  field_name: string;
-  document_type: string;
-  user_entered_value: string | number;
-  extracted_value: string | number;
-  variance_percentage: number;
-  tolerance_percentage: number;
-  severity: "none" | "minor" | "major";
-  needs_human_review: boolean;
-  confidence_score: number;
-  review_note: string;
-  extraction_method: "pdf_stream" | "tesseract_ocr" | "regex_anchor";
-}
+import { DiscrepancyItem } from "@/types";
 
 interface DiscrepancyViewerProps {
   discrepancies?: DiscrepancyItem[];

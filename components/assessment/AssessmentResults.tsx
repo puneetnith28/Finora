@@ -13,53 +13,7 @@ import { formatCurrency, formatPercent } from "@/lib/utils";
 import { ExplainableLenderCard } from "@/components/assessment/ExplainableLenderCard";
 import { ReadinessScoreCard } from "@/components/assessment/ReadinessScoreCard";
 import { FinancialVisuals } from "@/components/assessment/FinancialVisuals";
-import { LenderMatch } from "@/types";
-
-export interface LenderMatchResult {
-  lender_id: number;
-  lender_name: string;
-  lender_type: string;
-  outcome_state: "eligible" | "conditional" | "ineligible" | "review_required";
-  interest_rate_min: number;
-  interest_rate_max: number;
-  max_loan_amount_inr: number;
-  rules_evaluated: number;
-  rules_passed: number;
-  rules_failed: number;
-  failed_rules: Array<{
-    rule_id?: string;
-    rule_name?: string;
-    rule_type?: string;
-    reason?: string;
-    field?: string;
-    threshold?: unknown;
-    actual_value?: unknown;
-  }>;
-  passed_rules: Array<{
-    rule_id?: string;
-    rule_name?: string;
-    rule_type?: string;
-  }>;
-  conditions?: string[];
-  remedial_actions?: string[];
-}
-
-export interface FullAssessmentResult {
-  id: number;
-  student_id: number;
-  readiness_score: number;
-  readiness_band: string;
-  total_cost_inr: number;
-  total_funding_inr: number;
-  funding_gap_inr: number;
-  foir_percentage: number;
-  net_worth_inr: number;
-  total_eligible_collateral_inr: number;
-  ltv_percentage?: number | null;
-  lender_matches: LenderMatchResult[];
-  disclaimer: string;
-  created_at?: string;
-}
+import { LenderMatch, FullAssessmentResult } from "@/types";
 
 export interface AssessmentResultsProps {
   assessment: FullAssessmentResult;
@@ -271,13 +225,14 @@ export function AssessmentResults({ assessment, onReset }: AssessmentResultsProp
               lender_type: lender.lender_type,
               outcome_state: lender.outcome_state,
               match_score:
-                lender.rules_evaluated > 0
-                  ? lender.rules_passed / lender.rules_evaluated
+                lender.match_score ??
+                ((lender.rules_evaluated || 0) > 0
+                  ? (lender.rules_passed || 0) / (lender.rules_evaluated || 1)
                   : lender.outcome_state === "eligible"
                   ? 1.0
                   : lender.outcome_state === "conditional"
                   ? 0.75
-                  : 0.3,
+                  : 0.3),
               interest_rate_min: lender.interest_rate_min,
               interest_rate_max: lender.interest_rate_max,
               max_loan_amount_inr: lender.max_loan_amount_inr,
