@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/lib/utils";
 import { Check, User, GraduationCap, DollarSign, Wallet, Shield, ClipboardCheck } from "lucide-react";
 
 export interface StepItem {
@@ -15,44 +14,44 @@ export interface StepItem {
 export const WORKFLOW_STEPS: StepItem[] = [
   {
     id: 1,
-    label: "Student Profile",
-    shortLabel: "Profile",
-    description: "Personal and academic target",
+    label: "Candidate Profile",
+    shortLabel: "01 / PROFILE",
+    description: "Personal & University",
     icon: User,
   },
   {
     id: 2,
     label: "Study Plan & Costs",
-    shortLabel: "Study Costs",
-    description: "Tuition, living and currency",
+    shortLabel: "02 / COSTS",
+    description: "Tuition & Currency",
     icon: GraduationCap,
   },
   {
     id: 3,
     label: "Funding Sources",
-    shortLabel: "Funding",
-    description: "Savings, scholarship & support",
+    shortLabel: "03 / FUNDING",
+    description: "Savings & Support",
     icon: DollarSign,
   },
   {
     id: 4,
     label: "Financial Profile",
-    shortLabel: "Financials",
-    description: "Income, debt & FOIR",
+    shortLabel: "04 / FOIR",
+    description: "Income & Debt",
     icon: Wallet,
   },
   {
     id: 5,
     label: "Collateral & Assets",
-    shortLabel: "Collateral",
-    description: "Pledged property & LTV",
+    shortLabel: "05 / PLEDGE",
+    description: "Property & Haircuts",
     icon: Shield,
   },
   {
     id: 6,
-    label: "Review & Assessment",
-    shortLabel: "Assessment",
-    description: "Rule audit & lender matching",
+    label: "Assessment Review",
+    shortLabel: "06 / AUDIT",
+    description: "Lender Matching",
     icon: ClipboardCheck,
   },
 ];
@@ -69,14 +68,20 @@ export function StepNavigation({
   maxStepUnlocked = 6,
 }: StepNavigationProps) {
   return (
-    <div className="w-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm mb-8">
+    <div className="w-full neo-box-lg bg-white p-3 sm:p-4 mb-8">
       <nav aria-label="Assessment Progress">
-        <ol className="grid grid-cols-2 md:grid-cols-6 gap-3">
+        <ol className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
           {WORKFLOW_STEPS.map((step) => {
             const isCompleted = step.id < currentStep;
             const isCurrent = step.id === currentStep;
             const isClickable = step.id <= maxStepUnlocked && onStepClick;
             const Icon = step.icon;
+
+            const bgClass = isCurrent
+              ? "bg-[#FEF08A] shadow-[4px_4px_0px_0px_#000000] translate-x-[-1px] translate-y-[-1px]"
+              : isCompleted
+              ? "bg-[#86EFAC] shadow-[2px_2px_0px_0px_#000000]"
+              : "bg-[#FAF8F5] shadow-[2px_2px_0px_0px_#000000] opacity-80";
 
             return (
               <li key={step.id} className="relative">
@@ -84,54 +89,22 @@ export function StepNavigation({
                   type="button"
                   disabled={!isClickable}
                   onClick={() => isClickable && onStepClick?.(step.id)}
-                  className={cn(
-                    "w-full text-left p-3 rounded-xl transition-all duration-150 flex flex-col justify-between h-full",
-                    isCurrent
-                      ? "bg-[#0f382c] text-white shadow-md dark:bg-emerald-600 dark:text-slate-950"
-                      : isCompleted
-                      ? "bg-emerald-50/70 border border-emerald-200/60 text-emerald-950 hover:bg-emerald-100/70 dark:bg-emerald-950/40 dark:border-emerald-800/40 dark:text-emerald-300"
-                      : "bg-slate-50/60 border border-slate-200/60 text-slate-500 dark:bg-slate-950/40 dark:border-slate-800/60 dark:text-slate-400",
-                    isClickable && !isCurrent && "cursor-pointer hover:border-slate-300 dark:hover:border-slate-700",
-                    !isClickable && "cursor-default opacity-80"
-                  )}
+                  className={`w-full text-left p-2.5 sm:p-3 border-2 border-black transition-all duration-100 flex flex-col justify-between h-full ${bgClass} ${
+                    isClickable ? "cursor-pointer" : "cursor-default"
+                  }`}
                 >
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span
-                      className={cn(
-                        "flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold",
-                        isCurrent
-                          ? "bg-white/20 text-white dark:bg-slate-950/30 dark:text-slate-950"
-                          : isCompleted
-                          ? "bg-emerald-600 text-white dark:bg-emerald-500 dark:text-slate-950"
-                          : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-                      )}
-                    >
-                      {isCompleted ? <Check className="h-3.5 w-3.5" /> : step.id}
+                  <div className="flex items-center justify-between gap-1.5 mb-1.5">
+                    <span className="flex h-5 w-5 items-center justify-center border-2 border-black bg-black text-[#FEF08A] font-mono text-[10px] font-black">
+                      {isCompleted ? <Check className="h-3 w-3 text-white stroke-[3]" /> : step.id}
                     </span>
-                    <Icon
-                      className={cn(
-                        "h-4 w-4",
-                        isCurrent
-                          ? "text-emerald-300 dark:text-slate-950/70"
-                          : isCompleted
-                          ? "text-emerald-600 dark:text-emerald-400"
-                          : "text-slate-400"
-                      )}
-                    />
+                    <Icon className="h-3.5 w-3.5 text-black" />
                   </div>
 
                   <div>
-                    <span className="block text-xs font-semibold tracking-tight truncate">
+                    <span className="block text-[11px] font-black tracking-tight uppercase text-black truncate">
                       {step.shortLabel}
                     </span>
-                    <span
-                      className={cn(
-                        "block text-[10px] truncate",
-                        isCurrent
-                          ? "text-emerald-100 dark:text-slate-900"
-                          : "text-slate-500 dark:text-slate-400"
-                      )}
-                    >
+                    <span className="block text-[9px] font-bold text-neutral-800 truncate">
                       {step.description}
                     </span>
                   </div>
