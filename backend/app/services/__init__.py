@@ -14,6 +14,11 @@ from app.services.emi_calculator import (
     EMIResult,
     calculate_emi,
 )
+from app.services.foir_calculator import (
+    FOIRInput,
+    FOIRResult,
+    calculate_foir,
+)
 from app.services.funding_calculator import (
     FundingCalculationResult,
     FundingItem,
@@ -45,6 +50,8 @@ __all__ = [
     "DEFAULT_EXCHANGE_RATES",
     "EMIInput",
     "EMIResult",
+    "FOIRInput",
+    "FOIRResult",
     "FundingCalculationResult",
     "FundingGapInput",
     "FundingGapResult",
@@ -56,6 +63,7 @@ __all__ = [
     "StudyCostResult",
     "calculate_available_funding",
     "calculate_emi",
+    "calculate_foir",
     "calculate_funding_gap",
     "calculate_net_worth",
     "calculate_study_cost",
