@@ -7,12 +7,10 @@ import {
   ArrowRight, 
   CheckCircle2, 
   Search, 
-  Sparkles 
+  Sparkles,
+  Percent,
+  ShieldCheck
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Input } from "@/components/ui/Input";
 import { formatCurrency } from "@/lib/utils";
 import { api } from "@/lib/api";
 
@@ -50,7 +48,7 @@ export default function LendersPage() {
         const data = await api.get<LenderItem[]>("/api/lenders");
         setLenders(data);
       } catch {
-        // Fallback demo lenders if backend is initializing
+        // Fallback demo lenders
         setLenders([
           {
             id: 1,
@@ -122,158 +120,168 @@ export default function LendersPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200 dark:border-slate-800">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1 text-xs font-semibold text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 mb-3">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Underwriting Database</span>
+    <div className="bg-[#FEF08A] min-h-screen py-10 sm:py-16 px-4 sm:px-6 lg:px-8 border-b-3 border-black">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header Ribbon */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-3 border-black">
+          <div>
+            <div className="inline-block bg-[#86EFAC] text-black border-2 border-black px-3 py-1 text-xs font-black uppercase tracking-wider -rotate-1 shadow-[2px_2px_0px_#000000] mb-3">
+              LIVE UNDERWRITING DIRECTORY
+            </div>
+            <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-black leading-none">
+              LENDER UNDERWRITING MATRIX
+            </h1>
+            <p className="text-xs sm:text-sm font-bold text-black/80 mt-2 max-w-2xl">
+              Inspect the exact loan limits, interest rate brackets, collateral requirements, and CIBIL benchmarks programmed into Finora&apos;s deterministic rule engine.
+            </p>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            Lender Underwriting Matrix & Rulesets
-          </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 max-w-2xl">
-            Explore the exact eligibility limits, interest rate brackets, collateral mandates, 
-            and CIBIL requirements configured across all participating lenders.
-          </p>
+
+          <Link href="/assessment" className="shrink-0">
+            <button className="neo-btn bg-black text-white text-xs sm:text-sm font-black uppercase py-3 px-5 flex items-center gap-2">
+              Evaluate Candidate Profile <ArrowRight className="h-4 w-4 stroke-[3]" />
+            </button>
+          </Link>
         </div>
 
-        <Link href="/assessment">
-          <Button size="lg" rightIcon={<ArrowRight className="h-4 w-4" />}>
-            Evaluate Your Profile
-          </Button>
-        </Link>
-      </div>
+        {/* Filters & Search */}
+        <div className="neo-box p-4 sm:p-5 bg-[#FFFDF9] flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+          <div className="w-full md:w-96 relative">
+            <input
+              type="text"
+              placeholder="Search by institution name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="neo-input text-xs font-bold py-2.5 px-3 bg-white w-full"
+            />
+          </div>
 
-      {/* Filters & Search */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
-        <div className="w-full sm:w-80">
-          <Input
-            placeholder="Search by bank or NBFC name..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            leftIcon={<Search className="h-4 w-4" />}
-          />
+          {/* Filter Buttons */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setTypeFilter("all")}
+              className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
+                typeFilter === "all"
+                  ? "bg-black text-white shadow-[2px_2px_0px_#000000]"
+                  : "bg-white text-black hover:bg-[#F3F4F6]"
+              }`}
+            >
+              All ({lenders.length})
+            </button>
+            <button
+              onClick={() => setTypeFilter("public_bank")}
+              className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
+                typeFilter === "public_bank"
+                  ? "bg-[#86EFAC] text-black shadow-[2px_2px_0px_#000000]"
+                  : "bg-white text-black hover:bg-[#F3F4F6]"
+              }`}
+            >
+              Public Banks
+            </button>
+            <button
+              onClick={() => setTypeFilter("private_bank")}
+              className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
+                typeFilter === "private_bank"
+                  ? "bg-[#BAE6FD] text-black shadow-[2px_2px_0px_#000000]"
+                  : "bg-white text-black hover:bg-[#F3F4F6]"
+              }`}
+            >
+              Private Banks
+            </button>
+            <button
+              onClick={() => setTypeFilter("nbfc")}
+              className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
+                typeFilter === "nbfc"
+                  ? "bg-[#FEF08A] text-black shadow-[2px_2px_0px_#000000]"
+                  : "bg-white text-black hover:bg-[#F3F4F6]"
+              }`}
+            >
+              NBFCs
+            </button>
+            <button
+              onClick={() => setTypeFilter("international_usd")}
+              className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
+                typeFilter === "international_usd"
+                  ? "bg-[#FECDD3] text-black shadow-[2px_2px_0px_#000000]"
+                  : "bg-white text-black hover:bg-[#F3F4F6]"
+              }`}
+            >
+              USD Fintech
+            </button>
+          </div>
         </div>
 
-        <div className="flex rounded-xl bg-slate-100 dark:bg-slate-900 p-1 border border-slate-200 dark:border-slate-800 text-xs font-semibold self-stretch sm:self-auto">
-          <button
-            onClick={() => setTypeFilter("all")}
-            className={`px-3 py-2 rounded-lg transition-all ${
-              typeFilter === "all"
-                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400"
-            }`}
-          >
-            All Lenders
-          </button>
-          <button
-            onClick={() => setTypeFilter("public_bank")}
-            className={`px-3 py-2 rounded-lg transition-all ${
-              typeFilter === "public_bank"
-                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400"
-            }`}
-          >
-            Public Banks
-          </button>
-          <button
-            onClick={() => setTypeFilter("private_bank")}
-            className={`px-3 py-2 rounded-lg transition-all ${
-              typeFilter === "private_bank"
-                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400"
-            }`}
-          >
-            Private Banks
-          </button>
-          <button
-            onClick={() => setTypeFilter("nbfc")}
-            className={`px-3 py-2 rounded-lg transition-all ${
-              typeFilter === "nbfc"
-                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400"
-            }`}
-          >
-            NBFCs
-          </button>
-          <button
-            onClick={() => setTypeFilter("international_usd")}
-            className={`px-3 py-2 rounded-lg transition-all ${
-              typeFilter === "international_usd"
-                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400"
-            }`}
-          >
-            USD Fintech
-          </button>
-        </div>
-      </div>
-
-      {/* Grid of Lenders */}
-      {loading ? (
-        <div className="text-center py-16 text-slate-500">Loading lender directory...</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((lender) => (
-            <Card key={lender.id} className="flex flex-col justify-between hover:shadow-lg transition-all">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="p-2.5 rounded-xl bg-[#0f382c]/10 text-[#0f382c] dark:bg-emerald-950 dark:text-emerald-400">
-                    <Building2 className="h-5 w-5" />
+        {/* Grid of Lenders */}
+        {loading ? (
+          <div className="neo-box p-12 text-center text-sm font-black uppercase bg-[#FFFDF9]">
+            Loading underwriting rules database...
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((lender) => (
+              <div
+                key={lender.id}
+                className="neo-box p-6 bg-[#FFFDF9] flex flex-col justify-between transition-all hover:translate-x-[2px] hover:translate-y-[2px]"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="w-10 h-10 bg-[#BAE6FD] border-2 border-black flex items-center justify-center font-black shrink-0 shadow-[2px_2px_0px_#000000]">
+                      <Building2 className="h-5 w-5 text-black stroke-[2.5]" />
+                    </div>
+                    <span className="bg-white text-black border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase shadow-[2px_2px_0px_#000000]">
+                      {lender.lender_type.toUpperCase().replace(/_/g, " ")}
+                    </span>
                   </div>
-                  <Badge variant="outline">
-                    {lender.lender_type.toUpperCase().replace("_", " ")}
-                  </Badge>
+
+                  <div>
+                    <h3 className="text-lg font-black uppercase tracking-tight text-black leading-tight">
+                      {lender.name}
+                    </h3>
+                    <span className="text-xs font-bold text-black/70 mt-1 block">
+                      {lender.requires_collateral
+                        ? "• Tangible Collateral Mandated"
+                        : "• Collateral-Free / Unsecured Option"}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2 text-xs border-t-2 border-black pt-3">
+                    <div className="flex justify-between">
+                      <span className="font-bold text-black/70">Indicative Rate:</span>
+                      <span className="font-mono font-black text-black">
+                        {lender.interest_rate_min?.toFixed(2)}% - {lender.interest_rate_max?.toFixed(2)}%
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-bold text-black/70">Maximum Limit:</span>
+                      <span className="font-mono font-black text-black">
+                        {formatCurrency(lender.max_loan_amount_inr)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-bold text-black/70">Min CIBIL Score:</span>
+                      <span className="font-mono font-bold text-black">
+                        {lender.min_cibil_score > 0 ? lender.min_cibil_score : "No CIBIL (USD)"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-lg">
-                    {lender.name}
-                  </h3>
-                  <span className="text-xs text-slate-500">
-                    {lender.requires_collateral
-                      ? "Tangible Collateral Required"
-                      : "Unsecured / Collateral-Free Option Available"}
+                <div className="mt-6 pt-3 border-t-2 border-black flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase text-black flex items-center gap-1 bg-[#86EFAC] px-1.5 py-0.5 border border-black">
+                    <CheckCircle2 className="h-3 w-3 stroke-[3]" />
+                    Verified Engine
                   </span>
-                </div>
-
-                <div className="space-y-2 text-xs border-t border-slate-100 dark:border-slate-800 pt-3">
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Interest Rates:</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-white">
-                      {lender.interest_rate_min?.toFixed(2)}% - {lender.interest_rate_max?.toFixed(2)}%
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Max Sanction:</span>
-                    <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
-                      {formatCurrency(lender.max_loan_amount_inr)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Min CIBIL Score:</span>
-                    <span className="font-mono font-semibold">
-                      {lender.min_cibil_score > 0 ? lender.min_cibil_score : "No CIBIL Mandate (USD)"}
-                    </span>
-                  </div>
+                  <Link
+                    href={`/assessment?step=1`}
+                    className="text-xs font-black uppercase text-black hover:underline flex items-center gap-1"
+                  >
+                    Check Match <ArrowRight className="h-3.5 w-3.5 stroke-[3]" />
+                  </Link>
                 </div>
               </div>
-
-              <div className="mt-6 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  Active in Engine
-                </span>
-                <Link href={`/assessment?step=1`} className="text-xs font-bold text-[#0f382c] dark:text-emerald-400 hover:underline">
-                  Check Match →
-                </Link>
-              </div>
-            </Card>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
