@@ -93,8 +93,9 @@ def evaluate_income_discrepancy(
         select(FinancialProfile).where(FinancialProfile.student_id == student_id)
     )
     user_entered_monthly = (
-        profile.monthly_income_inr if profile else Decimal("0.0")
+        profile.monthly_income if (profile and profile.monthly_income is not None) else Decimal("0.0")
     )
+
 
     # Parse extracted evidence
     extracted_data = json.loads(doc.extracted_data_json or "{}")

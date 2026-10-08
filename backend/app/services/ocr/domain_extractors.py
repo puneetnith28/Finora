@@ -22,7 +22,7 @@ class SalarySlipExtractor(DocumentExtractor):
 
         # 1. Employee Name
         name_match = re.search(
-            r"(?:Employee\s*Name|Name\s*of\s*Employee|Emp\s*Name|Staff\s*Name)[:\s]+([A-Za-z\s\.]+)",
+            r"(?:Employee\s*Name|Name\s*of\s*Employee|Emp\s*Name|Staff\s*Name)[:\s]+([^\r\n]+)",
             content_text,
             re.IGNORECASE,
         )
@@ -37,21 +37,31 @@ class SalarySlipExtractor(DocumentExtractor):
 
         # 2. Employer / Company Name
         employer_match = re.search(
-            r"(?:Company\s*Name|Employer|Organization|Pvt\s*Ltd|Limited|Technologies|Corporation)[:\s]*([A-Za-z0-9\s\.,]+)",
+            r"(?:Company\s*Name|Employer|Organization)[:\s]+([^\r\n]+)",
             content_text,
             re.IGNORECASE,
         )
         if employer_match:
-            emp = employer_match.group(1).strip().split("\n")[0]
+            emp = employer_match.group(1).strip()
             payload.fields["employer_name"] = ExtractedField(
                 field_name="employer_name",
                 value=emp,
                 confidence=0.85,
             )
+        else:
+            lines = [line.strip() for line in content_text.splitlines() if line.strip()]
+            for line in lines:
+                if any(w in line for w in ("Pvt", "Ltd", "Corporation", "Limited", "Technologies", "LLP", "Corp", "Bank", "Inc")):
+                    payload.fields["employer_name"] = ExtractedField(
+                        field_name="employer_name",
+                        value=line,
+                        confidence=0.80,
+                    )
+                    break
 
         # 3. Gross Monthly Salary
         gross_match = re.search(
-            r"(?:Gross\s*(?:Salary|Earnings|Pay|Income)|Total\s*Earnings)[:\s]*[₹$€]?\s*([0-9,]+(?:\.[0-9]{2})?)",
+            r"(?:Gross\s*(?:Salary|Earnings|Pay|Income)|Total\s*Earnings)[:\s]*(?:Rs\.?|INR|₹|\$|€)?\s*([0-9,]+(?:\.[0-9]{2})?)",
             content_text,
             re.IGNORECASE,
         )
@@ -70,7 +80,7 @@ class SalarySlipExtractor(DocumentExtractor):
 
         # 4. Net Monthly Salary
         net_match = re.search(
-            r"(?:Net\s*(?:Salary|Pay|Amount|Take\s*Home))[:\s]*[₹$€]?\s*([0-9,]+(?:\.[0-9]{2})?)",
+            r"(?:Net\s*(?:Salary|Pay|Amount|Take\s*Home))[:\s]*(?:Rs\.?|INR|₹|\$|€)?\s*([0-9,]+(?:\.[0-9]{2})?)",
             content_text,
             re.IGNORECASE,
         )
@@ -89,7 +99,7 @@ class SalarySlipExtractor(DocumentExtractor):
 
         # 5. Total Deductions (PF, TDS, Professional Tax)
         ded_match = re.search(
-            r"(?:Total\s*Deductions|Deductions)[:\s]*[₹$€]?\s*([0-9,]+(?:\.[0-9]{2})?)",
+            r"(?:Total\s*Deductions|Deductions)[:\s]*(?:Rs\.?|INR|₹|\$|€)?\s*([0-9,]+(?:\.[0-9]{2})?)",
             content_text,
             re.IGNORECASE,
         )
@@ -107,17 +117,24 @@ class SalarySlipExtractor(DocumentExtractor):
 
         # 6. Pay Date / Month
         date_match = re.search(
-            r"(?:Pay\s*Date|Salary\s*Month|Period|For\s*the\s*month\s*of)[:\s]*([A-Za-z0-9\s,/-]+)",
+            r"(?:Date\s*of\s*Payment|Payment\s*Date|Pay\s*Date)[:\s]*([^\r\n]+)",
             content_text,
             re.IGNORECASE,
         )
+        if not date_match:
+            date_match = re.search(
+                r"(?:Salary\s*Month|Period|For\s*the\s*month\s*of)[:\s]*([^\r\n]+)",
+                content_text,
+                re.IGNORECASE,
+            )
         if date_match:
-            p_date = date_match.group(1).strip().split("\n")[0]
+            p_date = date_match.group(1).strip()
             payload.fields["pay_date"] = ExtractedField(
                 field_name="pay_date",
                 value=p_date,
                 confidence=0.90,
             )
+
 
         return payload
 
@@ -133,21 +150,35 @@ class BankStatementExtractor(DocumentExtractor):
 
         # 1. Account Holder Name
         holder_match = re.search(
-            r"(?:Account\s*Name|Customer\s*Name|Account\s*Holder|Name)[:\s]+([A-Za-z\s\.]+)",
+            r"(?:Account\s*Name|Customer\s*Name|Account\s*Holder|Name)[:\s]+([^\r\n]+)",
             content_text,
             re.IGNORECASE,
         )
         if holder_match:
-            holder = holder_match.group(1).strip().split("\n")[0]
+            holder = holder_match.group(1).strip()
             payload.fields["account_holder_name"] = ExtractedField(
                 field_name="account_holder_name",
                 value=holder,
                 confidence=0.90,
             )
 
-        # 2. Total Credits (Deposits / Inflows)
+        # 2. Account Number
+        acc_match = re.search(
+            r"(?:Account\s*(?:No|Number|#)|A/C\s*No)[:\s]*([0-9A-Za-z]+)",
+            content_text,
+            re.IGNORECASE,
+        )
+        if acc_match:
+            acc_num = acc_match.group(1).strip()
+            payload.fields["account_number"] = ExtractedField(
+                field_name="account_number",
+                value=acc_num,
+                confidence=0.95,
+            )
+
+        # 3. Total Credits (Deposits / Inflows)
         credits_match = re.search(
-            r"(?:Total\s*Credits|Total\s*Deposits|Sum\s*of\s*Credits)[:\s]*[₹$€]?\s*([0-9,]+(?:\.[0-9]{2})?)",
+            r"(?:Total\s*Credits|Total\s*Deposits|Sum\s*of\s*Credits)[:\s]*(?:Rs\.?|INR|₹|\$|€)?\s*([0-9,]+(?:\.[0-9]{2})?)",
             content_text,
             re.IGNORECASE,
         )
@@ -163,9 +194,9 @@ class BankStatementExtractor(DocumentExtractor):
             except Exception:
                 pass
 
-        # 3. Total Debits (Outflows)
+        # 4. Total Debits (Outflows)
         debits_match = re.search(
-            r"(?:Total\s*Debits|Total\s*Withdrawals|Sum\s*of\s*Debits)[:\s]*[₹$€]?\s*([0-9,]+(?:\.[0-9]{2})?)",
+            r"(?:Total\s*Debits|Total\s*Withdrawals|Sum\s*of\s*Debits)[:\s]*(?:Rs\.?|INR|₹|\$|€)?\s*([0-9,]+(?:\.[0-9]{2})?)",
             content_text,
             re.IGNORECASE,
         )
@@ -181,9 +212,9 @@ class BankStatementExtractor(DocumentExtractor):
             except Exception:
                 pass
 
-        # 4. Average Monthly Balance
+        # 5. Average Monthly Balance
         avg_bal_match = re.search(
-            r"(?:Average\s*(?:Monthly\s*)?Balance|AMB|Average\s*Quarterly\s*Balance|Closing\s*Balance)[:\s]*[₹$€]?\s*([0-9,]+(?:\.[0-9]{2})?)",
+            r"(?:Average\s*(?:Monthly\s*)?Balance|AMB|Average\s*Quarterly\s*Balance|Closing\s*Balance)[:\s]*(?:Rs\.?|INR|₹|\$|€)?\s*([0-9,]+(?:\.[0-9]{2})?)",
             content_text,
             re.IGNORECASE,
         )
@@ -191,17 +222,17 @@ class BankStatementExtractor(DocumentExtractor):
             val_str = avg_bal_match.group(1).replace(",", "").strip()
             try:
                 avg_val = Decimal(val_str)
-                payload.fields["average_monthly_balance"] = ExtractedField(
-                    field_name="average_monthly_balance",
+                payload.fields["average_balance"] = ExtractedField(
+                    field_name="average_balance",
                     value=avg_val,
                     confidence=0.88,
                 )
             except Exception:
                 pass
 
-        # 5. Statement Period
+        # 6. Statement Period
         period_match = re.search(
-            r"(?:Statement\s*Period|Period\s*From|From\s*Date)[:\s]*([A-Za-z0-9\s,/-]+(?:to|-)\s*[A-Za-z0-9\s,/-]+)",
+            r"(?:Statement\s*Period|Period\s*From|From\s*Date)[:\s]*([^\r\n]+)",
             content_text,
             re.IGNORECASE,
         )
@@ -213,7 +244,25 @@ class BankStatementExtractor(DocumentExtractor):
                 confidence=0.85,
             )
 
+        # 7. Transaction Count
+        txn_match = re.search(
+            r"(?:Total\s*Transactions|Transaction\s*Count)[:\s]*([0-9]+)",
+            content_text,
+            re.IGNORECASE,
+        )
+        if txn_match:
+            try:
+                tx_count = int(txn_match.group(1).strip())
+                payload.fields["transaction_count"] = ExtractedField(
+                    field_name="transaction_count",
+                    value=tx_count,
+                    confidence=0.90,
+                )
+            except Exception:
+                pass
+
         return payload
+
 
 
 class ITRExtractor(DocumentExtractor):

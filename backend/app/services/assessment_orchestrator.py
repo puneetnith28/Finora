@@ -18,6 +18,7 @@ from app.models.assessment import (
     AssessmentStatus,
 )
 from app.models.collateral import Collateral
+from app.models.document import DocumentStatus
 from app.models.financial_profile import FinancialProfile
 from app.models.funding_source import FundingSource
 from app.models.lender import CriterionOperator, CriterionType, Lender, LenderCriterion
@@ -57,10 +58,13 @@ class FullAssessmentReport(BaseModel):
     total_lenders_evaluated: int
     matching_lenders_count: int
     review_lenders_count: int
+    document_evidence: list[dict] = []
+    discrepancy_flags: list[dict] = []
     created_at: datetime
     disclaimer: str = (
         "Indicative assessment based on provided data. Not a guaranteed sanction or formal loan offer."
     )
+
 
 
 def map_db_criterion_to_rule_def(crit: LenderCriterion) -> RuleDefinition | None:
@@ -310,6 +314,31 @@ def run_candidate_assessment(
     match_count = sum(1 for e in lender_evaluations if e.outcome_state.value == "potential_match")
     review_count = sum(1 for e in lender_evaluations if e.outcome_state.value == "needs_review")
 
+    doc_evidence: list[dict] = []
+    discrepancy_flags: list[dict] = []
+    import json
+    if student.documents:
+        for doc in student.documents:
+            if doc.extracted_data_json:
+                data = json.loads(doc.extracted_data_json)
+                doc_evidence.append({
+                    "document_id": doc.id,
+                    "document_type": doc.document_type.value,
+                    "status": doc.status.value,
+                    "extraction_status": doc.extraction_status.value,
+                    "extracted_fields": data.get("fields", {}),
+                    "confidence_score": data.get("confidence_score", 1.0),
+                    "extracted_at": data.get("extracted_at"),
+                })
+            if doc.status == DocumentStatus.NEEDS_REVIEW:
+                discrepancy_flags.append({
+                    "document_id": doc.id,
+                    "document_type": doc.document_type.value,
+                    "file_name": doc.file_name,
+                    "status": doc.status.value,
+                    "message": "Flagged for human underwriter review due to income discrepancy.",
+                })
+
     return FullAssessmentReport(
         assessment_id=assessment.id,
         student_id=student.id,
@@ -320,5 +349,8 @@ def run_candidate_assessment(
         total_lenders_evaluated=len(lender_evaluations),
         matching_lenders_count=match_count,
         review_lenders_count=review_count,
+        document_evidence=doc_evidence,
+        discrepancy_flags=discrepancy_flags,
         created_at=assessment.created_at,
     )
+
