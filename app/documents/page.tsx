@@ -234,9 +234,6 @@ export default function DocumentsPage() {
           </div>
         )}
 
-        {/* Discrepancy Reconciliation Engine Card */}
-        <DiscrepancyViewer />
-
         {/* Document Items Grid */}
         {loading ? (
           <div className="neo-box p-12 text-center text-sm font-black uppercase bg-[#FFFDF9]">
