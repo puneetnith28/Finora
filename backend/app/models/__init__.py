@@ -6,6 +6,7 @@ from app.models.collateral import Collateral, CollateralType, OwnershipStatus
 from app.models.document import Document, DocumentStatus, DocumentType, ExtractionStatus
 from app.models.financial_profile import FinancialProfile
 from app.models.funding_source import FundingSource, FundingSourceType
+from app.models.lender import CriterionOperator, CriterionType, Lender, LenderCriterion
 from app.models.liability import Liability, LiabilityType
 from app.models.student import Student
 from app.models.study_plan import StudyPlan
@@ -16,6 +17,8 @@ __all__ = [
     "Base",
     "Collateral",
     "CollateralType",
+    "CriterionOperator",
+    "CriterionType",
     "Document",
     "DocumentStatus",
     "DocumentType",
@@ -23,6 +26,8 @@ __all__ = [
     "FinancialProfile",
     "FundingSource",
     "FundingSourceType",
+    "Lender",
+    "LenderCriterion",
     "Liability",
     "LiabilityType",
     "OwnershipStatus",
