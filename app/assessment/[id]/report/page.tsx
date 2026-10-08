@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, use } from "react";
+import React, { useEffect, useState, use, Suspense } from "react";
 import Link from "next/link";
 import {
   Download,
@@ -27,7 +27,7 @@ interface ReportPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default function AssessmentReportPage({ params }: ReportPageProps) {
+function ReportContent({ params }: ReportPageProps) {
   const resolvedParams = use(params);
   const assessmentId = resolvedParams.id;
 
@@ -300,5 +300,22 @@ export default function AssessmentReportPage({ params }: ReportPageProps) {
           "This report is generated deterministically based on candidate inputs and published lender guidelines. It is intended for educational and readiness assessment purposes and does not represent an irrevocable loan sanction."}
       </div>
     </div>
+  );
+}
+
+export default function AssessmentReportPage({ params }: ReportPageProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-4">
+          <Loader2 className="h-10 w-10 animate-spin text-emerald-600" />
+          <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
+            Loading candidate readiness audit...
+          </p>
+        </div>
+      }
+    >
+      <ReportContent params={params} />
+    </Suspense>
   );
 }

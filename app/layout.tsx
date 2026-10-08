@@ -20,6 +20,8 @@ export const metadata: Metadata = {
     "Deterministic financial evaluation, currency normalization, funding gap analysis, and transparent lender matching for study-abroad students.",
 };
 
+import { Suspense } from "react";
+
 export default function RootLayout({
   children,
 }: {
@@ -31,7 +33,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#f8faf9] text-[#0f172a] dark:bg-[#0b100e] dark:text-[#f8fafc]">
-        <Navbar />
+        <Suspense fallback={<div className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" />}>
+          <Navbar />
+        </Suspense>
         <main className="flex-1 w-full">{children}</main>
         <Footer />
       </body>

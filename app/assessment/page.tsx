@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { StepNavigation } from "@/components/StepNavigation";
 import { StudentProfileForm } from "@/components/assessment/StudentProfileForm";
@@ -16,9 +16,9 @@ import { type FundingSourceItem } from "@/lib/validations/funding";
 import { type FinancialProfileFormData } from "@/lib/validations/financial_profile";
 import { type CollateralItem } from "@/lib/validations/collateral";
 import { api, ApiClientError } from "@/lib/api";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 
-export default function AssessmentPage() {
+function AssessmentContent() {
   const searchParams = useSearchParams();
   const stepParam = searchParams.get("step");
   const parsedStep = stepParam ? parseInt(stepParam, 10) : 1;
@@ -349,5 +349,20 @@ export default function AssessmentPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function AssessmentPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3">
+          <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+          <p className="text-sm text-slate-500 font-medium">Loading Finora Assessment Engine...</p>
+        </div>
+      }
+    >
+      <AssessmentContent />
+    </Suspense>
   );
 }

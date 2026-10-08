@@ -105,7 +105,7 @@ export function Footer() {
 
         {/* Bottom Disclaimer */}
         <div className="mt-10 border-t border-slate-200 dark:border-slate-800 pt-6 text-xs text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p>© {new Date().getFullYear()} Finora. All calculations, readiness bands, and lender rule evaluations are deterministic and non-binding.</p>
+          <p>© 2026 Finora. All calculations, readiness bands, and lender rule evaluations are deterministic and non-binding.</p>
           <div className="flex gap-4">
             <span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400">
               ZERO HIDDEN RULE EVALUATION
