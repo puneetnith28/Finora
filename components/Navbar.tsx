@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
-  GraduationCap, 
   Building2, 
   FileText, 
   Calculator,
@@ -21,7 +20,6 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "ASSESSMENT", href: "/assessment", icon: GraduationCap },
   { label: "FOIR SIMULATOR", href: "/simulator", icon: Calculator },
   { label: "LENDER RULES", href: "/lenders", icon: Building2 },
   { label: "DOCUMENTS & OCR", href: "/documents", icon: FileText },
