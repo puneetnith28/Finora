@@ -20,6 +20,9 @@ class LiabilityType(enum.StrEnum):
     EDUCATION_LOAN = "education_loan"
     CREDIT_CARD = "credit_card"
     VEHICLE_LOAN = "vehicle_loan"
+    AUTO_LOAN = "auto_loan"
+    CAR_LOAN = "car_loan"
+    BUSINESS_LOAN = "business_loan"
     OTHER = "other"
 
 

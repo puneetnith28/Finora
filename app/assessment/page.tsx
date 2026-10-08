@@ -190,11 +190,22 @@ function AssessmentContent() {
       });
 
       for (const asset of data.assets) {
-        await api.post(`/api/students/${studentId}/assets`, asset);
+        await api.post(`/api/students/${studentId}/assets`, {
+          asset_type: asset.asset_type || "other",
+          description: asset.description || "Asset",
+          estimated_value_inr: Number(asset.estimated_value_inr) || 0,
+          is_liquid: Boolean(asset.is_liquid),
+        });
       }
 
       for (const liability of data.liabilities) {
-        await api.post(`/api/students/${studentId}/liabilities`, liability);
+        await api.post(`/api/students/${studentId}/liabilities`, {
+          liability_type: liability.liability_type || "other",
+          lender_name: liability.description || "Financial Institution",
+          description: liability.description || "Obligation",
+          outstanding_amount_inr: Number(liability.outstanding_amount_inr) || 0,
+          monthly_emi_inr: Number(liability.monthly_emi_inr) || 0,
+        });
       }
 
       showAlert("success", "Financial profile, assets, and debts recorded.");

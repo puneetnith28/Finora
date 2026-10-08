@@ -16,11 +16,15 @@ if TYPE_CHECKING:
 
 class AssetType(enum.StrEnum):
     SAVINGS_DEPOSIT = "savings_deposit"
+    SAVINGS_ACCOUNT = "savings_account"
     FIXED_DEPOSIT = "fixed_deposit"
     MUTUAL_FUNDS = "mutual_funds"
     STOCKS = "stocks"
     PROPERTY = "property"
+    RESIDENTIAL_PROPERTY = "residential_property"
+    COMMERCIAL_PROPERTY = "commercial_property"
     GOLD = "gold"
+    PROVIDENT_FUND = "provident_fund"
     OTHER = "other"
 
 

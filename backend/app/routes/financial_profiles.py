@@ -42,6 +42,7 @@ class AssetInput(BaseModel):
 class LiabilityInput(BaseModel):
     liability_type: LiabilityType
     lender_name: str | None = None
+    description: str | None = None
     outstanding_amount_inr: Decimal = Field(default=Decimal("0.0"), ge=0)
     monthly_emi_inr: Decimal = Field(default=Decimal("0.0"), ge=0)
 
@@ -337,7 +338,7 @@ def add_student_liability(
     liability = Liability(
         student_id=student_id,
         liability_type=payload.liability_type,
-        lender_name=payload.lender_name,
+        lender_name=payload.lender_name or payload.description or "Obligation",
         outstanding_amount_inr=payload.outstanding_amount_inr,
         monthly_emi_inr=payload.monthly_emi_inr,
     )
