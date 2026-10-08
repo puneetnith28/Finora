@@ -4,6 +4,7 @@ from app.db.base import Base
 from app.models.asset import Asset, AssetType
 from app.models.financial_profile import FinancialProfile
 from app.models.funding_source import FundingSource, FundingSourceType
+from app.models.liability import Liability, LiabilityType
 from app.models.student import Student
 from app.models.study_plan import StudyPlan
 
@@ -14,6 +15,8 @@ __all__ = [
     "FinancialProfile",
     "FundingSource",
     "FundingSourceType",
+    "Liability",
+    "LiabilityType",
     "Student",
     "StudyPlan",
 ]

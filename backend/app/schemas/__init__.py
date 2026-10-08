@@ -13,6 +13,12 @@ from app.schemas.funding_source import (
     FundingSourceResponse,
     FundingSourceUpdate,
 )
+from app.schemas.liability import (
+    LiabilityBase,
+    LiabilityCreate,
+    LiabilityResponse,
+    LiabilityUpdate,
+)
 from app.schemas.student import StudentBase, StudentCreate, StudentResponse, StudentUpdate
 from app.schemas.study_plan import (
     StudyPlanBase,
@@ -34,6 +40,10 @@ __all__ = [
     "FundingSourceCreate",
     "FundingSourceResponse",
     "FundingSourceUpdate",
+    "LiabilityBase",
+    "LiabilityCreate",
+    "LiabilityResponse",
+    "LiabilityUpdate",
     "StudentBase",
     "StudentCreate",
     "StudentResponse",

@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from app.models.asset import Asset
     from app.models.financial_profile import FinancialProfile
     from app.models.funding_source import FundingSource
+    from app.models.liability import Liability
     from app.models.study_plan import StudyPlan
 
 
@@ -48,6 +49,9 @@ class Student(Base):
     )
     assets: Mapped[list["Asset"]] = relationship(
         "Asset", back_populates="student", cascade="all, delete-orphan"
+    )
+    liabilities: Mapped[list["Liability"]] = relationship(
+        "Liability", back_populates="student", cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:
