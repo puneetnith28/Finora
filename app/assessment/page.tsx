@@ -61,11 +61,24 @@ function AssessmentContent() {
     setAlert(null);
     try {
       setStudent(data);
+      const payload = {
+        name: data.full_name,
+        email: data.email,
+        country_of_origin: data.citizenship || "India",
+        target_country: data.target_country,
+        target_university: data.target_university,
+        target_course: data.target_course,
+      };
+
       let res: { id: number };
       if (studentId) {
-        res = await api.put<{ id: number }>(`/api/students/${studentId}`, data);
+        try {
+          res = await api.put<{ id: number }>(`/api/students/${studentId}`, payload);
+        } catch {
+          res = await api.post<{ id: number }>("/api/students", payload);
+        }
       } else {
-        res = await api.post<{ id: number }>("/api/students", data);
+        res = await api.post<{ id: number }>("/api/students", payload);
       }
       setStudentId(res.id);
       setActiveStudentId(res.id);
@@ -92,7 +105,17 @@ function AssessmentContent() {
     setAlert(null);
     try {
       setStudyPlan(data);
-      await api.post(`/api/students/${studentId}/study-plan`, data);
+      const otherExpenses = (Number(data.insurance_original) || 0) + (Number(data.visa_fees_original) || 0) + (Number(data.miscellaneous_original) || 0);
+      const payload = {
+        tuition_fee: Number(data.tuition_fees_original) || 0,
+        living_expenses: Number(data.living_expenses_original) || 0,
+        travel_expenses: Number(data.travel_expenses_original) || 0,
+        other_expenses: otherExpenses,
+        currency: data.currency || "USD",
+        duration_months: Number(data.duration_months) || 24,
+        exchange_rate_to_inr: Number(data.exchange_rate_to_inr) || 85.0,
+      };
+      await api.post(`/api/students/${studentId}/study-plan`, payload);
       showAlert("success", "Study plan and cost breakdown recorded.");
       setCurrentStep(3);
       setMaxStepUnlocked((prev) => Math.max(prev, 3));
@@ -148,12 +171,12 @@ function AssessmentContent() {
     try {
       setFinancialProfile(data);
       await api.post(`/api/students/${studentId}/financial-profile`, {
-        co_borrower_relationship: data.co_borrower_relationship,
-        monthly_income_inr: data.monthly_income_inr,
-        other_income_inr: data.other_income_inr,
-        existing_monthly_obligations_inr: data.existing_monthly_obligations_inr,
-        monthly_living_expenses_inr: data.monthly_living_expenses_inr,
-        cibil_score: data.cibil_score,
+        monthly_income: Number(data.monthly_income_inr) || 0,
+        existing_monthly_obligations: Number(data.existing_monthly_obligations_inr) || 0,
+        monthly_living_expenses: Number(data.monthly_living_expenses_inr) || 0,
+        requested_loan_amount: Number(fundingGapInr) || 4500000,
+        loan_tenure_months: 120,
+        loan_interest_rate: 10.50,
       });
 
       for (const asset of data.assets) {
@@ -187,7 +210,13 @@ function AssessmentContent() {
     try {
       setCollaterals(items);
       for (const item of items) {
-        await api.post(`/api/students/${studentId}/collaterals`, item);
+        await api.post(`/api/students/${studentId}/collaterals`, {
+          collateral_type: item.collateral_type || "property",
+          ownership_status: item.ownership_status || "sole",
+          description: item.description || "Collateral Asset",
+          market_value_inr: Number(item.market_value_inr) || 0,
+          existing_encumbrance_inr: 0,
+        });
       }
       showAlert("success", "Pledged security and collateral recorded.");
       setCurrentStep(6);
@@ -210,9 +239,10 @@ function AssessmentContent() {
     setIsLoading(true);
     setAlert(null);
     try {
-      const res = await api.post<FullAssessmentResult>("/api/assessments/evaluate", {
-        student_id: studentId,
-      });
+      const res = await api.post<FullAssessmentResult>(
+        `/api/students/${studentId}/assessments`,
+        {}
+      );
       setAssessmentResult(res);
       showAlert("success", "Deterministic assessment executed with full audit trail.");
     } catch (err: unknown) {

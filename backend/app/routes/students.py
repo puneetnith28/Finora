@@ -75,10 +75,15 @@ def get_student(
     return student
 
 
+@router.put(
+    "/{student_id}",
+    response_model=StudentResponse,
+    summary="Update student profile (PUT)",
+)
 @router.patch(
     "/{student_id}",
     response_model=StudentResponse,
-    summary="Update student profile",
+    summary="Update student profile (PATCH)",
 )
 def update_student(
     student_id: int,
