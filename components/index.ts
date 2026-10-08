@@ -1,2 +1,1 @@
-// Shared UI components for Finora
-export {};
+export * from "./HealthStatus";

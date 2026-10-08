@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.routes.api import api_router
+from app.routes.health import router as health_router
 
 
 @asynccontextmanager
@@ -29,6 +30,10 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+# Mount Health check endpoints (root & API levels)
+app.include_router(health_router)
+app.include_router(health_router, prefix=settings.API_V1_STR)
 
 # Include API v1 Router
 app.include_router(api_router, prefix=settings.API_V1_STR)
