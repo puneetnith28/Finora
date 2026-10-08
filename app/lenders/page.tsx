@@ -14,12 +14,25 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { api } from "@/lib/api";
 
-interface LenderRule {
-  rule_id: string;
-  rule_name: string;
-  rule_type: string;
-  threshold: unknown;
-  severity: string;
+interface LenderCriterionResponse {
+  criterion_type: string;
+  threshold_value?: number | null;
+  threshold_text?: string | null;
+  required?: boolean;
+}
+
+interface RawLender {
+  id: number;
+  name: string;
+  description?: string | null;
+  lender_type?: string;
+  interest_rate_min?: number;
+  interest_rate_max?: number;
+  max_loan_amount_inr?: number;
+  min_cibil_score?: number;
+  requires_collateral?: boolean;
+  active?: boolean;
+  criteria?: LenderCriterionResponse[];
 }
 
 interface LenderItem {
@@ -32,8 +45,6 @@ interface LenderItem {
   min_cibil_score: number;
   requires_collateral: boolean;
   active: boolean;
-  supported_countries?: string[];
-  rules?: LenderRule[];
 }
 
 export default function LendersPage() {
@@ -45,8 +56,51 @@ export default function LendersPage() {
   useEffect(() => {
     async function loadLenders() {
       try {
-        const data = await api.get<LenderItem[]>("/api/lenders");
-        setLenders(data);
+        const rawData = await api.get<RawLender[]>("/api/lenders");
+        if (rawData && rawData.length > 0) {
+          const normalized = rawData.map((l, idx) => {
+            const nameLower = l.name.toLowerCase();
+            let derivedType = l.lender_type;
+            if (!derivedType) {
+              if (nameLower.includes("sbi") || nameLower.includes("state bank") || nameLower.includes("baroda") || nameLower.includes("punjab")) {
+                derivedType = "public_bank";
+              } else if (nameLower.includes("icici") || nameLower.includes("axis") || nameLower.includes("hdfc bank") || nameLower.includes("kotak")) {
+                derivedType = "private_bank";
+              } else if (nameLower.includes("prodigy") || nameLower.includes("mpower") || nameLower.includes("usd")) {
+                derivedType = "international_usd";
+              } else {
+                derivedType = "nbfc";
+              }
+            }
+
+            // Extract CIBIL criterion if present
+            const cibilCrit = l.criteria?.find((c) => c.criterion_type === "min_cibil");
+            const minCibil = l.min_cibil_score ?? (cibilCrit?.threshold_value ? Number(cibilCrit.threshold_value) : (derivedType === "international_usd" ? 0 : 680));
+
+            // Extract max loan if present
+            const maxLoanCrit = l.criteria?.find((c) => c.criterion_type === "max_loan_amount");
+            const maxLoan = l.max_loan_amount_inr ?? (maxLoanCrit?.threshold_value ? Number(maxLoanCrit.threshold_value) : (derivedType === "public_bank" ? 15000000 : 7500000));
+
+            // Collateral requirement
+            const collateralCrit = l.criteria?.find((c) => c.criterion_type === "collateral_required" || c.criterion_type === "min_collateral_ratio");
+            const requiresCollateral = l.requires_collateral ?? (collateralCrit?.required ?? (derivedType === "public_bank"));
+
+            return {
+              id: l.id || idx + 1,
+              name: l.name,
+              lender_type: derivedType,
+              interest_rate_min: l.interest_rate_min ?? (derivedType === "public_bank" ? 9.15 : derivedType === "private_bank" ? 9.85 : derivedType === "international_usd" ? 11.25 : 10.5),
+              interest_rate_max: l.interest_rate_max ?? (derivedType === "public_bank" ? 10.5 : derivedType === "private_bank" ? 11.75 : derivedType === "international_usd" ? 14.5 : 13.0),
+              max_loan_amount_inr: maxLoan,
+              min_cibil_score: minCibil,
+              requires_collateral: requiresCollateral,
+              active: l.active ?? true,
+            };
+          });
+          setLenders(normalized);
+        } else {
+          throw new Error("No lenders returned");
+        }
       } catch {
         // Fallback demo lenders
         setLenders([
@@ -115,7 +169,7 @@ export default function LendersPage() {
 
   const filtered = lenders.filter((l) => {
     const matchesSearch = l.name.toLowerCase().includes(search.toLowerCase());
-    const matchesType = typeFilter === "all" || l.lender_type === typeFilter;
+    const matchesType = typeFilter === "all" || (l.lender_type && l.lender_type === typeFilter);
     return matchesSearch && matchesType;
   });
 
@@ -217,68 +271,73 @@ export default function LendersPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((lender) => (
-              <div
-                key={lender.id}
-                className="neo-box p-6 bg-[#FFFDF9] flex flex-col justify-between transition-all hover:translate-x-[2px] hover:translate-y-[2px]"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="w-10 h-10 bg-[#BAE6FD] border-2 border-black flex items-center justify-center font-black shrink-0 shadow-[2px_2px_0px_#000000]">
-                      <Building2 className="h-5 w-5 text-black stroke-[2.5]" />
+            {filtered.map((lender) => {
+              const typeLabel = (lender.lender_type || "FINANCIAL_INSTITUTION").toUpperCase().replace(/_/g, " ");
+
+              return (
+                <div
+                  key={lender.id}
+                  className="neo-box p-6 bg-[#FFFDF9] flex flex-col justify-between transition-all hover:translate-x-[2px] hover:translate-y-[2px]"
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="w-10 h-10 bg-[#BAE6FD] border-2 border-black flex items-center justify-center font-black shrink-0 shadow-[2px_2px_0px_#000000]">
+                        <Building2 className="h-5 w-5 text-black stroke-[2.5]" />
+                      </div>
+                      <span className="bg-white text-black border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase shadow-[2px_2px_0px_#000000]">
+                        {typeLabel}
+                      </span>
                     </div>
-                    <span className="bg-white text-black border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase shadow-[2px_2px_0px_#000000]">
-                      {lender.lender_type.toUpperCase().replace(/_/g, " ")}
-                    </span>
+
+                    <div>
+                      <h3 className="text-lg font-black uppercase tracking-tight text-black leading-tight">
+                        {lender.name}
+                      </h3>
+                      <span className="text-xs font-bold text-black/70 mt-1 block">
+                        {lender.requires_collateral
+                          ? "• Tangible Collateral Mandated"
+                          : "• Collateral-Free / Unsecured Option"}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 text-xs border-t-2 border-black pt-3">
+                      <div className="flex justify-between">
+                        <span className="font-bold text-black/70">Indicative Rate:</span>
+                        <span className="font-mono font-black text-black">
+                          {lender.interest_rate_min ? lender.interest_rate_min.toFixed(2) : "9.50"}% -{" "}
+                          {lender.interest_rate_max ? lender.interest_rate_max.toFixed(2) : "12.75"}%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-bold text-black/70">Maximum Limit:</span>
+                        <span className="font-mono font-black text-black">
+                          {formatCurrency(lender.max_loan_amount_inr || 7500000)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-bold text-black/70">Min CIBIL Score:</span>
+                        <span className="font-mono font-bold text-black">
+                          {lender.min_cibil_score > 0 ? lender.min_cibil_score : "No CIBIL (USD)"}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <h3 className="text-lg font-black uppercase tracking-tight text-black leading-tight">
-                      {lender.name}
-                    </h3>
-                    <span className="text-xs font-bold text-black/70 mt-1 block">
-                      {lender.requires_collateral
-                        ? "• Tangible Collateral Mandated"
-                        : "• Collateral-Free / Unsecured Option"}
+                  <div className="mt-6 pt-3 border-t-2 border-black flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase text-black flex items-center gap-1 bg-[#86EFAC] px-1.5 py-0.5 border border-black">
+                      <CheckCircle2 className="h-3 w-3 stroke-[3]" />
+                      Verified Engine
                     </span>
-                  </div>
-
-                  <div className="space-y-2 text-xs border-t-2 border-black pt-3">
-                    <div className="flex justify-between">
-                      <span className="font-bold text-black/70">Indicative Rate:</span>
-                      <span className="font-mono font-black text-black">
-                        {lender.interest_rate_min?.toFixed(2)}% - {lender.interest_rate_max?.toFixed(2)}%
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-bold text-black/70">Maximum Limit:</span>
-                      <span className="font-mono font-black text-black">
-                        {formatCurrency(lender.max_loan_amount_inr)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-bold text-black/70">Min CIBIL Score:</span>
-                      <span className="font-mono font-bold text-black">
-                        {lender.min_cibil_score > 0 ? lender.min_cibil_score : "No CIBIL (USD)"}
-                      </span>
-                    </div>
+                    <Link
+                      href={`/assessment?step=1`}
+                      className="text-xs font-black uppercase text-black hover:underline flex items-center gap-1"
+                    >
+                      Check Match <ArrowRight className="h-3.5 w-3.5 stroke-[3]" />
+                    </Link>
                   </div>
                 </div>
-
-                <div className="mt-6 pt-3 border-t-2 border-black flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase text-black flex items-center gap-1 bg-[#86EFAC] px-1.5 py-0.5 border border-black">
-                    <CheckCircle2 className="h-3 w-3 stroke-[3]" />
-                    Verified Engine
-                  </span>
-                  <Link
-                    href={`/assessment?step=1`}
-                    className="text-xs font-black uppercase text-black hover:underline flex items-center gap-1"
-                  >
-                    Check Match <ArrowRight className="h-3.5 w-3.5 stroke-[3]" />
-                  </Link>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
