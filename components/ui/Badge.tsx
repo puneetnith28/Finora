@@ -16,24 +16,24 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variants = {
-    default: "bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700",
-    primary: "finora-badge-primary",
-    success: "finora-badge-success",
-    warning: "finora-badge-warning",
-    danger: "finora-badge-danger",
-    info: "finora-badge-info",
-    outline: "border border-slate-300 text-slate-700 dark:border-slate-700 dark:text-slate-300 bg-transparent",
+    default: "bg-[#E5E7EB] text-black border-2 border-black shadow-[1px_1px_0px_#000000]",
+    primary: "bg-black text-white border-2 border-black shadow-[1px_1px_0px_#000000]",
+    success: "bg-[#86EFAC] text-black border-2 border-black shadow-[1px_1px_0px_#000000]",
+    warning: "bg-[#FEF08A] text-black border-2 border-black shadow-[1px_1px_0px_#000000]",
+    danger: "bg-[#FECDD3] text-black border-2 border-black shadow-[1px_1px_0px_#000000]",
+    info: "bg-[#BAE6FD] text-black border-2 border-black shadow-[1px_1px_0px_#000000]",
+    outline: "bg-white text-black border-2 border-black shadow-[1px_1px_0px_#000000]",
   };
 
   const sizes = {
-    sm: "px-2 py-0.5 text-[10px] font-semibold",
-    md: "px-2.5 py-1 text-xs font-semibold",
+    sm: "px-2 py-0.5 text-[9px] font-black uppercase tracking-wider",
+    md: "px-2.5 py-1 text-xs font-black uppercase tracking-wider",
   };
 
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border transition-colors",
+        "inline-flex items-center gap-1.5 font-black uppercase select-none",
         variants[variant],
         sizes[size],
         className

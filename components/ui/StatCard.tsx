@@ -27,30 +27,30 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "relative p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden",
+        "relative p-4 sm:p-5 bg-[#FFFDF9] border-2 border-black shadow-[3px_3px_0px_#000000] overflow-hidden",
         className
       )}
     >
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      <div className="flex items-center justify-between gap-2 mb-1.5">
+        <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-black/60">
           {label}
         </span>
-        {icon && <div className="text-slate-400 dark:text-slate-500">{icon}</div>}
+        {icon && <div className="text-black">{icon}</div>}
       </div>
 
-      <div className="flex items-baseline justify-between gap-3">
-        <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50 font-mono">
+      <div className="flex items-baseline justify-between gap-2 flex-wrap">
+        <span className="text-xl sm:text-2xl font-black tracking-tight text-black font-mono">
           {value}
         </span>
         {badge && (
           <span
             className={cn(
-              "px-2 py-0.5 text-[11px] font-semibold rounded-full uppercase tracking-wider",
-              badge.variant === "success" && "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800",
-              badge.variant === "warning" && "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800",
-              badge.variant === "danger" && "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-800",
+              "px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider border border-black",
+              badge.variant === "success" && "bg-[#86EFAC] text-black shadow-[1px_1px_0px_#000000]",
+              badge.variant === "warning" && "bg-[#FEF08A] text-black shadow-[1px_1px_0px_#000000]",
+              badge.variant === "danger" && "bg-[#FECDD3] text-black shadow-[1px_1px_0px_#000000]",
               (!badge.variant || badge.variant === "default" || badge.variant === "primary") &&
-                "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200"
+                "bg-[#BAE6FD] text-black shadow-[1px_1px_0px_#000000]"
             )}
           >
             {badge.text}
@@ -59,50 +59,10 @@ export function StatCard({
       </div>
 
       {subtext && (
-        <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 leading-normal">
+        <p className="text-[11px] font-bold text-black/70 mt-1.5 line-clamp-1">
           {subtext}
         </p>
       )}
-    </div>
-  );
-}
-
-export interface ProgressBarProps {
-  value: number; // 0 to 100
-  max?: number;
-  className?: string;
-  indicatorClassName?: string;
-  label?: string;
-  showPercentage?: boolean;
-}
-
-export function ProgressBar({
-  value,
-  max = 100,
-  className,
-  indicatorClassName,
-  label,
-  showPercentage = false,
-}: ProgressBarProps) {
-  const percentage = Math.min(100, Math.max(0, (value / max) * 100));
-
-  return (
-    <div className={cn("w-full space-y-1.5", className)}>
-      {(label || showPercentage) && (
-        <div className="flex justify-between items-center text-xs font-medium text-slate-600 dark:text-slate-300">
-          {label && <span>{label}</span>}
-          {showPercentage && <span className="font-mono">{percentage.toFixed(0)}%</span>}
-        </div>
-      )}
-      <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-        <div
-          className={cn(
-            "h-full bg-[#0f382c] dark:bg-emerald-500 transition-all duration-300 ease-out rounded-full",
-            indicatorClassName
-          )}
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
     </div>
   );
 }

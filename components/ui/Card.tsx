@@ -8,16 +8,16 @@ export const Card = forwardRef<
   React.HTMLAttributes<HTMLDivElement> & { variant?: "default" | "elevated" | "interactive" | "flat" }
 >(({ className, variant = "default", ...props }, ref) => {
   const variants = {
-    default: "finora-card",
-    elevated: "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-lg",
-    interactive: "finora-card-interactive",
-    flat: "bg-slate-50 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl",
+    default: "neo-box bg-[#FFFDF9]",
+    elevated: "neo-box bg-white shadow-[6px_6px_0px_#000000]",
+    interactive: "neo-box bg-[#FFFDF9] hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer",
+    flat: "border-2 border-black bg-white p-4",
   };
 
   return (
     <div
       ref={ref}
-      className={cn(variants[variant], "p-6", className)}
+      className={cn(variants[variant], "p-5 sm:p-6", className)}
       {...props}
     />
   );
@@ -30,7 +30,7 @@ export const CardHeader = forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex flex-col space-y-1.5 pb-4", className)}
+    className={cn("flex flex-col space-y-1.5 pb-4 border-b-2 border-black/10", className)}
     {...props}
   />
 ));
@@ -43,7 +43,7 @@ export const CardTitle = forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100",
+      "text-lg font-black uppercase tracking-tight text-black",
       className
     )}
     {...props}
@@ -57,7 +57,7 @@ export const CardDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-slate-500 dark:text-slate-400 leading-relaxed", className)}
+    className={cn("text-xs font-bold text-black/70 leading-relaxed", className)}
     {...props}
   />
 ));
@@ -67,7 +67,7 @@ export const CardContent = forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("pt-0", className)} {...props} />
+  <div ref={ref} className={cn("pt-4", className)} {...props} />
 ));
 CardContent.displayName = "CardContent";
 
@@ -77,7 +77,7 @@ export const CardFooter = forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex items-center pt-4 border-t border-slate-100 dark:border-slate-800/60", className)}
+    className={cn("flex items-center pt-4 border-t-2 border-black/10", className)}
     {...props}
   />
 ));

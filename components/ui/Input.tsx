@@ -20,15 +20,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            className="block text-xs font-black uppercase tracking-wider text-black"
           >
             {label}
-            {props.required && <span className="text-rose-500 ml-1">*</span>}
+            {props.required && <span className="text-[#E11D48] ml-1">*</span>}
           </label>
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-3.5 flex items-center pointer-events-none text-slate-400">
+            <div className="absolute left-3 flex items-center pointer-events-none text-black">
               {leftIcon}
             </div>
           )}
@@ -37,26 +37,25 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             type={type}
             ref={ref}
             className={cn(
-              "flex h-11 w-full rounded-xl border bg-white px-3.5 py-2 text-sm text-slate-900 transition-all duration-150",
-              "border-slate-300 focus:border-[#0f382c] focus:outline-none focus:ring-2 focus:ring-[#0f382c]/10",
-              "dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 dark:focus:border-emerald-500 dark:focus:ring-emerald-500/20",
-              "placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-50",
-              leftIcon && "pl-10",
-              rightIcon && "pr-10",
-              error && "border-rose-500 focus:border-rose-500 focus:ring-rose-500/10 dark:border-rose-500",
+              "flex h-11 w-full border-2 border-black bg-white px-3 py-2 text-xs sm:text-sm font-bold text-black transition-all",
+              "focus:outline-none focus:ring-2 focus:ring-black focus:border-black shadow-[2px_2px_0px_#000000]",
+              "placeholder:text-black/40 disabled:cursor-not-allowed disabled:opacity-50",
+              leftIcon && "pl-9",
+              rightIcon && "pr-9",
+              error && "border-[#E11D48] bg-[#FFF1F2]",
               className
             )}
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3.5 flex items-center text-slate-400">
+            <div className="absolute right-3 flex items-center text-black">
               {rightIcon}
             </div>
           )}
         </div>
-        {error && <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">{error}</p>}
+        {error && <p className="text-xs text-[#E11D48] font-bold">{error}</p>}
         {!error && helperText && (
-          <p className="text-xs text-slate-500 dark:text-slate-400">{helperText}</p>
+          <p className="text-xs text-black/60 font-medium">{helperText}</p>
         )}
       </div>
     );
@@ -80,21 +79,20 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+            className="block text-xs font-black uppercase tracking-wider text-black"
           >
             {label}
-            {props.required && <span className="text-rose-500 ml-1">*</span>}
+            {props.required && <span className="text-[#E11D48] ml-1">*</span>}
           </label>
         )}
         <select
           id={selectId}
           ref={ref}
           className={cn(
-            "flex h-11 w-full rounded-xl border bg-white px-3.5 py-2 text-sm text-slate-900 transition-all duration-150",
-            "border-slate-300 focus:border-[#0f382c] focus:outline-none focus:ring-2 focus:ring-[#0f382c]/10",
-            "dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 dark:focus:border-emerald-500 dark:focus:ring-emerald-500/20",
-            "disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer",
-            error && "border-rose-500 focus:border-rose-500 focus:ring-rose-500/10 dark:border-rose-500",
+            "flex h-11 w-full border-2 border-black bg-white px-3 py-2 text-xs sm:text-sm font-bold text-black transition-all",
+            "focus:outline-none focus:ring-2 focus:ring-black focus:border-black shadow-[2px_2px_0px_#000000] cursor-pointer",
+            "disabled:cursor-not-allowed disabled:opacity-50",
+            error && "border-[#E11D48] bg-[#FFF1F2]",
             className
           )}
           {...props}
@@ -107,9 +105,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               ))
             : children}
         </select>
-        {error && <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">{error}</p>}
+        {error && <p className="text-xs text-[#E11D48] font-bold">{error}</p>}
         {!error && helperText && (
-          <p className="text-xs text-slate-500 dark:text-slate-400">{helperText}</p>
+          <p className="text-xs text-black/60 font-medium">{helperText}</p>
         )}
       </div>
     );
