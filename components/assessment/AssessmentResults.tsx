@@ -4,10 +4,11 @@ import React, { useState } from "react";
 import { 
   Download, 
   RotateCcw, 
-  Sparkles
+  Sparkles,
+  ShieldCheck,
+  Filter,
+  ArrowRight
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { StatCard } from "@/components/ui/StatCard";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 import { ExplainableLenderCard } from "@/components/assessment/ExplainableLenderCard";
 import { ReadinessScoreCard } from "@/components/assessment/ReadinessScoreCard";
@@ -85,95 +86,108 @@ export function AssessmentResults({ assessment, onReset }: AssessmentResultsProp
 
   return (
     <div className="space-y-10 pb-16">
-      {/* 1. Header & Score Hero Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-[#0f382c] dark:bg-emerald-950 p-6 sm:p-10 text-white shadow-2xl border border-emerald-800/80">
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      {/* 1. Score Dossier Hero Card (Pitch Black + Yellow Accent Box) */}
+      <div className="neo-box-black p-6 sm:p-10 relative overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-8 space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300 border border-emerald-400/30">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Assessment Audit Completed</span>
+            <div className="inline-block bg-[#FEF08A] text-black border-2 border-white px-3 py-1 text-xs font-black uppercase tracking-wider -rotate-1 shadow-[2px_2px_0px_#FFFFFF]">
+              AUDIT COMPLETED • DETERMINISTIC RECORD
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-              Financial Readiness Score: {assessment.readiness_score?.toFixed(0) || 85}/100
+            <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white leading-none">
+              READINESS SCORE: {assessment.readiness_score?.toFixed(0) || 85}/100
             </h1>
 
-            <p className="text-sm sm:text-base text-emerald-100/90 max-w-2xl leading-relaxed">
-              Based on your target university, normalized budget of{" "}
-              <strong className="text-white font-mono">{formatCurrency(assessment.total_cost_inr)}</strong>, 
+            <p className="text-sm sm:text-base font-medium text-white/90 max-w-2xl leading-relaxed">
+              Based on your target university, study budget of{" "}
+              <strong className="text-[#FEF08A] font-mono font-black">{formatCurrency(assessment.total_cost_inr)}</strong>, 
               co-borrower FOIR of{" "}
-              <strong className="text-white font-mono">{formatPercent(assessment.foir_percentage)}</strong>, 
+              <strong className="text-[#FEF08A] font-mono font-black">{formatPercent(assessment.foir_percentage)}</strong>, 
               and collateral LTV, your application qualifies for{" "}
-              <strong className="text-emerald-300">{eligibleCount} direct lender approvals</strong> and{" "}
-              <strong className="text-amber-300">{conditionalCount} conditional options</strong>.
+              <strong className="text-[#86EFAC] font-black">{eligibleCount} direct lender approvals</strong> and{" "}
+              <strong className="text-[#FEF08A] font-black">{conditionalCount} conditional options</strong>.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Button
-                variant="secondary"
-                size="sm"
+            <div className="flex flex-wrap items-center gap-3 pt-3">
+              <button
                 onClick={() => window.print()}
-                leftIcon={<Download className="h-4 w-4" />}
+                className="neo-btn bg-[#FEF08A] text-black text-xs font-black uppercase py-2.5 px-4 flex items-center gap-2"
               >
-                Print / Save Audit PDF
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
+                <Download className="h-4 w-4 stroke-[2.5]" />
+                Print Dossier PDF
+              </button>
+              <button
                 onClick={onReset}
-                className="bg-emerald-900/40 text-emerald-100 border-emerald-700/60 hover:bg-emerald-800/40"
-                leftIcon={<RotateCcw className="h-4 w-4" />}
+                className="neo-btn bg-white text-black text-xs font-black uppercase py-2.5 px-4 flex items-center gap-2"
               >
+                <RotateCcw className="h-4 w-4 stroke-[2.5]" />
                 Start New Assessment
-              </Button>
+              </button>
             </div>
           </div>
 
-          <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 rounded-2xl bg-white/10 dark:bg-black/30 backdrop-blur-md border border-white/10 text-center space-y-2">
-            <span className="text-xs uppercase font-bold tracking-wider text-emerald-200">
-              Readiness Rating
+          {/* Right Stamp Card */}
+          <div className="lg:col-span-4 bg-[#FFFDF9] border-3 border-white p-6 text-black text-center space-y-2 shadow-[4px_4px_0px_#FEF08A]">
+            <span className="text-[11px] font-black uppercase tracking-widest text-black/60 block">
+              Readiness Band
             </span>
-            <div className="text-3xl font-extrabold capitalize text-white font-mono">
+            <div className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-black">
               {assessment.readiness_band}
             </div>
-            <span className="text-xs text-emerald-200/80">
-              {eligibleCount > 0 ? "High probability of loan sanction" : "Conditional approval path available"}
-            </span>
+            <div className="pt-2 border-t-2 border-black text-xs font-bold">
+              {eligibleCount > 0 ? (
+                <span className="text-[#16A34A] flex items-center justify-center gap-1">
+                  <ShieldCheck className="w-4 h-4 stroke-[3]" /> High Sanction Probability
+                </span>
+              ) : (
+                <span className="text-[#D97706]">Conditional Path Available</span>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* 2. Key Underwriting Metrics Ribbon */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Total Study Budget"
-          value={formatCurrency(assessment.total_cost_inr)}
-          subtext="Tuition + Living + Buffer"
-        />
-        <StatCard
-          label="Loan Funding Gap"
-          value={formatCurrency(assessment.funding_gap_inr)}
-          subtext="Net borrowing needed"
-          badge={{ text: "Required Loan", variant: "primary" }}
-        />
-        <StatCard
-          label="Co-Borrower FOIR"
-          value={formatPercent(assessment.foir_percentage)}
-          subtext="Debt-to-Income Ratio"
-          badge={{
-            text: assessment.foir_percentage <= 50 ? "Safe FOIR" : "Review FOIR",
-            variant: assessment.foir_percentage <= 50 ? "success" : "warning",
-          }}
-        />
-        <StatCard
-          label="Eligible Collateral"
-          value={formatCurrency(assessment.total_eligible_collateral_inr)}
-          subtext="Post-haircut security value"
-          badge={{
-            text: assessment.total_eligible_collateral_inr > 0 ? "Secured" : "Unsecured",
-            variant: assessment.total_eligible_collateral_inr > 0 ? "success" : "default",
-          }}
-        />
+        <div className="neo-box p-4 bg-[#FFFDF9]">
+          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Total Budget</span>
+          <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
+            {formatCurrency(assessment.total_cost_inr)}
+          </div>
+          <span className="text-[11px] font-bold text-black/70 mt-1 block">Tuition + Living + Buffer</span>
+        </div>
+
+        <div className="neo-box p-4 bg-[#FEF08A]">
+          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Funding Gap</span>
+          <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
+            {formatCurrency(assessment.funding_gap_inr)}
+          </div>
+          <span className="text-[11px] font-black uppercase text-black mt-1 inline-block bg-black text-white px-1.5 py-0.5">
+            Loan Required
+          </span>
+        </div>
+
+        <div className="neo-box p-4 bg-[#FFFDF9]">
+          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Co-Borrower FOIR</span>
+          <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
+            {formatPercent(assessment.foir_percentage)}
+          </div>
+          <span className={`text-[10px] font-black uppercase px-1.5 py-0.5 mt-1 inline-block border border-black ${
+            assessment.foir_percentage <= 50 ? "bg-[#86EFAC]" : "bg-[#FEF08A]"
+          }`}>
+            {assessment.foir_percentage <= 50 ? "✓ Safe FOIR (≤50%)" : "⚠ Elevated FOIR"}
+          </span>
+        </div>
+
+        <div className="neo-box p-4 bg-[#BAE6FD]">
+          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Eligible Collateral</span>
+          <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
+            {formatCurrency(assessment.total_eligible_collateral_inr)}
+          </div>
+          <span className="text-[10px] font-black uppercase px-1.5 py-0.5 mt-1 inline-block border border-black bg-white">
+            {assessment.total_eligible_collateral_inr > 0 ? "Secured Asset Base" : "Unsecured Evaluation"}
+          </span>
+        </div>
       </div>
 
       {/* 2b. Transparent Multi-Dimensional Readiness Score Indicator */}
@@ -190,54 +204,57 @@ export function AssessmentResults({ assessment, onReset }: AssessmentResultsProp
 
       {/* 3. Lender Matching Results & Audit Trail */}
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-3 border-black pb-4">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-              Deterministic Lender Evaluations
+            <div className="inline-block bg-[#86EFAC] text-black border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase tracking-wider mb-1">
+              RULE-BASED MATCH ENGINE
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-black">
+              Lender Eligibility Dossier
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-xs sm:text-sm font-bold text-black/70">
               100% transparent audit of all passed and failed underwriting criteria per lender.
             </p>
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex rounded-xl bg-slate-100 dark:bg-slate-900 p-1 border border-slate-200 dark:border-slate-800 text-xs font-semibold">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilter("all")}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
+              className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
                 filter === "all"
-                  ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm"
-                  : "text-slate-600 dark:text-slate-400"
+                  ? "bg-black text-white shadow-[2px_2px_0px_#000000]"
+                  : "bg-white text-black hover:bg-[#F3F4F6]"
               }`}
             >
               All ({assessment.lender_matches.length})
             </button>
             <button
               onClick={() => setFilter("eligible")}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
+              className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
                 filter === "eligible"
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : "text-slate-600 dark:text-slate-400"
+                  ? "bg-[#86EFAC] text-black shadow-[2px_2px_0px_#000000]"
+                  : "bg-white text-black hover:bg-[#F3F4F6]"
               }`}
             >
-              Eligible ({eligibleCount})
+              Approved ({eligibleCount})
             </button>
             <button
               onClick={() => setFilter("conditional")}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
+              className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
                 filter === "conditional"
-                  ? "bg-amber-600 text-white shadow-sm"
-                  : "text-slate-600 dark:text-slate-400"
+                  ? "bg-[#FEF08A] text-black shadow-[2px_2px_0px_#000000]"
+                  : "bg-white text-black hover:bg-[#F3F4F6]"
               }`}
             >
               Conditional ({conditionalCount})
             </button>
             <button
               onClick={() => setFilter("ineligible")}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
+              className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
                 filter === "ineligible"
-                  ? "bg-rose-600 text-white shadow-sm"
-                  : "text-slate-600 dark:text-slate-400"
+                  ? "bg-[#FECDD3] text-black shadow-[2px_2px_0px_#000000]"
+                  : "bg-white text-black hover:bg-[#F3F4F6]"
               }`}
             >
               Ineligible ({ineligibleCount})
@@ -301,9 +318,9 @@ export function AssessmentResults({ assessment, onReset }: AssessmentResultsProp
         </div>
       </div>
 
-      {/* 4. Legal & Engine Disclaimer */}
-      <div className="p-4 rounded-2xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-        <div className="font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-[10px] mb-1">
+      {/* 4. Legal & Regulatory Disclaimer */}
+      <div className="p-4 bg-[#FFFDF9] border-2 border-black text-xs font-bold text-black/80 leading-relaxed shadow-[3px_3px_0px_#000000]">
+        <div className="font-black uppercase tracking-wider text-[11px] text-black mb-1">
           Regulatory & Underwriting Disclaimer
         </div>
         {assessment.disclaimer ||

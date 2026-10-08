@@ -8,14 +8,11 @@ import {
   AlertTriangle,
   ChevronDown,
   ChevronUp,
-  HelpCircle,
   Percent,
   Sparkles,
   Info,
+  ExternalLink,
 } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 import { LenderMatch } from "@/types";
 
 interface ExplainableLenderCardProps {
@@ -47,29 +44,29 @@ export function ExplainableLenderCard({
   const getStatusBadge = () => {
     if (isEligible) {
       return (
-        <Badge variant="success" className="px-3 py-1 text-xs font-bold uppercase tracking-wider">
-          Eligible
-        </Badge>
+        <span className="inline-block bg-[#86EFAC] text-black border-2 border-black px-3 py-1 text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000000]">
+          ✓ Direct Approval
+        </span>
       );
     }
     if (isConditional) {
       return (
-        <Badge variant="warning" className="px-3 py-1 text-xs font-bold uppercase tracking-wider">
-          Conditional Approval
-        </Badge>
+        <span className="inline-block bg-[#FEF08A] text-black border-2 border-black px-3 py-1 text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000000]">
+          ⚠ Conditional Approval
+        </span>
       );
     }
     if (isIneligible) {
       return (
-        <Badge variant="danger" className="px-3 py-1 text-xs font-bold uppercase tracking-wider">
-          Ineligible
-        </Badge>
+        <span className="inline-block bg-[#FECDD3] text-black border-2 border-black px-3 py-1 text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000000]">
+          ✕ Ineligible
+        </span>
       );
     }
     return (
-      <Badge variant="info" className="px-3 py-1 text-xs font-bold uppercase tracking-wider">
-        Needs Review
-      </Badge>
+      <span className="inline-block bg-[#BAE6FD] text-black border-2 border-black px-3 py-1 text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#000000]">
+        ⚡ Needs Review
+      </span>
     );
   };
 
@@ -81,90 +78,86 @@ export function ExplainableLenderCard({
   });
 
   return (
-    <Card
-      className={`border-l-4 transition-all duration-200 overflow-hidden shadow-sm hover:shadow-md ${
+    <div
+      className={`border-3 border-black p-5 sm:p-6 transition-all duration-150 ${
         isEligible
-          ? "border-l-emerald-600 bg-white dark:bg-slate-900"
+          ? "bg-white shadow-[6px_6px_0px_#86EFAC]"
           : isConditional
-          ? "border-l-amber-500 bg-white dark:bg-slate-900"
+          ? "bg-white shadow-[6px_6px_0px_#FEF08A]"
           : isIneligible
-          ? "border-l-rose-500 bg-white dark:bg-slate-900"
-          : "border-l-blue-500 bg-white dark:bg-slate-900"
+          ? "bg-white shadow-[6px_6px_0px_#FECDD3]"
+          : "bg-white shadow-[6px_6px_0px_#BAE6FD]"
       }`}
     >
-      {/* Header Summary */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+      {/* Top Bar / Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b-2 border-black">
         <div className="flex items-start gap-4">
           <div
-            className={`p-3.5 rounded-2xl shrink-0 ${
+            className={`w-12 h-12 border-2 border-black flex items-center justify-center font-black shrink-0 shadow-[2px_2px_0px_#000000] ${
               isEligible
-                ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                ? "bg-[#86EFAC]"
                 : isConditional
-                ? "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
-                : "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
+                ? "bg-[#FEF08A]"
+                : isIneligible
+                ? "bg-[#FECDD3]"
+                : "bg-[#BAE6FD]"
             }`}
           >
-            <Building2 className="h-6 w-6" />
+            <Building2 className="w-6 h-6 text-black stroke-[2.5]" />
           </div>
 
           <div>
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-black">
                 {lender.lender_name}
               </h3>
               {getStatusBadge()}
             </div>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold tracking-wider">
+            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+              <span className="text-xs font-black uppercase tracking-wider text-black/70 bg-[#F3F4F6] px-2 py-0.5 border border-black">
                 {lender.lender_type?.replace(/_/g, " ") || "EDUCATION FINANCIER"}
               </span>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
-              <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                <Percent className="h-3 w-3" /> Match Score: {(lender.match_score * 100).toFixed(0)}%
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-black bg-white px-2 py-0.5 border border-black">
+                <Percent className="h-3 w-3 stroke-[3]" /> Match: {(lender.match_score * 100).toFixed(0)}%
               </span>
             </div>
           </div>
         </div>
 
-        {/* Key Loan Terms */}
-        <div className="flex items-center gap-4 sm:gap-6 text-xs shrink-0 flex-wrap">
-          <div className="bg-slate-50 dark:bg-slate-800/60 px-3 py-2 rounded-xl border border-slate-100 dark:border-slate-800">
-            <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Indicative Rate</span>
-            <span className="font-mono font-bold text-slate-900 dark:text-white text-sm">
+        {/* Indicative Terms Pill Boxes */}
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0 flex-wrap">
+          <div className="bg-[#FFFDF9] border-2 border-black px-3.5 py-2 shadow-[2px_2px_0px_#000000]">
+            <span className="text-black/60 block text-[10px] font-black uppercase tracking-wider">Rate</span>
+            <span className="font-mono font-black text-black text-sm">
               {lender.interest_rate_min ? `${lender.interest_rate_min.toFixed(2)}%` : "9.50%"} -{" "}
               {lender.interest_rate_max ? `${lender.interest_rate_max.toFixed(2)}%` : "12.75%"}
             </span>
           </div>
 
-          <div className="bg-slate-50 dark:bg-slate-800/60 px-3 py-2 rounded-xl border border-slate-100 dark:border-slate-800">
-            <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Max Limit</span>
-            <span className="font-mono font-bold text-slate-900 dark:text-white text-sm">
+          <div className="bg-[#FFFDF9] border-2 border-black px-3.5 py-2 shadow-[2px_2px_0px_#000000]">
+            <span className="text-black/60 block text-[10px] font-black uppercase tracking-wider">Max Cap</span>
+            <span className="font-mono font-black text-black text-sm">
               {formatCurrency(lender.max_loan_amount_inr || 7500000)}
             </span>
           </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-slate-700 dark:text-slate-300"
-            rightIcon={
-              isExpanded ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )
-            }
+            className="neo-btn bg-[#F3F4F6] text-black text-xs font-black uppercase py-2 px-3 flex items-center gap-1.5"
           >
-            {isExpanded ? "Hide Breakdown" : "View Audit"}
-          </Button>
+            {isExpanded ? (
+              <>Hide Audit <ChevronUp className="w-4 h-4 stroke-[3]" /></>
+            ) : (
+              <>View Audit ({lender.evaluated_criteria?.length || 0}) <ChevronDown className="w-4 h-4 stroke-[3]" /></>
+            )}
+          </button>
         </div>
       </div>
 
       {/* Primary Reason / Summary */}
-      <div className="mt-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 flex items-start gap-2">
-        <Info className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
-        <p className="leading-relaxed">
+      <div className="mt-4 p-3 bg-[#FFFDF9] border-2 border-black flex items-start gap-2.5">
+        <Info className="h-4 w-4 text-black shrink-0 mt-0.5 stroke-[2.5]" />
+        <p className="text-xs sm:text-sm font-bold text-black leading-relaxed">
           {lender.primary_reason ||
             (isEligible
               ? "All mandatory and primary credit underwriting rules satisfied."
@@ -174,99 +167,99 @@ export function ExplainableLenderCard({
         </p>
       </div>
 
-      {/* Expandable Criteria Audit & Remedial Actions */}
+      {/* Expandable Rule Audit Matrix */}
       {isExpanded && (
-        <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 space-y-6">
-          {/* 1. Evaluated Criteria Breakdown */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                Rule-by-Rule Audit Matrix
-              </h4>
-              <span className="text-[11px] text-slate-500">
-                {lender.evaluated_criteria?.filter((c) => c.passed).length || 0} /{" "}
-                {lender.evaluated_criteria?.length || 0} Rules Passed
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {lender.evaluated_criteria && lender.evaluated_criteria.length > 0 ? (
-                lender.evaluated_criteria.map((crit, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-3 rounded-xl border text-xs flex flex-col justify-between gap-2 transition-colors ${
-                      crit.passed
-                        ? "bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200/60 dark:border-emerald-800/40 text-emerald-900 dark:text-emerald-200"
-                        : crit.required
-                        ? "bg-rose-50/50 dark:bg-rose-950/20 border-rose-200/60 dark:border-rose-800/40 text-rose-900 dark:text-rose-200"
-                        : "bg-amber-50/50 dark:bg-amber-950/20 border-amber-200/60 dark:border-amber-800/40 text-amber-900 dark:text-amber-200"
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        {crit.passed ? (
-                          <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                        ) : crit.required ? (
-                          <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-400 shrink-0" />
-                        ) : (
-                          <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                        )}
-                        <span className="font-semibold text-slate-900 dark:text-white capitalize">
-                          {crit.criterion_name.replace(/_/g, " ")}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase ${
-                          crit.required
-                            ? "bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300"
-                            : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
-                        }`}
-                      >
-                        {crit.required ? "Mandatory" : "Optional"}
-                      </span>
-                    </div>
-
-                    {/* Actual vs Benchmark */}
-                    <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-black/5 dark:border-white/5">
-                      <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px]">Candidate Value</span>
-                        <span className="font-mono font-medium text-slate-800 dark:text-slate-200">
-                          {crit.actual_value !== undefined && crit.actual_value !== null
-                            ? String(crit.actual_value)
-                            : "Not Provided"}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px]">Benchmark Required</span>
-                        <span className="font-mono font-medium text-slate-800 dark:text-slate-200">
-                          {crit.expected_value || "—"}
-                        </span>
-                      </div>
-                    </div>
-
-                    {crit.explanation && (
-                      <p className="text-[11px] text-slate-600 dark:text-slate-400 italic">
-                        {crit.explanation}
-                      </p>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <div className="col-span-2 text-center py-4 text-xs text-slate-500">
-                  Detailed evaluation criteria available upon final underwriting sync.
-                </div>
-              )}
-            </div>
+        <div className="mt-6 pt-5 border-t-2 border-black space-y-6">
+          {/* Rule Breakdown Header */}
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-black uppercase tracking-wider text-black flex items-center gap-2">
+              <span className="w-2.5 h-2.5 bg-black inline-block"></span>
+              Deterministic Underwriting Matrix
+            </h4>
+            <span className="text-xs font-mono font-bold bg-[#FEF08A] px-2 py-0.5 border border-black">
+              {lender.evaluated_criteria?.filter((c) => c.passed).length || 0} /{" "}
+              {lender.evaluated_criteria?.length || 0} Criteria Met
+            </span>
           </div>
 
-          {/* 2. Next Best Action / Remedial Action Suggestions */}
-          {remedialSuggestions.length > 0 && (
-            <div className="p-4 rounded-2xl bg-amber-500/10 dark:bg-amber-950/30 border border-amber-500/20 text-xs space-y-2">
-              <div className="flex items-center gap-2 font-bold text-amber-800 dark:text-amber-300">
-                <Sparkles className="h-4 w-4" />
-                <span>Recommended Actions to Unlock Approval</span>
+          {/* Grid of Rules */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {lender.evaluated_criteria && lender.evaluated_criteria.length > 0 ? (
+              lender.evaluated_criteria.map((crit, idx) => (
+                <div
+                  key={idx}
+                  className={`p-3.5 border-2 border-black text-xs flex flex-col justify-between gap-2.5 shadow-[2px_2px_0px_#000000] ${
+                    crit.passed
+                      ? "bg-[#F0FDF4]"
+                      : crit.required
+                      ? "bg-[#FFF1F2]"
+                      : "bg-[#FEFCE8]"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      {crit.passed ? (
+                        <CheckCircle2 className="h-4 w-4 text-[#16A34A] shrink-0 stroke-[3]" />
+                      ) : crit.required ? (
+                        <XCircle className="h-4 w-4 text-[#E11D48] shrink-0 stroke-[3]" />
+                      ) : (
+                        <AlertTriangle className="h-4 w-4 text-[#D97706] shrink-0 stroke-[3]" />
+                      )}
+                      <span className="font-black uppercase tracking-tight text-black">
+                        {crit.criterion_name.replace(/_/g, " ")}
+                      </span>
+                    </div>
+                    <span
+                      className={`text-[9px] font-black px-1.5 py-0.5 border border-black uppercase ${
+                        crit.required
+                          ? "bg-[#FECDD3] text-black"
+                          : "bg-[#E5E7EB] text-black"
+                      }`}
+                    >
+                      {crit.required ? "Mandatory" : "Optional"}
+                    </span>
+                  </div>
+
+                  {/* Actual vs Required Benchmark */}
+                  <div className="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-black/20">
+                    <div>
+                      <span className="text-black/60 block text-[9px] font-bold uppercase tracking-wider">Candidate</span>
+                      <span className="font-mono font-bold text-black">
+                        {crit.actual_value !== undefined && crit.actual_value !== null
+                          ? String(crit.actual_value)
+                          : "Not Provided"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-black/60 block text-[9px] font-bold uppercase tracking-wider">Benchmark</span>
+                      <span className="font-mono font-bold text-black">
+                        {crit.expected_value || "—"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {crit.explanation && (
+                    <p className="text-[11px] font-medium text-black/80 border-t border-black/10 pt-1.5">
+                      {crit.explanation}
+                    </p>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="col-span-2 text-center py-4 text-xs font-bold text-black/60">
+                Detailed rule evaluation criteria available upon final underwriting sync.
               </div>
-              <ul className="space-y-1.5 pl-5 list-disc text-amber-900/90 dark:text-amber-200/90">
+            )}
+          </div>
+
+          {/* Remedial Suggestions Banner */}
+          {remedialSuggestions.length > 0 && (
+            <div className="p-4 bg-[#FEF08A] border-2 border-black shadow-[3px_3px_0px_#000000] text-xs space-y-2">
+              <div className="flex items-center gap-2 font-black uppercase text-black tracking-wide">
+                <Sparkles className="h-4 w-4 stroke-[2.5]" />
+                <span>Recommended Action Plan for Approval</span>
+              </div>
+              <ul className="space-y-1 pl-5 list-disc font-bold text-black">
                 {remedialSuggestions.map((rec, i) => (
                   <li key={i} className="leading-relaxed">
                     {rec}
@@ -276,15 +269,15 @@ export function ExplainableLenderCard({
             </div>
           )}
 
-          {/* 3. Demo Disclaimer Note */}
-          <div className="flex items-center gap-2 text-[11px] text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800">
-            <HelpCircle className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+          {/* Verification Notice */}
+          <div className="flex items-center gap-2 text-[11px] font-bold text-black bg-[#BAE6FD] p-2.5 border-2 border-black">
+            <span className="font-mono font-black">ℹ AUDIT:</span>
             <span>
-              <strong>Demo Criteria Notice:</strong> Lender guidelines shown above are sample benchmark rules for platform verification and not binding bank commitments.
+              Lender guidelines evaluated deterministically against current published underwriting thresholds.
             </span>
           </div>
         </div>
       )}
-    </Card>
+    </div>
   );
 }
