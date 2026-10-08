@@ -13,12 +13,10 @@ import {
   Download,
   Trash2,
   RefreshCw,
-  Plus
+  Plus,
+  ShieldCheck,
+  Lock
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Select } from "@/components/ui/Input";
 import { api, ApiClientError } from "@/lib/api";
 
 interface ReadinessItem {
@@ -53,7 +51,6 @@ export default function DocumentsPage() {
   const [previewFileName, setPreviewFileName] = useState<string | null>(null);
   const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
-  // Demo active student fallback or retrieved student ID
   const activeStudentId = 1;
 
   const loadReadiness = async () => {
@@ -125,273 +122,281 @@ export default function DocumentsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
-      {/* Alert Banner */}
-      {alert && (
-        <div
-          className={`p-4 rounded-2xl flex items-center justify-between text-sm font-medium ${
-            alert.type === "success"
-              ? "bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 text-emerald-900 dark:text-emerald-200"
-              : "bg-rose-50 dark:bg-rose-950/60 border border-rose-300 text-rose-900 dark:text-rose-200"
-          }`}
-        >
-          <span>{alert.message}</span>
-          <button onClick={() => setAlert(null)} className="text-xs font-bold uppercase">
-            Dismiss
-          </button>
-        </div>
-      )}
-
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200 dark:border-slate-800">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1 text-xs font-semibold text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 mb-3">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Document Readiness Vault</span>
+    <div className="bg-[#BAE6FD] min-h-screen py-10 sm:py-16 px-4 sm:px-6 lg:px-8 border-b-3 border-black">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Alert Banner */}
+        {alert && (
+          <div
+            className={`p-4 border-3 border-black shadow-[4px_4px_0px_#000000] flex items-center justify-between text-xs sm:text-sm font-black uppercase ${
+              alert.type === "success"
+                ? "bg-[#86EFAC] text-black"
+                : "bg-[#FECDD3] text-black"
+            }`}
+          >
+            <span>{alert.message}</span>
+            <button
+              onClick={() => setAlert(null)}
+              className="neo-btn bg-white text-black text-xs px-2 py-1"
+            >
+              Dismiss
+            </button>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            Pre-Underwriting Verification Vault
-          </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 max-w-2xl">
-            Upload and verify your academic, income, and collateral documents. 
-            All files are stored in isolated storage with magic-byte validation and anti-path traversal protection.
-          </p>
+        )}
+
+        {/* Header Ribbon */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-3 border-black">
+          <div>
+            <div className="inline-block bg-[#FEF08A] text-black border-2 border-black px-3 py-1 text-xs font-black uppercase tracking-wider -rotate-1 shadow-[2px_2px_0px_#000000] mb-3">
+              PRE-UNDERWRITING VAULT • MAGIC-BYTE VERIFIED
+            </div>
+            <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-black leading-none">
+              DOCUMENT READINESS VAULT
+            </h1>
+            <p className="text-xs sm:text-sm font-bold text-black/80 mt-2 max-w-2xl">
+              Deterministic verification vault. Upload proof documents for admission, co-borrower income, tax filings, and collateral with isolated magic-byte verification.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0 flex-wrap">
+            <button
+              onClick={loadReadiness}
+              className="neo-btn bg-white text-black text-xs font-black uppercase py-2.5 px-4 flex items-center gap-2"
+            >
+              <RefreshCw className="h-4 w-4 stroke-[2.5]" />
+              Refresh Vault
+            </button>
+            <Link href="/assessment">
+              <button className="neo-btn bg-[#FEF08A] text-black text-xs font-black uppercase py-2.5 px-4 flex items-center gap-2">
+                Launch Assessment <ArrowRight className="h-4 w-4 stroke-[3]" />
+              </button>
+            </Link>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" onClick={loadReadiness} leftIcon={<RefreshCw className="h-4 w-4" />}>
-            Refresh Status
-          </Button>
-          <Link href="/assessment">
-            <Button size="sm" rightIcon={<ArrowRight className="h-4 w-4" />}>
-              Run Assessment
-            </Button>
-          </Link>
-        </div>
-      </div>
-
-      {/* Upload Zone */}
-      <Card className="border-2 border-dashed border-emerald-500/30 bg-emerald-50/10 dark:bg-emerald-950/10">
-        <form onSubmit={handleFileUpload} className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
-                <UploadCloud className="h-6 w-6" />
+        {/* Upload Zone */}
+        <div className="neo-box p-6 bg-[#FFFDF9]">
+          <form onSubmit={handleFileUpload} className="space-y-4">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-[#86EFAC] border-2 border-black flex items-center justify-center font-black shadow-[2px_2px_0px_#000000] shrink-0">
+                  <UploadCloud className="h-6 w-6 text-black stroke-[2.5]" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black uppercase tracking-tight text-black">
+                    Upload Underwriting Evidence
+                  </h3>
+                  <span className="text-xs font-bold text-black/60 block">
+                    Supported: PDF, JPG, PNG (Max 10MB per document)
+                  </span>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                  Upload Document Proof
-                </h3>
-                <span className="text-xs text-slate-500">
-                  Supported formats: PDF, JPG, PNG (Max 10MB per file)
-                </span>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+                <select
+                  value={selectedDocType}
+                  onChange={(e) => setSelectedDocType(e.target.value)}
+                  className="neo-input text-xs font-bold py-2 px-3 bg-white"
+                >
+                  <option value="admission_letter">Admission Offer Letter</option>
+                  <option value="passport">Passport / National ID</option>
+                  <option value="salary_slip">Salary Slip (3-6 Months)</option>
+                  <option value="itr">Income Tax Returns (ITR-V)</option>
+                  <option value="bank_statement">6-Month Bank Statement</option>
+                  <option value="property_document">Property Title Deed / Collateral</option>
+                  <option value="scholarship_proof">Scholarship Award Letter</option>
+                  <option value="other">Other Supporting Document</option>
+                </select>
+
+                <input
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  onChange={(e) => setFileToUpload(e.target.files?.[0] || null)}
+                  className="text-xs font-bold text-black file:mr-2 file:py-2 file:px-3 file:border-2 file:border-black file:text-xs file:font-black file:uppercase file:bg-[#FEF08A] file:cursor-pointer file:shadow-[2px_2px_0px_#000000] cursor-pointer"
+                />
+
+                <button
+                  type="submit"
+                  disabled={uploading || !fileToUpload}
+                  className="neo-btn bg-[#86EFAC] text-black text-xs font-black uppercase py-2.5 px-4 flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <Plus className="h-4 w-4 stroke-[3]" />
+                  {uploading ? "Verifying..." : "Upload"}
+                </button>
               </div>
             </div>
-
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-              <Select
-                value={selectedDocType}
-                onChange={(e) => setSelectedDocType(e.target.value)}
-                options={[
-                  { value: "admission_letter", label: "Admission Offer Letter" },
-                  { value: "passport", label: "Passport / Government ID" },
-                  { value: "salary_slip", label: "Salary Slip (3-6 Months)" },
-                  { value: "itr", label: "Income Tax Returns (ITR-V)" },
-                  { value: "bank_statement", label: "6-Month Bank Statement" },
-                  { value: "property_document", label: "Property Title Deed / Collateral" },
-                  { value: "scholarship_proof", label: "Scholarship Award Letter" },
-                  { value: "other", label: "Other Supporting Document" },
-                ]}
-              />
-
-              <input
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={(e) => setFileToUpload(e.target.files?.[0] || null)}
-                className="text-xs text-slate-600 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 cursor-pointer"
-              />
-
-              <Button
-                type="submit"
-                size="md"
-                isLoading={uploading}
-                disabled={!fileToUpload}
-                leftIcon={<Plus className="h-4 w-4" />}
-              >
-                Upload
-              </Button>
-            </div>
-          </div>
-        </form>
-      </Card>
-
-      {/* Compliance Overview Banner */}
-      {report && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-            <span className="text-xs uppercase font-bold text-slate-500">Readiness Status</span>
-            <div className="text-lg font-bold capitalize text-slate-900 dark:text-white mt-1">
-              {report.overall_readiness.replace("_", " ")}
-            </div>
-          </div>
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-            <span className="text-xs uppercase font-bold text-slate-500">Required Documents</span>
-            <div className="text-lg font-mono font-bold text-slate-900 dark:text-white mt-1">
-              {report.total_required}
-            </div>
-          </div>
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-            <span className="text-xs uppercase font-bold text-emerald-600">Uploaded & Verified</span>
-            <div className="text-lg font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-1">
-              {report.total_uploaded}
-            </div>
-          </div>
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-            <span className="text-xs uppercase font-bold text-rose-600">Missing Action</span>
-            <div className="text-lg font-mono font-bold text-rose-600 dark:text-rose-400 mt-1">
-              {report.total_missing}
-            </div>
-          </div>
+          </form>
         </div>
-      )}
 
-      {/* Document Items Table / Grid */}
-      {loading ? (
-        <div className="text-center py-16 text-slate-500">Loading document vault...</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {report?.items.map((item, idx) => {
-            const isVerified = item.status === "verified" || item.status === "uploaded";
+        {/* Compliance Overview Grid */}
+        {report && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="neo-box p-4 bg-[#FFFDF9]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Readiness Status</span>
+              <div className="text-xl font-black uppercase text-black mt-1">
+                {report.overall_readiness.replace("_", " ")}
+              </div>
+            </div>
+            <div className="neo-box p-4 bg-[#FFFDF9]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Total Required</span>
+              <div className="text-xl font-black font-mono text-black mt-1">
+                {report.total_required} Dossiers
+              </div>
+            </div>
+            <div className="neo-box p-4 bg-[#86EFAC]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black block">Verified</span>
+              <div className="text-xl font-black font-mono text-black mt-1">
+                {report.total_uploaded} Uploaded
+              </div>
+            </div>
+            <div className="neo-box p-4 bg-[#FECDD3]">
+              <span className="text-[10px] font-black uppercase tracking-wider text-black block">Pending Proof</span>
+              <div className="text-xl font-black font-mono text-black mt-1">
+                {report.total_missing} Action Items
+              </div>
+            </div>
+          </div>
+        )}
 
-            return (
-              <Card
-                key={idx}
-                className={`p-6 flex flex-col justify-between border-l-4 ${
-                  isVerified ? "border-l-emerald-600" : "border-l-rose-500"
-                }`}
-              >
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={`p-2.5 rounded-xl shrink-0 ${
-                          isVerified
-                            ? "bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400"
-                            : "bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-400"
+        {/* Document Items Grid */}
+        {loading ? (
+          <div className="neo-box p-12 text-center text-sm font-black uppercase bg-[#FFFDF9]">
+            Loading document verification vault...
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {report?.items.map((item, idx) => {
+              const isVerified = item.status === "verified" || item.status === "uploaded";
+
+              return (
+                <div
+                  key={idx}
+                  className={`border-3 border-black p-6 flex flex-col justify-between transition-all ${
+                    isVerified
+                      ? "bg-white shadow-[6px_6px_0px_#86EFAC]"
+                      : "bg-white shadow-[6px_6px_0px_#FECDD3]"
+                  }`}
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={`w-10 h-10 border-2 border-black flex items-center justify-center font-black shrink-0 shadow-[2px_2px_0px_#000000] ${
+                            isVerified ? "bg-[#86EFAC]" : "bg-[#FECDD3]"
+                          }`}
+                        >
+                          <FileText className="h-5 w-5 text-black stroke-[2.5]" />
+                        </div>
+                        <div>
+                          <h4 className="font-black uppercase tracking-tight text-black text-base">
+                            {item.title}
+                          </h4>
+                          <p className="text-xs font-medium text-black/70 mt-0.5 leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      <span
+                        className={`text-[10px] font-black uppercase px-2 py-0.5 border-2 border-black shadow-[2px_2px_0px_#000000] shrink-0 ${
+                          isVerified ? "bg-[#86EFAC] text-black" : "bg-[#FECDD3] text-black"
                         }`}
                       >
-                        <FileText className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-slate-900 dark:text-white text-base">
-                          {item.title}
-                        </h4>
-                        <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                          {item.description}
-                        </p>
-                      </div>
+                        {item.status.toUpperCase()}
+                      </span>
                     </div>
 
-                    <Badge variant={isVerified ? "success" : "danger"}>
-                      {item.status.toUpperCase()}
-                    </Badge>
-                  </div>
-
-                  {item.file_name && (
-                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 text-xs flex items-center justify-between">
-                      <div className="flex items-center gap-2 truncate">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                        <span className="font-mono truncate">{item.file_name}</span>
+                    {item.file_name && (
+                      <div className="p-3 bg-[#F3F4F6] border-2 border-black text-xs flex items-center justify-between">
+                        <div className="flex items-center gap-2 truncate">
+                          <CheckCircle2 className="h-4 w-4 text-[#16A34A] shrink-0 stroke-[3]" />
+                          <span className="font-mono font-bold truncate">{item.file_name}</span>
+                        </div>
+                        {item.uploaded_at && (
+                          <span className="text-[10px] font-mono font-bold text-black/60 shrink-0 ml-2">
+                            {new Date(item.uploaded_at).toLocaleDateString()}
+                          </span>
+                        )}
                       </div>
-                      {item.uploaded_at && (
-                        <span className="text-[10px] text-slate-400 shrink-0 ml-2">
-                          {new Date(item.uploaded_at).toLocaleDateString()}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                    )}
 
-                  {item.remedial_note && (
-                    <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-xs text-rose-900 dark:text-rose-200 flex items-start gap-2">
-                      <AlertTriangle className="h-4 w-4 text-rose-600 shrink-0 mt-0.5" />
-                      <span>{item.remedial_note}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                  <span className="text-xs text-slate-400">
-                    {item.mandatory ? "Mandatory for Loan Sanction" : "Optional / Contextual"}
-                  </span>
-
-                  <div className="flex items-center gap-2">
-                    {item.uploaded_document_id && (
-                      <>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setPreviewDocId(item.uploaded_document_id || null);
-                            setPreviewFileName(item.file_name || "document.pdf");
-                          }}
-                          leftIcon={<Eye className="h-3.5 w-3.5" />}
-                        >
-                          Preview
-                        </Button>
-                        <a
-                          href={`/api/documents/${item.uploaded_document_id}/preview?download=true`}
-                          download
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <Button variant="ghost" size="sm" leftIcon={<Download className="h-3.5 w-3.5" />}>
-                            Download
-                          </Button>
-                        </a>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(item.uploaded_document_id!)}
-                          className="text-rose-600 hover:text-rose-700"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </>
+                    {item.remedial_note && (
+                      <div className="p-3 bg-[#FEF08A] border-2 border-black text-xs font-bold text-black flex items-start gap-2 shadow-[2px_2px_0px_#000000]">
+                        <AlertTriangle className="h-4 w-4 text-black shrink-0 mt-0.5 stroke-[2.5]" />
+                        <span>{item.remedial_note}</span>
+                      </div>
                     )}
                   </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      )}
 
-      {/* Safe Modal Preview Drawer */}
-      {previewDocId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-4xl w-full h-[80vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
-            <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
-                <FileText className="h-4 w-4 text-emerald-600" />
-                <span>{previewFileName}</span>
+                  <div className="mt-6 pt-4 border-t-2 border-black flex flex-wrap items-center justify-between gap-3">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-black/60">
+                      {item.mandatory ? "• Mandatory for Sanction" : "• Contextual / Optional"}
+                    </span>
+
+                    <div className="flex items-center gap-2">
+                      {item.uploaded_document_id && (
+                        <>
+                          <button
+                            onClick={() => {
+                              setPreviewDocId(item.uploaded_document_id || null);
+                              setPreviewFileName(item.file_name || "document.pdf");
+                            }}
+                            className="neo-btn bg-white text-black text-[11px] font-black uppercase py-1 px-2.5 flex items-center gap-1"
+                          >
+                            <Eye className="h-3.5 w-3.5 stroke-[2.5]" /> Preview
+                          </button>
+                          <a
+                            href={`/api/documents/${item.uploaded_document_id}/preview?download=true`}
+                            download
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <button className="neo-btn bg-white text-black text-[11px] font-black uppercase py-1 px-2.5 flex items-center gap-1">
+                              <Download className="h-3.5 w-3.5 stroke-[2.5]" /> Download
+                            </button>
+                          </a>
+                          <button
+                            onClick={() => handleDelete(item.uploaded_document_id!)}
+                            className="neo-btn bg-[#FECDD3] text-black text-[11px] font-black uppercase py-1 px-2 flex items-center"
+                          >
+                            <Trash2 className="h-3.5 w-3.5 stroke-[2.5]" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Modal Preview Drawer */}
+        {previewDocId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-none p-4">
+            <div className="bg-[#FFFDF9] border-3 border-black shadow-[8px_8px_0px_#000000] max-w-4xl w-full h-[80vh] flex flex-col overflow-hidden">
+              <div className="p-4 bg-[#FEF08A] border-b-3 border-black flex items-center justify-between">
+                <div className="flex items-center gap-2 font-black uppercase text-black text-sm">
+                  <FileText className="h-4 w-4 stroke-[2.5]" />
+                  <span>{previewFileName}</span>
+                </div>
+                <button
+                  onClick={() => setPreviewDocId(null)}
+                  className="neo-btn bg-white text-black text-xs font-black uppercase px-3 py-1"
+                >
+                  Close
+                </button>
               </div>
-              <button
-                onClick={() => setPreviewDocId(null)}
-                className="text-xs uppercase font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200"
-              >
-                Close Preview
-              </button>
-            </div>
-            <div className="flex-1 w-full bg-slate-100 dark:bg-slate-950 p-2">
-              <iframe
-                src={`/api/documents/${previewDocId}/preview`}
-                className="w-full h-full rounded-2xl border border-slate-200 dark:border-slate-800"
-                title="Document Preview"
-              />
+              <div className="flex-1 w-full bg-white p-2">
+                <iframe
+                  src={`/api/documents/${previewDocId}/preview`}
+                  className="w-full h-full border-2 border-black"
+                  title="Document Preview"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
