@@ -12,8 +12,10 @@ from app.models.student import Student
 from app.schemas.funding_source import FundingSourceResponse, FundingSourceUpdate
 from app.services.currency_service import get_default_exchange_rate
 
-# Router mounted at /students/{student_id}/funding and /funding
+# Routers mounted at /students/{student_id}/funding, /students/{student_id}/funding-sources, and /funding
 student_funding_router = APIRouter(prefix="/students/{student_id}/funding", tags=["Funding Sources"])
+student_funding_sources_router = APIRouter(prefix="/students/{student_id}/funding-sources", tags=["Funding Sources"])
+student_funding_sources_under_router = APIRouter(prefix="/students/{student_id}/funding_sources", tags=["Funding Sources"])
 funding_item_router = APIRouter(prefix="/funding", tags=["Funding Sources"])
 
 
@@ -22,6 +24,7 @@ class FundingSourceInput(BaseModel):
     amount_original: Decimal = Field(..., ge=0)
     currency: str = Field(default="INR", min_length=1, max_length=10)
     exchange_rate_to_inr: Decimal | None = Field(default=None, gt=0)
+    description: str | None = None
     verified: bool = Field(default=False)
 
 
@@ -36,6 +39,18 @@ def _compute_funding_inr(amount: Decimal, currency: str, rate: Decimal | None) -
     response_model=FundingSourceResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Add funding source for a student",
+)
+@student_funding_sources_router.post(
+    "",
+    response_model=FundingSourceResponse,
+    status_code=status.HTTP_201_CREATED,
+    include_in_schema=False,
+)
+@student_funding_sources_under_router.post(
+    "",
+    response_model=FundingSourceResponse,
+    status_code=status.HTTP_201_CREATED,
+    include_in_schema=False,
 )
 def add_funding_source(
     student_id: int,
@@ -73,6 +88,16 @@ def add_funding_source(
     "",
     response_model=list[FundingSourceResponse],
     summary="List funding sources for a student",
+)
+@student_funding_sources_router.get(
+    "",
+    response_model=list[FundingSourceResponse],
+    include_in_schema=False,
+)
+@student_funding_sources_under_router.get(
+    "",
+    response_model=list[FundingSourceResponse],
+    include_in_schema=False,
 )
 def list_student_funding_sources(
     student_id: int,
