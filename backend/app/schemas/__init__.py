@@ -8,6 +8,13 @@ from app.schemas.collateral import (
     CollateralResponse,
     CollateralUpdate,
 )
+from app.schemas.document import (
+    DocumentBase,
+    DocumentCreate,
+    DocumentRead,
+    DocumentResponse,
+    DocumentUpdate,
+)
 from app.schemas.financial_profile import (
     FinancialProfileBase,
     FinancialProfileCreate,
@@ -44,6 +51,11 @@ __all__ = [
     "CollateralRead",
     "CollateralResponse",
     "CollateralUpdate",
+    "DocumentBase",
+    "DocumentCreate",
+    "DocumentRead",
+    "DocumentResponse",
+    "DocumentUpdate",
     "FinancialProfileBase",
     "FinancialProfileCreate",
     "FinancialProfileResponse",

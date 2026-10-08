@@ -11,6 +11,7 @@ from app.db.base import Base
 if TYPE_CHECKING:
     from app.models.asset import Asset
     from app.models.collateral import Collateral
+    from app.models.document import Document
     from app.models.financial_profile import FinancialProfile
     from app.models.funding_source import FundingSource
     from app.models.liability import Liability
@@ -56,6 +57,9 @@ class Student(Base):
     )
     collaterals: Mapped[list["Collateral"]] = relationship(
         "Collateral", back_populates="student", cascade="all, delete-orphan"
+    )
+    documents: Mapped[list["Document"]] = relationship(
+        "Document", back_populates="student", cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:

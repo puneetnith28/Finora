@@ -3,6 +3,7 @@
 from app.db.base import Base
 from app.models.asset import Asset, AssetType
 from app.models.collateral import Collateral, CollateralType, OwnershipStatus
+from app.models.document import Document, DocumentStatus, DocumentType, ExtractionStatus
 from app.models.financial_profile import FinancialProfile
 from app.models.funding_source import FundingSource, FundingSourceType
 from app.models.liability import Liability, LiabilityType
@@ -15,6 +16,10 @@ __all__ = [
     "Base",
     "Collateral",
     "CollateralType",
+    "Document",
+    "DocumentStatus",
+    "DocumentType",
+    "ExtractionStatus",
     "FinancialProfile",
     "FundingSource",
     "FundingSourceType",
