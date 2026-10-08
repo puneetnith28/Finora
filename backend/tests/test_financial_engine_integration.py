@@ -153,7 +153,6 @@ def test_full_financial_engine_fully_funded_candidate() -> None:
     assert summary.readiness_band in ["strong", "excellent"]
 
 
-
 def test_full_financial_engine_distressed_high_foir_candidate() -> None:
     """Test overleveraged candidate with critical FOIR burden and no collateral."""
     study_cost = StudyCostBreakdown(

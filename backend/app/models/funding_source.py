@@ -25,7 +25,6 @@ class FundingSourceType(enum.StrEnum):
     OTHER = "other"
 
 
-
 class FundingSource(Base):
     __tablename__ = "funding_sources"
 
