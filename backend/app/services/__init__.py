@@ -18,6 +18,13 @@ from app.services.funding_gap_calculator import (
     FundingGapResult,
     calculate_funding_gap,
 )
+from app.services.net_worth_calculator import (
+    AssetSummaryItem,
+    LiabilitySummaryItem,
+    NetWorthCalculationInput,
+    NetWorthCalculationResult,
+    calculate_net_worth,
+)
 from app.services.study_cost_calculator import (
     StudyCostBreakdown,
     StudyCostResult,
@@ -25,17 +32,22 @@ from app.services.study_cost_calculator import (
 )
 
 __all__ = [
-    "DEFAULT_EXCHANGE_RATES",
+    "AssetSummaryItem",
     "CurrencyConversionRequest",
     "CurrencyConversionResult",
+    "DEFAULT_EXCHANGE_RATES",
     "FundingCalculationResult",
     "FundingGapInput",
     "FundingGapResult",
     "FundingItem",
+    "LiabilitySummaryItem",
+    "NetWorthCalculationInput",
+    "NetWorthCalculationResult",
     "StudyCostBreakdown",
     "StudyCostResult",
     "calculate_available_funding",
     "calculate_funding_gap",
+    "calculate_net_worth",
     "calculate_study_cost",
     "convert_currency",
     "get_default_exchange_rate",
