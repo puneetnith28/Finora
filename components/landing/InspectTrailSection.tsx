@@ -3,57 +3,22 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, FileText, Sparkles } from "lucide-react";
+import { CANONICAL_DEMO_PERSONAS } from "@/lib/constants/demo";
 
 export function InspectTrailSection() {
   const [selectedCase, setSelectedCase] = useState<number>(0);
 
-  const CASES = [
-    {
-      id: "FIN-DEMO-01",
-      title: "US MS CS • Safe FOIR • Full Approval",
-      country: "United States",
-      currency: "USD / INR",
-      loanNeeded: "₹45,00,000",
-      foir: "38%",
-      score: "94/100",
-      status: "APPROVED BY 4 LENDERS",
-      trail: [
-        { app: "01 / Currency & Tuition", result: "Verified SEVP $42,500 rate @ 86.5 INR" },
-        { app: "02 / Co-Borrower FOIR", result: "Monthly Income ₹1,85,000 against ₹42,000 EMI" },
-        { app: "03 / Underwriting Sync", result: "Direct match against SBI & HDFC Credila criteria" },
-      ],
-    },
-    {
-      id: "FIN-DEMO-02",
-      title: "German Public Uni • Zero Tuition • Living Buffer",
-      country: "Germany",
-      currency: "EUR / INR",
-      loanNeeded: "₹18,00,000",
-      foir: "26%",
-      score: "98/100",
-      status: "APPROVED BY 5 LENDERS",
-      trail: [
-        { app: "01 / Blocked Account", result: "€11,208 mandatory living deposit verified" },
-        { app: "02 / Debt Burden", result: "FOIR 26% — lowest tier risk category" },
-        { app: "03 / Sanction Pathway", result: "Unsecured education loan approved with 0 collateral" },
-      ],
-    },
-    {
-      id: "FIN-DEMO-03",
-      title: "UK MBA • High Gap • Collateral Backed",
-      country: "United Kingdom",
-      currency: "GBP / INR",
-      loanNeeded: "₹65,00,000",
-      foir: "56%",
-      score: "78/100",
-      status: "CONDITIONAL APPROVAL",
-      trail: [
-        { app: "01 / Budget Audit", result: "£48,000 full tuition + London living allowance" },
-        { app: "02 / Collateral Haircut", result: "Residential property valued ₹1.2 Cr (70% LTV applied)" },
-        { app: "03 / Underwriting Result", result: "Secured approval conditional on co-applicant add" },
-      ],
-    },
-  ];
+  const CASES = CANONICAL_DEMO_PERSONAS.slice(0, 3).map((p) => ({
+    id: `FIN-DEMO-${p.num}`,
+    title: `${p.name} • ${p.course} (${p.country})`,
+    country: p.country,
+    currency: p.currency,
+    loanNeeded: p.loanNeeded,
+    foir: p.foir,
+    score: p.score,
+    status: p.status,
+    trail: p.trail,
+  }));
 
   const activeCase = CASES[selectedCase];
 

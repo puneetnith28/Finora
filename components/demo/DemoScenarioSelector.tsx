@@ -10,59 +10,9 @@ import {
 } from "lucide-react";
 import { NeoBadge, NeoButton, NeoCard } from "@/components/ui/NeoPrimitives";
 import { api } from "@/lib/api";
+import { CANONICAL_DEMO_PERSONAS } from "@/lib/constants/demo";
 
-export const SAMPLE_PERSONAS = [
-  {
-    num: "01",
-    id: "aarav",
-    name: "AARAV MEHTA",
-    tag: "STEM USA",
-    badgeColor: "mint" as const,
-    university: "Carnegie Mellon University (MS in CS)",
-    profile: "CIBIL 780 • Co-borrower ₹1.6L/mo • ₹60L Property",
-    verdict: "UNANIMOUS TIER-1 BANK APPROVAL (9.2%)",
-  },
-  {
-    num: "02",
-    id: "priya",
-    name: "PRIYA SHARMA",
-    tag: "UK UNSECURED",
-    badgeColor: "cyan" as const,
-    university: "London School of Economics (MSc Finance)",
-    profile: "CIBIL 725 • Co-borrower ₹95k/mo • No Collateral",
-    verdict: "ELIGIBLE FOR SPECIALIST UNSECURED NBFCs",
-  },
-  {
-    num: "03",
-    id: "rohan",
-    name: "ROHAN VERMA",
-    tag: "HIGH DEBT STRESS",
-    badgeColor: "pink" as const,
-    university: "University of Toronto (MBA)",
-    profile: "CIBIL 660 • Co-borrower ₹55k/mo • ₹32k Existing EMIs",
-    verdict: "FOIR 78% WARNING • REMEDIAL ACTION REQUIRED",
-  },
-  {
-    num: "04",
-    id: "ananya",
-    name: "ANANYA IYER",
-    tag: "GERMANY STEM",
-    badgeColor: "yellow" as const,
-    university: "TU Munich (Robotics Engineering)",
-    profile: "€0 Tuition • €4k Award • ₹15L Fixed Deposit",
-    verdict: "LOW BORROWING GAP • SCORE 94/100",
-  },
-  {
-    num: "05",
-    id: "vikram",
-    name: "VIKRAM PATEL",
-    tag: "DISCREPANCY FLAG",
-    badgeColor: "white" as const,
-    university: "University of Melbourne (Data Science)",
-    profile: "CIBIL 695 • Co-borrower ₹72k/mo • Unverified Deed",
-    verdict: "CONDITIONAL • OCR DISCREPANCY DETECTED",
-  },
-];
+export const SAMPLE_PERSONAS = CANONICAL_DEMO_PERSONAS;
 
 export function DemoScenarioSelector() {
   const router = useRouter();
