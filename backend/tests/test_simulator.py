@@ -5,9 +5,24 @@ from decimal import Decimal
 import pytest
 from fastapi.testclient import TestClient
 
+from app.db.base import Base
+from app.db.seed_lenders import seed_demo_lenders
+from app.db.session import SessionLocal, engine
 from app.main import app
 from app.schemas.simulator import FoirSimulatorRequest
 from app.services.simulator_service import run_foir_simulation
+
+
+@pytest.fixture(autouse=True)
+def setup_db():
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        seed_demo_lenders(db)
+    finally:
+        db.close()
+    yield
+    Base.metadata.drop_all(bind=engine)
 
 
 @pytest.fixture
@@ -65,3 +80,25 @@ def test_foir_simulator_api_endpoint(client: TestClient):
     assert "foir_percentage" in data
     assert "status_badge" in data
     assert "remedial_suggestions" in data
+
+
+def test_lender_impact_simulation_endpoint(client: TestClient):
+    """Test POST /api/simulator/lender-impact endpoint."""
+    payload = {
+        "target_country": "USA",
+        "co_borrower_monthly_income_inr": "120000.00",
+        "existing_monthly_obligations_inr": "15000.00",
+        "simulated_loan_amount_inr": "4500000.00",
+        "simulated_interest_rate_percent": "11.00",
+        "simulated_tenure_months": 120,
+        "cibil_score": 750,
+        "has_collateral": True,
+    }
+    response = client.post("/api/simulator/lender-impact", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "lender_impacts" in data
+    assert len(data["lender_impacts"]) > 0
+    assert "matched_count" in data
+    assert "simulated_foir_percentage" in data
+

@@ -315,6 +315,136 @@ export function FoirSimulator({
           )}
         </div>
       </div>
+
+      {/* Real-time Lender Impact Simulation Grid */}
+      <div className="mt-10 border-t border-border pt-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h3 className="text-base font-bold text-foreground">Live Lender Impact Simulation</h3>
+            <p className="text-xs text-muted-foreground">
+              See how changing your requested loan amount, tenure, and FOIR transitions your eligibility across active lenders in real time.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            {
+              id: 1,
+              name: "SBI Global Ed-Vantage",
+              type: "Public Sector (Collateral Mandatory)",
+              maxFoir: 50,
+              maxLoan: 15000000,
+              minIncome: 40000,
+            },
+            {
+              id: 2,
+              name: "HDFC Credila Premier",
+              type: "Private NBFC (Prime Partner)",
+              maxFoir: 55,
+              maxLoan: 7500000,
+              minIncome: 35000,
+            },
+            {
+              id: 3,
+              name: "Avanse Financial Overseas",
+              type: "Specialized Education NBFC",
+              maxFoir: 60,
+              maxLoan: 5000000,
+              minIncome: 30000,
+            },
+            {
+              id: 4,
+              name: "ICICI Bank Unsecured Global",
+              type: "Private Bank (Merit-Based)",
+              maxFoir: 50,
+              maxLoan: 4000000,
+              minIncome: 50000,
+            },
+          ].map((lender) => {
+            const foirPct = result ? result.foir_percentage : 30;
+            const P = loanAmount;
+            const inc = monthlyIncome;
+
+            const baselineFoir = 35;
+            const baselineLoan = 2000000;
+
+            const baseMatch = baselineFoir <= lender.maxFoir && baselineLoan <= lender.maxLoan && inc >= lender.minIncome;
+            const baseStatus = baseMatch ? "Potential Match" : "Needs Review";
+
+            let simStatus = "Potential Match";
+            let delta = "Unchanged";
+            let reason = "All criteria met within simulated parameters.";
+
+            if (P > lender.maxLoan) {
+              simStatus = "Not Eligible";
+              reason = `Requested ${formatCurrency(P)} exceeds lender cap of ${formatCurrency(lender.maxLoan)}.`;
+            } else if (foirPct > lender.maxFoir) {
+              simStatus = "Needs Review";
+              reason = `FOIR ${foirPct}% exceeds lender maximum threshold of ${lender.maxFoir}%.`;
+            } else if (inc < lender.minIncome) {
+              simStatus = "Needs Review";
+              reason = `Co-borrower income ${formatCurrency(inc)} is below required ${formatCurrency(lender.minIncome)}.`;
+            }
+
+            if (baseStatus !== simStatus) {
+              if (simStatus === "Potential Match") delta = "Upgraded";
+              else delta = "Downgraded";
+            }
+
+            return (
+              <div
+                key={lender.id}
+                className="flex flex-col justify-between rounded-xl border border-border bg-card/70 p-4 transition-all hover:border-primary/40 hover:shadow-md"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-sm font-bold text-foreground line-clamp-1">{lender.name}</span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${
+                        simStatus === "Potential Match"
+                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                          : simStatus === "Needs Review"
+                          ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
+                          : "bg-rose-500/10 text-rose-400 border-rose-500/30"
+                      }`}
+                    >
+                      {simStatus}
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-muted-foreground block mt-0.5">{lender.type}</span>
+
+                  <div className="mt-3 pt-3 border-t border-border/60 space-y-1.5 text-xs">
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Baseline:</span>
+                      <span className="font-medium text-foreground">{baseStatus}</span>
+                    </div>
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Transition:</span>
+                      <span
+                        className={`font-semibold ${
+                          delta === "Upgraded"
+                            ? "text-emerald-400"
+                            : delta === "Downgraded"
+                            ? "text-rose-400"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {delta}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="mt-3 text-[11px] text-muted-foreground bg-secondary/40 p-2 rounded-lg border border-border/40">
+                  {reason}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
+
