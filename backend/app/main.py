@@ -11,9 +11,20 @@ from app.routes.api import api_router
 from app.routes.health import router as health_router
 
 
+from app.db.base import Base
+from app.db.seed_lenders import seed_demo_lenders
+from app.db.session import SessionLocal, engine
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup actions
+    # Auto-initialize database tables and seed demo lenders on startup
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        seed_demo_lenders(db)
+    finally:
+        db.close()
     yield
     # Shutdown actions
 
