@@ -5,9 +5,10 @@ import {
   Wallet, 
   TrendingUp, 
   PiggyBank, 
-  Building 
+  Building,
+  PieChart,
+  BarChart3
 } from "lucide-react";
-import { Card } from "@/components/ui/Card";
 import { formatCurrency } from "@/lib/utils";
 
 interface FinancialVisualsProps {
@@ -43,9 +44,9 @@ export function FinancialVisuals({
   const other = otherExpensesInr ?? Math.max(0, totalCostInr - tuition - living);
 
   const costItems = [
-    { label: "Tuition & Academic Fees", amount: tuition, color: "bg-emerald-500", hex: "#10b981", percent: totalCostInr > 0 ? (tuition / totalCostInr) * 100 : 65 },
-    { label: "Living, Housing & Food", amount: living, color: "bg-blue-500", hex: "#3b82f6", percent: totalCostInr > 0 ? (living / totalCostInr) * 100 : 25 },
-    { label: "Travel, Health & Buffer", amount: other, color: "bg-amber-500", hex: "#f59e0b", percent: totalCostInr > 0 ? (other / totalCostInr) * 100 : 10 },
+    { label: "Tuition & Academic Fees", amount: tuition, color: "bg-[#86EFAC]", hex: "#86EFAC", percent: totalCostInr > 0 ? (tuition / totalCostInr) * 100 : 65 },
+    { label: "Living, Housing & Food", amount: living, color: "bg-[#BAE6FD]", hex: "#BAE6FD", percent: totalCostInr > 0 ? (living / totalCostInr) * 100 : 25 },
+    { label: "Travel, Health & Buffer", amount: other, color: "bg-[#FEF08A]", hex: "#FEF08A", percent: totalCostInr > 0 ? (other / totalCostInr) * 100 : 10 },
   ];
 
   // Derive funding breakdown
@@ -55,55 +56,58 @@ export function FinancialVisuals({
   const scholarship = scholarshipInr || Math.round(totalCovered * 0.3);
 
   const fundingItems = [
-    { label: "Education Loan Required", amount: fundingGap, color: "bg-rose-500", hex: "#f43f5e", percent: totalCostInr > 0 ? (fundingGap / totalCostInr) * 100 : 70 },
-    { label: "Family Savings & Margin Money", amount: selfSavings, color: "bg-emerald-500", hex: "#10b981", percent: totalCostInr > 0 ? (selfSavings / totalCostInr) * 100 : 20 },
-    { label: "Scholarships & Grants", amount: scholarship, color: "bg-purple-500", hex: "#a855f7", percent: totalCostInr > 0 ? (scholarship / totalCostInr) * 100 : 10 },
+    { label: "Education Loan Required", amount: fundingGap, color: "bg-[#FECDD3]", hex: "#FECDD3", percent: totalCostInr > 0 ? (fundingGap / totalCostInr) * 100 : 70 },
+    { label: "Family Savings & Capital", amount: selfSavings, color: "bg-[#86EFAC]", hex: "#86EFAC", percent: totalCostInr > 0 ? (selfSavings / totalCostInr) * 100 : 20 },
+    { label: "Scholarships & Grants", amount: scholarship, color: "bg-[#BAE6FD]", hex: "#BAE6FD", percent: totalCostInr > 0 ? (scholarship / totalCostInr) * 100 : 10 },
   ];
 
-  // Net Worth & Assets breakdown
   const collateral = totalEligibleCollateralInr;
 
   return (
-    <Card className="p-6 sm:p-8 space-y-6 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+    <div className="neo-box p-6 sm:p-8 bg-[#FFFDF9] space-y-6">
+      {/* Header & Tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-black">
         <div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-emerald-600" />
-            <span>Interactive Financial Breakdown Visualizer</span>
+          <div className="inline-block bg-[#BAE6FD] text-black border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase tracking-wider mb-1">
+            FINANCIAL INTELLIGENCE
+          </div>
+          <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-black flex items-center gap-2">
+            <BarChart3 className="h-6 w-6 text-black stroke-[2.5]" />
+            <span>Interactive Breakdown Visualizer</span>
           </h3>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Audit capital allocation, study expense distribution, and debt-to-equity ratios.
+          <p className="text-xs sm:text-sm font-bold text-black/70">
+            Capital allocation, study expense distribution, and debt-to-equity ratios.
           </p>
         </div>
 
         {/* Tab Selector */}
-        <div className="flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200/60 dark:border-slate-700 text-xs font-semibold">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab("cost")}
-            className={`px-3 py-1.5 rounded-lg transition-all ${
+            className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
               activeTab === "cost"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400"
+                ? "bg-black text-white shadow-[2px_2px_0px_#000000]"
+                : "bg-white text-black hover:bg-[#F3F4F6]"
             }`}
           >
             Study Budget
           </button>
           <button
             onClick={() => setActiveTab("funding")}
-            className={`px-3 py-1.5 rounded-lg transition-all ${
+            className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
               activeTab === "funding"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400"
+                ? "bg-black text-white shadow-[2px_2px_0px_#000000]"
+                : "bg-white text-black hover:bg-[#F3F4F6]"
             }`}
           >
             Funding Gap
           </button>
           <button
             onClick={() => setActiveTab("networth")}
-            className={`px-3 py-1.5 rounded-lg transition-all ${
+            className={`px-3 py-1.5 text-xs font-black uppercase border-2 border-black transition-all ${
               activeTab === "networth"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400"
+                ? "bg-black text-white shadow-[2px_2px_0px_#000000]"
+                : "bg-white text-black hover:bg-[#F3F4F6]"
             }`}
           >
             Net Worth & Assets
@@ -115,19 +119,19 @@ export function FinancialVisuals({
       {activeTab === "cost" && (
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <span className="text-xs uppercase font-bold text-slate-500">Total Program Cost</span>
-            <span className="text-2xl font-extrabold font-mono text-slate-900 dark:text-white">
+            <span className="text-xs uppercase font-black tracking-wider text-black/70">Total Program Cost</span>
+            <span className="text-2xl font-black font-mono text-black">
               {formatCurrency(totalCostInr)}
             </span>
           </div>
 
           {/* Stacked Multi-Segment Bar */}
-          <div className="h-4 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex shadow-inner">
+          <div className="h-6 w-full bg-white border-2 border-black overflow-hidden flex shadow-[3px_3px_0px_#000000]">
             {costItems.map((item, idx) => (
               <div
                 key={idx}
-                className={`${item.color} h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full hover:opacity-90 cursor-pointer`}
-                style={{ width: `${Math.max(item.percent, 2)}%` }}
+                className={`${item.color} h-full border-r-2 last:border-r-0 border-black transition-all duration-300 hover:opacity-90 cursor-pointer`}
+                style={{ width: `${Math.max(item.percent, 3)}%` }}
                 title={`${item.label}: ${formatCurrency(item.amount)} (${item.percent.toFixed(1)}%)`}
               />
             ))}
@@ -138,18 +142,18 @@ export function FinancialVisuals({
             {costItems.map((item, idx) => (
               <div
                 key={idx}
-                className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 space-y-1"
+                className={`p-4 border-2 border-black shadow-[3px_3px_0px_#000000] ${item.color} space-y-1`}
               >
                 <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${item.color} shrink-0`} />
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <div className="w-3 h-3 bg-black border border-black shrink-0" />
+                  <span className="text-xs font-black uppercase text-black">
                     {item.label}
                   </span>
                 </div>
-                <div className="text-lg font-bold font-mono text-slate-900 dark:text-white">
+                <div className="text-xl font-black font-mono text-black">
                   {formatCurrency(item.amount)}
                 </div>
-                <span className="text-[11px] text-slate-400 font-mono">
+                <span className="text-[11px] font-bold text-black/80 font-mono block">
                   {item.percent.toFixed(1)}% of total cost
                 </span>
               </div>
@@ -162,21 +166,21 @@ export function FinancialVisuals({
       {activeTab === "funding" && (
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <span className="text-xs uppercase font-bold text-slate-500">
+            <span className="text-xs uppercase font-black tracking-wider text-black/70">
               Net Financing Requirement
             </span>
-            <span className="text-2xl font-extrabold font-mono text-rose-600 dark:text-rose-400">
-              {formatCurrency(fundingGap)} Needed
+            <span className="text-2xl font-black font-mono text-black">
+              {formatCurrency(fundingGap)} Loan Needed
             </span>
           </div>
 
           {/* Stacked Multi-Segment Bar */}
-          <div className="h-4 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex shadow-inner">
+          <div className="h-6 w-full bg-white border-2 border-black overflow-hidden flex shadow-[3px_3px_0px_#000000]">
             {fundingItems.map((item, idx) => (
               <div
                 key={idx}
-                className={`${item.color} h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full hover:opacity-90 cursor-pointer`}
-                style={{ width: `${Math.max(item.percent, 2)}%` }}
+                className={`${item.color} h-full border-r-2 last:border-r-0 border-black transition-all duration-300 hover:opacity-90 cursor-pointer`}
+                style={{ width: `${Math.max(item.percent, 3)}%` }}
                 title={`${item.label}: ${formatCurrency(item.amount)} (${item.percent.toFixed(1)}%)`}
               />
             ))}
@@ -187,18 +191,18 @@ export function FinancialVisuals({
             {fundingItems.map((item, idx) => (
               <div
                 key={idx}
-                className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 space-y-1"
+                className={`p-4 border-2 border-black shadow-[3px_3px_0px_#000000] ${item.color} space-y-1`}
               >
                 <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${item.color} shrink-0`} />
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <div className="w-3 h-3 bg-black border border-black shrink-0" />
+                  <span className="text-xs font-black uppercase text-black">
                     {item.label}
                   </span>
                 </div>
-                <div className="text-lg font-bold font-mono text-slate-900 dark:text-white">
+                <div className="text-xl font-black font-mono text-black">
                   {formatCurrency(item.amount)}
                 </div>
-                <span className="text-[11px] text-slate-400 font-mono">
+                <span className="text-[11px] font-bold text-black/80 font-mono block">
                   {item.percent.toFixed(1)}% of budget
                 </span>
               </div>
@@ -210,46 +214,46 @@ export function FinancialVisuals({
       {/* Tab 3: Net Worth & Balance Sheet */}
       {activeTab === "networth" && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 space-y-2">
-            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-              <PiggyBank className="h-4 w-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">Candidate Net Worth</span>
+          <div className="p-4 bg-[#86EFAC] border-2 border-black shadow-[3px_3px_0px_#000000] space-y-2">
+            <div className="flex items-center gap-2 text-black">
+              <PiggyBank className="h-5 w-5 stroke-[2.5]" />
+              <span className="text-xs font-black uppercase tracking-wider">Candidate Net Worth</span>
             </div>
-            <div className="text-xl font-extrabold font-mono text-slate-900 dark:text-white">
+            <div className="text-2xl font-black font-mono text-black">
               {formatCurrency(netWorthInr)}
             </div>
-            <span className="text-[11px] text-slate-500 block">
-              Calculated as Total Family Assets less Existing Liabilities
+            <span className="text-[11px] font-bold text-black/80 block">
+              Total Family Assets less Existing Liabilities
             </span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 space-y-2">
-            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
-              <Building className="h-4 w-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">Eligible Collateral</span>
+          <div className="p-4 bg-[#BAE6FD] border-2 border-black shadow-[3px_3px_0px_#000000] space-y-2">
+            <div className="flex items-center gap-2 text-black">
+              <Building className="h-5 w-5 stroke-[2.5]" />
+              <span className="text-xs font-black uppercase tracking-wider">Eligible Collateral</span>
             </div>
-            <div className="text-xl font-extrabold font-mono text-slate-900 dark:text-white">
+            <div className="text-2xl font-black font-mono text-black">
               {formatCurrency(collateral)}
             </div>
-            <span className="text-[11px] text-slate-500 block">
+            <span className="text-[11px] font-bold text-black/80 block">
               Assessed value after bank haircut factors
             </span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 space-y-2">
-            <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400">
-              <Wallet className="h-4 w-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">Asset Cushion Ratio</span>
+          <div className="p-4 bg-[#FEF08A] border-2 border-black shadow-[3px_3px_0px_#000000] space-y-2">
+            <div className="flex items-center gap-2 text-black">
+              <Wallet className="h-5 w-5 stroke-[2.5]" />
+              <span className="text-xs font-black uppercase tracking-wider">Asset Cushion Ratio</span>
             </div>
-            <div className="text-xl font-extrabold font-mono text-slate-900 dark:text-white">
+            <div className="text-2xl font-black font-mono text-black">
               {totalCostInr > 0 ? `${((netWorthInr / totalCostInr) * 100).toFixed(0)}%` : "N/A"}
             </div>
-            <span className="text-[11px] text-slate-500 block">
+            <span className="text-[11px] font-bold text-black/80 block">
               Net worth coverage against total program budget
             </span>
           </div>
         </div>
       )}
-    </Card>
+    </div>
   );
 }
