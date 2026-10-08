@@ -20,6 +20,7 @@ import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
 import { Badge } from "./ui/Badge";
 import { formatCurrency, formatPercent } from "@/lib/utils";
+import { DemoScenarioSelector } from "./demo/DemoScenarioSelector";
 
 export function LandingPage() {
   // Interactive preview state for demoing the deterministic engine on the hero
@@ -226,6 +227,11 @@ export function LandingPage() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Reviewer Demo Fast-Track Scenarios */}
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <DemoScenarioSelector />
       </section>
 
       {/* 2. WHAT THE TOOL DOES: 4 Core Pillars */}
