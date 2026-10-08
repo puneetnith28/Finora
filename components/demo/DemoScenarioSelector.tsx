@@ -3,74 +3,64 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { 
-  Sparkles, 
-  CheckCircle2, 
-  ArrowRight, 
+  ArrowUpRight, 
   Loader2, 
-  GraduationCap, 
-  AlertTriangle, 
-  ShieldCheck 
+  Check, 
+  Sparkles
 } from "lucide-react";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
+import { NeoBadge, NeoButton, NeoCard } from "@/components/ui/NeoPrimitives";
 import { api } from "@/lib/api";
 
 export const SAMPLE_PERSONAS = [
   {
+    num: "01",
     id: "aarav",
-    name: "Aarav Mehta",
-    title: "US MS in CS (Tier-1 Prime Approval)",
-    country: "USA",
-    university: "Carnegie Mellon University",
-    profile: "CIBIL 780 • Co-borrower ₹1.6L/mo • ₹60L Property Collateral",
-    outcome: "Unanimous Tier-1 Bank Approval (9.2% Rate)",
-    outcomeVariant: "success" as const,
-    icon: ShieldCheck,
+    name: "AARAV MEHTA",
+    tag: "STEM USA",
+    badgeColor: "mint" as const,
+    university: "Carnegie Mellon University (MS in CS)",
+    profile: "CIBIL 780 • Co-borrower ₹1.6L/mo • ₹60L Property",
+    verdict: "UNANIMOUS TIER-1 BANK APPROVAL (9.2%)",
   },
   {
+    num: "02",
     id: "priya",
-    name: "Priya Sharma",
-    title: "UK MSc Finance (Unsecured Route)",
-    country: "UK",
-    university: "London School of Economics",
+    name: "PRIYA SHARMA",
+    tag: "UK UNSECURED",
+    badgeColor: "cyan" as const,
+    university: "London School of Economics (MSc Finance)",
     profile: "CIBIL 725 • Co-borrower ₹95k/mo • No Collateral",
-    outcome: "Eligible for Specialist Unsecured NBFCs",
-    outcomeVariant: "info" as const,
-    icon: GraduationCap,
+    verdict: "ELIGIBLE FOR SPECIALIST UNSECURED NBFCs",
   },
   {
+    num: "03",
     id: "rohan",
-    name: "Rohan Verma",
-    title: "Canada MBA (High FOIR Stress)",
-    country: "Canada",
-    university: "University of Toronto",
+    name: "ROHAN VERMA",
+    tag: "HIGH DEBT STRESS",
+    badgeColor: "pink" as const,
+    university: "University of Toronto (MBA)",
     profile: "CIBIL 660 • Co-borrower ₹55k/mo • ₹32k Existing EMIs",
-    outcome: "FOIR 78% Warning • Remedial Actions Triggered",
-    outcomeVariant: "danger" as const,
-    icon: AlertTriangle,
+    verdict: "FOIR 78% WARNING • REMEDIAL ACTION REQUIRED",
   },
   {
+    num: "04",
     id: "ananya",
-    name: "Ananya Iyer",
-    title: "Germany Robotics (Scholarship & Low Gap)",
-    country: "Germany",
-    university: "TU Munich",
-    profile: "€0 Tuition • €4k Scholarship • ₹15L Fixed Deposit Collateral",
-    outcome: "Low Loan Gap • High Readiness Score (94/100)",
-    outcomeVariant: "success" as const,
-    icon: Sparkles,
+    name: "ANANYA IYER",
+    tag: "GERMANY STEM",
+    badgeColor: "yellow" as const,
+    university: "TU Munich (Robotics Engineering)",
+    profile: "€0 Tuition • €4k Award • ₹15L Fixed Deposit",
+    verdict: "LOW BORROWING GAP • SCORE 94/100",
   },
   {
+    num: "05",
     id: "vikram",
-    name: "Vikram Patel",
-    title: "Australia Data Science (Discrepancy Flag)",
-    country: "Australia",
-    university: "University of Melbourne",
-    profile: "CIBIL 695 • Co-borrower ₹72k/mo • Unverified Collateral Title",
-    outcome: "Conditional Approval • Document Discrepancy",
-    outcomeVariant: "warning" as const,
-    icon: AlertTriangle,
+    name: "VIKRAM PATEL",
+    tag: "DISCREPANCY FLAG",
+    badgeColor: "white" as const,
+    university: "University of Melbourne (Data Science)",
+    profile: "CIBIL 695 • Co-borrower ₹72k/mo • Unverified Deed",
+    verdict: "CONDITIONAL • OCR DISCREPANCY DETECTED",
   },
 ];
 
@@ -88,7 +78,6 @@ export function DemoScenarioSelector() {
         router.push(`/assessment/${res.scenarios[0].assessment_id}/report`);
       }
     } catch {
-      // Fallback
       router.push("/assessment");
     } finally {
       setIsSeeding(false);
@@ -96,77 +85,86 @@ export function DemoScenarioSelector() {
   };
 
   return (
-    <Card className="p-6 sm:p-8 space-y-6 bg-gradient-to-br from-slate-900 to-emerald-950 text-white border-emerald-800 shadow-xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300 border border-emerald-400/30 mb-2">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Reviewer Fast-Track</span>
+    <div className="neo-box-lg bg-[#FAF8F5] p-6 sm:p-8 space-y-6">
+      {/* Header bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-black">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <NeoBadge variant="pink" rotate="left">
+              REVIEWER EVALUATION CASES
+            </NeoBadge>
           </div>
-          <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
-            Evaluator Demo Candidate Scenarios
-          </h3>
-          <p className="text-xs sm:text-sm text-emerald-100/80">
-            Instantly load calibrated student profiles representing diverse financial circumstances.
+          <h2 className="text-2xl sm:text-3xl font-black text-black uppercase tracking-tight">
+            CALIBRATED CANDIDATE PERSONAS
+          </h2>
+          <p className="text-xs sm:text-sm font-bold text-neutral-700">
+            Click any persona to seed the deterministic scenario and inspect the live audit trail.
           </p>
         </div>
 
-        <Button
-          variant="secondary"
+        <NeoButton
+          variant="primary"
           onClick={handleSeedAll}
           disabled={isSeeding}
-          className="shrink-0 bg-emerald-400 text-slate-950 hover:bg-emerald-300 font-bold"
-          leftIcon={
-            isSeeding ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Sparkles className="h-4 w-4" />
-            )
-          }
+          className="shrink-0"
         >
-          {isSeeding ? "Seeding Scenarios..." : "Seed All 5 Scenarios & View Report"}
-        </Button>
+          {isSeeding ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>SEEDING RECORDS...</span>
+            </>
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4" />
+              <span>SEED ALL 5 DEMO SCENARIOS</span>
+            </>
+          )}
+        </NeoButton>
       </div>
 
+      {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {SAMPLE_PERSONAS.map((p) => {
-          const Icon = p.icon;
-          return (
-            <div
-              key={p.id}
-              onClick={handleSeedAll}
-              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all cursor-pointer space-y-2 group"
-            >
-              <div className="flex items-center justify-between">
+        {SAMPLE_PERSONAS.map((p) => (
+          <div
+            key={p.id}
+            onClick={handleSeedAll}
+            className="neo-box-interactive p-4 bg-white flex flex-col justify-between space-y-3 cursor-pointer group"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-xl bg-white/10 text-emerald-300">
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <span className="font-bold text-sm text-white">{p.name}</span>
+                  <span className="font-mono font-black text-xs border-2 border-black bg-black text-[#FEF08A] px-1.5 py-0.5">
+                    {p.num}
+                  </span>
+                  <span className="font-black text-sm text-black">{p.name}</span>
                 </div>
-                <Badge variant={p.outcomeVariant} className="text-[10px]">
-                  {p.country}
-                </Badge>
+                <NeoBadge variant={p.badgeColor}>{p.tag}</NeoBadge>
               </div>
 
-              <div className="text-xs text-emerald-200 font-medium">{p.university}</div>
-              <p className="text-[11px] text-slate-300 leading-relaxed">{p.profile}</p>
-
-              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
-                <span className="text-emerald-300 font-medium truncate">{p.outcome}</span>
-                <ArrowRight className="h-3.5 w-3.5 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+              <div className="text-xs font-black text-black">
+                {p.university}
               </div>
+              <p className="text-[11px] font-bold text-neutral-600 mt-1">
+                {p.profile}
+              </p>
             </div>
-          );
-        })}
+
+            <div className="pt-2 border-t-2 border-black flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase text-black tracking-tight truncate pr-2">
+                {p.verdict}
+              </span>
+              <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </div>
+          </div>
+        ))}
       </div>
 
       {seededCount && (
-        <div className="flex items-center gap-2 text-xs text-emerald-300 pt-2">
-          <CheckCircle2 className="h-4 w-4" />
-          <span>{seededCount} demo scenarios seeded into database successfully.</span>
+        <div className="flex items-center gap-2 text-xs font-black bg-[#86EFAC] border-2 border-black p-2.5 shadow-[2px_2px_0px_0px_#000000]">
+          <Check className="h-4 w-4" />
+          <span>{seededCount} DEMO CANDIDATE SCENARIOS RECORDED IN DATABASE.</span>
         </div>
       )}
-    </Card>
+    </div>
   );
 }
