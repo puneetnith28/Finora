@@ -1,5 +1,20 @@
 """Pydantic schemas package."""
 
+from app.schemas.assessment import (
+    AssessmentBase,
+    AssessmentCreate,
+    AssessmentRead,
+    AssessmentResponse,
+    AssessmentResultBase,
+    AssessmentResultCreate,
+    AssessmentResultRead,
+    AssessmentResultResponse,
+    AssessmentRuleResultBase,
+    AssessmentRuleResultCreate,
+    AssessmentRuleResultRead,
+    AssessmentRuleResultResponse,
+    AssessmentUpdate,
+)
 from app.schemas.asset import AssetBase, AssetCreate, AssetResponse, AssetUpdate
 from app.schemas.collateral import (
     CollateralBase,
@@ -54,6 +69,19 @@ from app.schemas.study_plan import (
 )
 
 __all__ = [
+    "AssessmentBase",
+    "AssessmentCreate",
+    "AssessmentRead",
+    "AssessmentResponse",
+    "AssessmentResultBase",
+    "AssessmentResultCreate",
+    "AssessmentResultRead",
+    "AssessmentResultResponse",
+    "AssessmentRuleResultBase",
+    "AssessmentRuleResultCreate",
+    "AssessmentRuleResultRead",
+    "AssessmentRuleResultResponse",
+    "AssessmentUpdate",
     "AssetBase",
     "AssetCreate",
     "AssetResponse",

@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 
 if TYPE_CHECKING:
+    from app.models.assessment import Assessment
     from app.models.asset import Asset
     from app.models.collateral import Collateral
     from app.models.document import Document
@@ -60,6 +61,9 @@ class Student(Base):
     )
     documents: Mapped[list["Document"]] = relationship(
         "Document", back_populates="student", cascade="all, delete-orphan"
+    )
+    assessments: Mapped[list["Assessment"]] = relationship(
+        "Assessment", back_populates="student", cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:
