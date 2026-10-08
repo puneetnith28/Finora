@@ -5,16 +5,12 @@ import {
   Plus, 
   Trash2, 
   Sparkles, 
-  ArrowRight, 
+  ArrowUpRight, 
   ArrowLeft,
   PieChart,
-  CheckCircle2,
-  AlertCircle
+  Check
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Input, Select } from "@/components/ui/Input";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/Card";
-import { ProgressBar } from "@/components/ui/StatCard";
+import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
 import { 
   type FundingSourceItem, 
   FUNDING_SOURCE_LABELS, 
@@ -116,12 +112,12 @@ export function FundingForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Preset Quick Loader */}
-      <div className="bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5">
-        <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-            Self-Funding Scenarios
-          </span>
+      <div className="neo-box-yellow p-4 sm:p-5 space-y-3">
+        <div className="flex items-center gap-2">
+          <NeoBadge variant="white" className="border-2 border-black">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>SELF-FUNDING BENCHMARKS</span>
+          </NeoBadge>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {FUNDING_PRESETS.map((preset) => (
@@ -129,12 +125,12 @@ export function FundingForm({
               key={preset.id}
               type="button"
               onClick={() => applyPreset(preset.id)}
-              className="text-left p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-500 hover:shadow-sm transition-all text-xs group"
+              className="text-left p-3 border-2 border-black bg-white hover:bg-neutral-50 shadow-[2px_2px_0px_0px_#000000] transition-all cursor-pointer group"
             >
-              <div className="font-bold text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
+              <div className="font-black text-xs text-black uppercase">
                 {preset.name}
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+              <div className="text-[11px] font-bold text-neutral-600 truncate mt-0.5">
                 {preset.subtitle}
               </div>
             </button>
@@ -145,59 +141,68 @@ export function FundingForm({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Funding Sources List */}
         <div className="lg:col-span-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
+          <div className="neo-box-lg bg-white p-6 sm:p-8 space-y-6">
+            <div className="pb-4 border-b-2 border-black flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <CardTitle>3. Available Funding & Self-Contribution</CardTitle>
-                <CardDescription>
-                  List all non-loan financial sources (savings, family support, scholarships, fixed deposits).
-                </CardDescription>
+                <NeoBadge variant="mint" rotate="left">
+                  03 / LIQUID FUNDING
+                </NeoBadge>
+                <h2 className="text-2xl sm:text-3xl font-black text-black uppercase tracking-tight mt-1">
+                  AVAILABLE FUNDING & CONTRIBUTIONS
+                </h2>
               </div>
-              <Button
+              <NeoButton
                 type="button"
-                variant="outline"
+                variant="white"
                 size="sm"
                 onClick={addSource}
-                leftIcon={<Plus className="h-4 w-4" />}
               >
-                Add Source
-              </Button>
-            </CardHeader>
+                <Plus className="h-4 w-4" />
+                <span>ADD SOURCE</span>
+              </NeoButton>
+            </div>
 
-            <CardContent className="space-y-4">
+            <div className="space-y-4">
               {sources.map((source, index) => (
                 <div
                   key={index}
-                  className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 space-y-3 relative group"
+                  className="neo-box p-4 bg-[#FAF8F5] space-y-3 relative group"
                 >
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-800">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-                      Funding Item #{index + 1}
+                  <div className="flex items-center justify-between pb-2 border-b-2 border-black">
+                    <span className="text-xs font-black uppercase tracking-wider text-black">
+                      FUNDING ITEM #{index + 1}
                     </span>
                     {sources.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeSource(index)}
-                        className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 p-1 rounded transition-colors"
+                        className="border-2 border-black bg-[#F472B6] p-1 hover:bg-pink-400 shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
                         title="Remove source"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3.5 w-3.5 text-black" />
                       </button>
                     )}
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <Select
-                      label="Source Type"
-                      value={source.source_type}
-                      onChange={(e) => updateSource(index, "source_type", e.target.value)}
-                      options={Object.entries(FUNDING_SOURCE_LABELS).map(([val, lbl]) => ({
-                        value: val,
-                        label: lbl,
-                      }))}
-                    />
+                    <div className="space-y-1.5 text-left">
+                      <label className="text-xs font-black uppercase tracking-wider text-black">
+                        Source Type
+                      </label>
+                      <select
+                        value={source.source_type}
+                        onChange={(e) => updateSource(index, "source_type", e.target.value)}
+                        className="neo-input"
+                      >
+                        {Object.entries(FUNDING_SOURCE_LABELS).map(([val, lbl]) => (
+                          <option key={val} value={val}>
+                            {lbl}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                    <Input
+                    <NeoInput
                       label="Original Amount"
                       type="number"
                       min={0}
@@ -208,147 +213,153 @@ export function FundingForm({
                       required
                     />
 
-                    <Select
-                      label="Currency"
-                      value={source.currency}
-                      onChange={(e) => {
-                        const curr = e.target.value;
-                        const rate =
-                          curr === "USD" ? 84.5 : curr === "EUR" ? 92.0 : curr === "GBP" ? 107.5 : 1.0;
-                        updateSource(index, "currency", curr);
-                        updateSource(index, "exchange_rate_to_inr", rate);
-                      }}
-                      options={[
-                        { value: "INR", label: "INR (₹)" },
-                        { value: "USD", label: "USD ($)" },
-                        { value: "EUR", label: "EUR (€)" },
-                        { value: "GBP", label: "GBP (£)" },
-                        { value: "CAD", label: "CAD ($)" },
-                        { value: "AUD", label: "AUD ($)" },
-                      ]}
-                    />
+                    <div className="space-y-1.5 text-left">
+                      <label className="text-xs font-black uppercase tracking-wider text-black">
+                        Currency
+                      </label>
+                      <select
+                        value={source.currency}
+                        onChange={(e) => {
+                          const curr = e.target.value;
+                          const rate =
+                            curr === "USD" ? 84.5 : curr === "EUR" ? 92.0 : curr === "GBP" ? 107.5 : 1.0;
+                          updateSource(index, "currency", curr);
+                          updateSource(index, "exchange_rate_to_inr", rate);
+                        }}
+                        className="neo-input"
+                      >
+                        <option value="INR">INR (₹)</option>
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="CAD">CAD ($)</option>
+                        <option value="AUD">AUD ($)</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Input
-                      label="Description / Bank Name"
+                    <NeoInput
+                      label="Description / Bank"
                       placeholder="e.g. HDFC Savings A/c or Merit Scholarship"
                       value={source.description || ""}
                       onChange={(e) => updateSource(index, "description", e.target.value)}
                     />
 
                     <div className="flex items-end pb-1.5">
-                      <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
+                      <label className="flex items-center gap-2 text-xs font-black text-black uppercase cursor-pointer">
                         <input
                           type="checkbox"
                           checked={source.verified}
                           onChange={(e) => updateSource(index, "verified", e.target.checked)}
-                          className="h-4 w-4 rounded border-slate-300 text-[#0f382c] accent-[#0f382c]"
+                          className="h-4 w-4 border-2 border-black accent-black cursor-pointer"
                         />
-                        <span>Verified with Proof (e.g. Statement / Award)</span>
+                        <span>Verified with Proof</span>
                       </label>
                     </div>
                   </div>
 
-                  <div className="text-right text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400">
-                    INR Value: {formatCurrency(Number(source.amount_original || 0) * Number(source.exchange_rate_to_inr || 1.0))}
+                  <div className="text-right text-xs font-mono font-black text-black">
+                    INR VALUE: {formatCurrency(Number(source.amount_original || 0) * Number(source.exchange_rate_to_inr || 1.0))}
                   </div>
                 </div>
               ))}
 
-              {errors.form && <p className="text-xs text-rose-600">{errors.form}</p>}
-            </CardContent>
+              {errors.form && (
+                <p className="text-xs font-black text-red-600 bg-red-100 p-2 border-2 border-red-600">
+                  {errors.form}
+                </p>
+              )}
+            </div>
 
-            <CardFooter className="justify-between">
+            {/* Footer Buttons */}
+            <div className="pt-4 border-t-2 border-black flex items-center justify-between">
               {onBack ? (
-                <Button type="button" variant="outline" onClick={onBack} leftIcon={<ArrowLeft className="h-4 w-4" />}>
-                  Back to Study Plan
-                </Button>
+                <NeoButton type="button" variant="white" onClick={onBack}>
+                  <ArrowLeft className="h-4 w-4" />
+                  <span>BACK TO COSTS</span>
+                </NeoButton>
               ) : <div />}
 
-              <Button
+              <NeoButton
                 type="submit"
+                variant="primary"
                 size="lg"
-                isLoading={isLoading}
-                rightIcon={<ArrowRight className="h-4 w-4" />}
+                disabled={isLoading}
               >
-                Save Funding & Proceed to Financials
-              </Button>
-            </CardFooter>
-          </Card>
+                <span>{isLoading ? "SAVING..." : "SAVE & PROCEED TO FINANCIALS"}</span>
+                <ArrowUpRight className="h-4 w-4" />
+              </NeoButton>
+            </div>
+          </div>
         </div>
 
         {/* Right Column: Live Funding Gap Analysis */}
         <div className="lg:col-span-4">
-          <div className="sticky top-24 rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 p-6 shadow-xl space-y-6">
-            <div className="flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
-              <PieChart className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                Funding Gap Analysis
+          <div className="sticky top-24 neo-box-lg bg-white p-6 space-y-5">
+            <div className="flex items-center gap-2 pb-3 border-b-2 border-black">
+              <PieChart className="h-4 w-4 text-black" />
+              <h3 className="font-black text-black uppercase tracking-tight text-sm">
+                FUNDING GAP ANALYSIS
               </h3>
             </div>
 
-            <div className="space-y-3 text-xs">
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Total Program Cost</span>
-                <span className="font-mono font-bold text-slate-900 dark:text-white">
+            <div className="space-y-2.5 text-xs font-bold">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">Total Program Cost</span>
+                <span className="font-mono text-black">
                   {formatCurrency(totalCostInr)}
                 </span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Available Self-Funding</span>
-                <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">Available Self-Funding</span>
+                <span className="font-mono text-black">
                   {formatCurrency(totalAvailableFundingInr)}
                 </span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Self-Funded Ratio</span>
-                <span className="font-mono font-bold text-slate-900 dark:text-white">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">Self-Funded Ratio</span>
+                <span className="font-mono text-black">
                   {formatPercent(fundedRatio)}
                 </span>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <ProgressBar
-                value={fundedRatio}
-                label="Self-Funding Coverage"
-                showPercentage
-                indicatorClassName={
-                  fundedRatio >= 50
-                    ? "bg-emerald-600 dark:bg-emerald-400"
-                    : fundedRatio >= 20
-                    ? "bg-blue-600 dark:bg-blue-400"
-                    : "bg-amber-600 dark:bg-amber-400"
-                }
-              />
+            {/* Progress Box */}
+            <div className="space-y-1">
+              <div className="flex justify-between text-[11px] font-black uppercase">
+                <span>COVERAGE</span>
+                <span>{formatPercent(fundedRatio)}</span>
+              </div>
+              <div className="w-full h-3 border-2 border-black bg-white overflow-hidden">
+                <div
+                  className="h-full bg-[#86EFAC] border-r-2 border-black"
+                  style={{ width: `${Math.min(100, fundedRatio)}%` }}
+                />
+              </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f382c] text-white dark:bg-emerald-950 dark:border dark:border-emerald-800 space-y-1">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-300 block">
-                Net Required Education Loan (Gap)
+            {/* Required Gap Banner */}
+            <div className="neo-box-black p-4 space-y-1">
+              <span className="text-[10px] uppercase font-black tracking-wider text-[#FEF08A] block">
+                REQUIRED EDUCATION LOAN (GAP)
               </span>
-              <span className="text-2xl font-extrabold font-mono text-white dark:text-emerald-300">
+              <span className="text-2xl font-black font-mono text-white block">
                 {formatCurrency(fundingGapInr)}
               </span>
-              <span className="text-[11px] text-emerald-200/70 block pt-1">
+              <span className="text-[10px] font-bold text-neutral-300 block pt-1">
                 {fundingGapInr === 0
                   ? "Fully self-funded. No loan needed."
-                  : `Target loan amount to be evaluated across lenders.`}
+                  : "Target loan amount to be evaluated across lenders."}
               </span>
             </div>
 
-            <div className="text-xs text-slate-500 flex items-start gap-2">
-              {fundingGapInr > 0 ? (
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" />
-              ) : (
-                <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-              )}
-              <span>
-                {fundingGapInr > 0
-                  ? "This gap will be stress-tested for co-borrower FOIR and collateral requirements in the next steps."
-                  : "All program expenses are covered by verified self-funding."}
-              </span>
+            <div className="p-2.5 bg-[#FEF08A] border-2 border-black text-[11px] font-bold text-neutral-900 shadow-[2px_2px_0px_0px_#000000]">
+              <div className="flex items-center gap-1 font-black text-black uppercase mb-0.5">
+                <Check className="h-3 w-3 stroke-[3]" />
+                <span>UNDERWRITING NOTICE</span>
+              </div>
+              This gap will be stress-tested for co-borrower FOIR and collateral requirements.
             </div>
           </div>
         </div>
