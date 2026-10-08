@@ -10,6 +10,7 @@ from decimal import Decimal
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from app.db.seed_lenders import seed_demo_lenders
 from app.models.assessment import (
     Assessment,
     AssessmentResult,
@@ -228,6 +229,8 @@ def run_candidate_assessment(
 
     # 7. Evaluate Lenders
     active_lenders = db.query(Lender).filter(Lender.active.is_(True)).all()
+    if not active_lenders:
+        active_lenders = seed_demo_lenders(db)
     candidate_context = CandidateAssessmentContext(
         target_country=student.target_country or "USA",
         target_course_level="masters",

@@ -2,6 +2,11 @@
 
 from fastapi import APIRouter
 
+from app.routes.assessments import (
+    assessment_item_router,
+    student_assessment_router,
+    student_assessment_singular_router,
+)
 from app.routes.collaterals import (
     collateral_item_router,
     collaterals_item_plural_router,
@@ -31,6 +36,10 @@ api_router.include_router(student_collaterals_plural_router)
 api_router.include_router(collateral_item_router)
 api_router.include_router(collaterals_item_plural_router)
 api_router.include_router(lenders_router)
+api_router.include_router(student_assessment_router)
+api_router.include_router(student_assessment_singular_router)
+api_router.include_router(assessment_item_router)
+
 
 
 
