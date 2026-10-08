@@ -5,8 +5,6 @@ import { HeroSection } from "./landing/HeroSection";
 import { DemoScenarioSelector } from "./demo/DemoScenarioSelector";
 import { ReceiptSection } from "./landing/ReceiptSection";
 import { PillarsSection } from "./landing/PillarsSection";
-import { HowItWorksSection } from "./landing/HowItWorksSection";
-import { InspectTrailSection } from "./landing/InspectTrailSection";
 import { FaqSection } from "./landing/FaqSection";
 import { CtaBanner } from "./landing/CtaBanner";
 
@@ -29,16 +27,10 @@ export function LandingPage() {
       {/* 4. Three Context Pillars Section (Linen Paper Canvas #FFFDF9) */}
       <PillarsSection />
 
-      {/* 5. How It Works - 3 Step Flow (Mint Green Canvas #86EFAC) */}
-      <HowItWorksSection />
-
-      {/* 6. A Trail You Can Inspect - Live Dossier (Soft Pink Canvas #FECDD3) */}
-      <InspectTrailSection />
-
-      {/* 7. What To Know FAQ Accordions (Linen Canvas #FFFDF9) */}
+      {/* 5. What To Know FAQ Accordions (Linen Canvas #FFFDF9) */}
       <FaqSection />
 
-      {/* 8. Pitch Black Box Call To Action Banner (#000000) */}
+      {/* 6. Pitch Black Box Call To Action Banner (#000000) */}
       <CtaBanner />
     </div>
   );
