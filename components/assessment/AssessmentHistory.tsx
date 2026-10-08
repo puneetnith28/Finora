@@ -12,12 +12,16 @@ import {
 import { api } from "@/lib/api";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 import { FullAssessmentResult } from "@/types";
+import { useStudent } from "@/lib/context/StudentContext";
 
 interface AssessmentHistoryProps {
-  studentId: number;
+  studentId?: number;
 }
 
-export function AssessmentHistory({ studentId }: AssessmentHistoryProps) {
+export function AssessmentHistory({ studentId: propStudentId }: AssessmentHistoryProps) {
+  const { activeStudentId } = useStudent();
+  const studentId = propStudentId || activeStudentId || 1;
+
   const [history, setHistory] = useState<FullAssessmentResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

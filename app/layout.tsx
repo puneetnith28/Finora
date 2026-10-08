@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ToastProvider } from "@/components/ui/NeoToast";
+import { StudentProvider } from "@/lib/context/StudentContext";
 import { Suspense } from "react";
 
 const geistSans = Geist({
@@ -33,13 +34,15 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#FFFDF9] text-black">
-        <ToastProvider>
-          <Suspense fallback={<div className="h-16 bg-white border-b-2 border-black" />}>
-            <Navbar />
-          </Suspense>
-          <main className="flex-1 w-full">{children}</main>
-          <Footer />
-        </ToastProvider>
+        <StudentProvider>
+          <ToastProvider>
+            <Suspense fallback={<div className="h-16 bg-white border-b-2 border-black" />}>
+              <Navbar />
+            </Suspense>
+            <main className="flex-1 w-full">{children}</main>
+            <Footer />
+          </ToastProvider>
+        </StudentProvider>
       </body>
     </html>
   );

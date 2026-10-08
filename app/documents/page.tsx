@@ -20,8 +20,12 @@ import {
 import { api, ApiClientError } from "@/lib/api";
 import { DiscrepancyViewer } from "@/components/documents/DiscrepancyViewer";
 import { ReadinessItem, ReadinessReport } from "@/types";
+import { useStudent } from "@/lib/context/StudentContext";
 
 export default function DocumentsPage() {
+  const { activeStudentId = 1 } = useStudent();
+  const studentId = activeStudentId || 1;
+
   const [report, setReport] = useState<ReadinessReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -31,11 +35,9 @@ export default function DocumentsPage() {
   const [previewFileName, setPreviewFileName] = useState<string | null>(null);
   const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
-  const activeStudentId = 1;
-
   const loadReadiness = async () => {
     try {
-      const data = await api.get<ReadinessReport>(`/api/students/${activeStudentId}/documents/readiness`);
+      const data = await api.get<ReadinessReport>(`/api/students/${studentId}/documents/readiness`);
       setReport(data);
     } catch {
       // Keep existing report
@@ -45,7 +47,7 @@ export default function DocumentsPage() {
   useEffect(() => {
     let isMounted = true;
     api
-      .get<ReadinessReport>(`/api/students/${activeStudentId}/documents/readiness`)
+      .get<ReadinessReport>(`/api/students/${studentId}/documents/readiness`)
       .then((data) => {
         if (isMounted) {
           setReport(data);
@@ -78,7 +80,7 @@ export default function DocumentsPage() {
     formData.append("document_type", selectedDocType);
 
     try {
-      await api.upload(`/api/students/${activeStudentId}/documents`, formData);
+      await api.upload(`/api/students/${studentId}/documents`, formData);
       setAlert({ type: "success", message: `Document '${fileToUpload.name}' uploaded and validated.` });
       setFileToUpload(null);
       await loadReadiness();

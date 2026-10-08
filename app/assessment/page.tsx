@@ -21,6 +21,7 @@ import {
 import { api, ApiClientError } from "@/lib/api";
 import { Check, AlertTriangle, Loader2 } from "lucide-react";
 import { NeoBadge } from "@/components/ui/NeoPrimitives";
+import { useStudent } from "@/lib/context/StudentContext";
 
 function AssessmentContent() {
   const searchParams = useSearchParams();
@@ -28,9 +29,10 @@ function AssessmentContent() {
   const parsedStep = stepParam ? parseInt(stepParam, 10) : 1;
   const initialStep = !isNaN(parsedStep) && parsedStep >= 1 && parsedStep <= 6 ? parsedStep : 1;
 
+  const { activeStudentId, setActiveStudentId, setActiveStudentName } = useStudent();
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
   const [maxStepUnlocked, setMaxStepUnlocked] = useState<number>(6);
-  const [studentId, setStudentId] = useState<number | null>(null);
+  const [studentId, setStudentId] = useState<number | null>(activeStudentId || null);
 
   // Assessment State
   const [student, setStudent] = useState<StudentFormData | null>(null);
@@ -66,6 +68,8 @@ function AssessmentContent() {
         res = await api.post<{ id: number }>("/api/students", data);
       }
       setStudentId(res.id);
+      setActiveStudentId(res.id);
+      setActiveStudentName(data.full_name);
       showAlert("success", "Student profile recorded in database.");
       setCurrentStep(2);
       setMaxStepUnlocked((prev) => Math.max(prev, 2));
