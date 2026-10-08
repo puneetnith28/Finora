@@ -1,4 +1,5 @@
 """Tests for SQLite configuration and session management."""
+
 import pytest
 from sqlalchemy import ForeignKey, Integer, String, text
 from sqlalchemy.exc import IntegrityError
@@ -17,7 +18,9 @@ class ParentTestModel(Base):
 class ChildTestModel(Base):
     __tablename__ = "child_test_model"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    parent_id: Mapped[int] = mapped_column(Integer, ForeignKey("parent_test_model.id", ondelete="CASCADE"))
+    parent_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("parent_test_model.id", ondelete="CASCADE")
+    )
 
 
 def test_sqlite_foreign_keys_enabled():

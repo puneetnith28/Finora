@@ -1,4 +1,5 @@
 """Finora FastAPI Application Entrypoint."""
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI

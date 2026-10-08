@@ -1,4 +1,5 @@
 """Health check endpoints for service and database status."""
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import text
 from sqlalchemy.orm import Session

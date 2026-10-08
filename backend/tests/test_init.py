@@ -1,4 +1,5 @@
 """Basic test for FastAPI application initialization."""
+
 import pytest
 from httpx import ASGITransport, AsyncClient
 

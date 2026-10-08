@@ -28,6 +28,7 @@ class Settings(BaseSettings):
             return v
         elif isinstance(v, str) and v.startswith("["):
             import json
+
             try:
                 parsed = json.loads(v)
                 if isinstance(parsed, list):

@@ -1,4 +1,5 @@
 """Tests for CORS policy configuration."""
+
 import pytest
 from httpx import ASGITransport, AsyncClient
 
