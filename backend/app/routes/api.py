@@ -13,6 +13,7 @@ from app.routes.collaterals import (
     student_collateral_router,
     student_collaterals_plural_router,
 )
+from app.routes.documents import router as documents_router
 from app.routes.financial_profiles import (
     asset_item_router,
     financial_profile_router,
@@ -35,6 +36,7 @@ api_router.include_router(student_collateral_router)
 api_router.include_router(student_collaterals_plural_router)
 api_router.include_router(collateral_item_router)
 api_router.include_router(collaterals_item_plural_router)
+api_router.include_router(documents_router)
 api_router.include_router(lenders_router)
 api_router.include_router(student_assessment_router)
 api_router.include_router(student_assessment_singular_router)
