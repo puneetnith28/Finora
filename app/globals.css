@@ -237,3 +237,54 @@ body {
   backdrop-filter: blur(12px);
   border: 1px solid rgba(35, 52, 45, 0.8);
 }
+
+/* Print-Optimized Styles for Professional PDF & Physical Export */
+@media print {
+  @page {
+    margin: 1.2cm;
+    size: A4 portrait;
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt;
+  }
+
+  /* Hide UI elements during print */
+  nav,
+  footer,
+  header,
+  button,
+  .print\:hidden,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ensure cards and tables do not break across page boundaries */
+  .finora-card,
+  article,
+  section,
+  .card,
+  .stat-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  /* High-contrast backgrounds for headers */
+  .bg-\[\#0f382c\] {
+    background-color: #0f382c !important;
+    color: #ffffff !important;
+  }
+}
+
