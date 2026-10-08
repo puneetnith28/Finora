@@ -273,6 +273,12 @@ def run_candidate_assessment(
     db.add(assessment)
     db.flush()
 
+    # Link active student documents to this assessment
+    if student.documents:
+        for doc in student.documents:
+            if doc.assessment_id is None:
+                doc.assessment_id = assessment.id
+
     assessment_result = AssessmentResult(
         assessment_id=assessment.id,
         total_study_cost=fin_summary.study_cost.total_cost_inr,
