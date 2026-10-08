@@ -20,7 +20,9 @@ class DocumentType(enum.StrEnum):
     SALARY_SLIP = "salary_slip"
     BANK_STATEMENT = "bank_statement"
     ITR = "itr"
+    PROPERTY_DOCUMENT = "property_document"
     COLLATERAL_DEED = "collateral_deed"
+    SCHOLARSHIP_PROOF = "scholarship_proof"
     ACADEMIC_TRANSCRIPT = "academic_transcript"
     OTHER = "other"
 
