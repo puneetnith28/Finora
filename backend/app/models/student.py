@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 
 if TYPE_CHECKING:
+    from app.models.funding_source import FundingSource
     from app.models.study_plan import StudyPlan
 
 
@@ -36,6 +37,9 @@ class Student(Base):
     # Relationships
     study_plan: Mapped["StudyPlan | None"] = relationship(
         "StudyPlan", back_populates="student", cascade="all, delete-orphan", uselist=False
+    )
+    funding_sources: Mapped[list["FundingSource"]] = relationship(
+        "FundingSource", back_populates="student", cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:
