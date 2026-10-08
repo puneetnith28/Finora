@@ -13,6 +13,11 @@ from app.services.funding_calculator import (
     FundingItem,
     calculate_available_funding,
 )
+from app.services.funding_gap_calculator import (
+    FundingGapInput,
+    FundingGapResult,
+    calculate_funding_gap,
+)
 from app.services.study_cost_calculator import (
     StudyCostBreakdown,
     StudyCostResult,
@@ -24,10 +29,13 @@ __all__ = [
     "CurrencyConversionRequest",
     "CurrencyConversionResult",
     "FundingCalculationResult",
+    "FundingGapInput",
+    "FundingGapResult",
     "FundingItem",
     "StudyCostBreakdown",
     "StudyCostResult",
     "calculate_available_funding",
+    "calculate_funding_gap",
     "calculate_study_cost",
     "convert_currency",
     "get_default_exchange_rate",
