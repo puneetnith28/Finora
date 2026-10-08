@@ -1,5 +1,11 @@
 """Pydantic schemas package."""
 
+from app.schemas.financial_profile import (
+    FinancialProfileBase,
+    FinancialProfileCreate,
+    FinancialProfileResponse,
+    FinancialProfileUpdate,
+)
 from app.schemas.funding_source import (
     FundingSourceBase,
     FundingSourceCreate,
@@ -15,6 +21,10 @@ from app.schemas.study_plan import (
 )
 
 __all__ = [
+    "FinancialProfileBase",
+    "FinancialProfileCreate",
+    "FinancialProfileResponse",
+    "FinancialProfileUpdate",
     "FundingSourceBase",
     "FundingSourceCreate",
     "FundingSourceResponse",
