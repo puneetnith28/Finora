@@ -350,6 +350,9 @@ export default function DocumentsPage() {
           </div>
         )}
 
+        {/* OCR Discrepancy Audit Engine */}
+        <DiscrepancyViewer studentId={studentId} />
+
         {/* Modal Preview Drawer */}
         {previewDocId && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-none p-4">
