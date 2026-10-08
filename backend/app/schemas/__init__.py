@@ -1,5 +1,6 @@
 """Pydantic schemas package."""
 
+from app.schemas.asset import AssetBase, AssetCreate, AssetResponse, AssetUpdate
 from app.schemas.financial_profile import (
     FinancialProfileBase,
     FinancialProfileCreate,
@@ -21,6 +22,10 @@ from app.schemas.study_plan import (
 )
 
 __all__ = [
+    "AssetBase",
+    "AssetCreate",
+    "AssetResponse",
+    "AssetUpdate",
     "FinancialProfileBase",
     "FinancialProfileCreate",
     "FinancialProfileResponse",
