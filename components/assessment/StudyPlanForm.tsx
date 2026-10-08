@@ -4,16 +4,11 @@ import React, { useState } from "react";
 import { 
   Calculator, 
   Sparkles, 
-  ArrowRight, 
+  ArrowUpRight, 
   ArrowLeft,
-  Plane,
-  Shield,
-  FileCheck,
   Coins
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Input, Select } from "@/components/ui/Input";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/Card";
+import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
 import { 
   studyPlanSchema, 
   type StudyPlanFormData, 
@@ -118,12 +113,12 @@ export function StudyPlanForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Preset Quick Loaders */}
-      <div className="bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5">
-        <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-            Target Destination Budget Benchmarks
-          </span>
+      <div className="neo-box-yellow p-4 sm:p-5 space-y-3">
+        <div className="flex items-center gap-2">
+          <NeoBadge variant="white" className="border-2 border-black">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>DESTINATION BUDGET BENCHMARKS</span>
+          </NeoBadge>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {STUDY_PLAN_PRESETS.map((preset) => (
@@ -131,12 +126,12 @@ export function StudyPlanForm({
               key={preset.id}
               type="button"
               onClick={() => applyPreset(preset.id)}
-              className="text-left p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-500 hover:shadow-sm transition-all text-xs group"
+              className="text-left p-3 border-2 border-black bg-white hover:bg-neutral-50 shadow-[2px_2px_0px_0px_#000000] transition-all cursor-pointer group"
             >
-              <div className="font-bold text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
+              <div className="font-black text-xs text-black uppercase">
                 {preset.title}
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+              <div className="text-[11px] font-bold text-neutral-600 truncate mt-0.5">
                 {preset.subtitle}
               </div>
             </button>
@@ -147,183 +142,189 @@ export function StudyPlanForm({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Col: Inputs */}
         <div className="lg:col-span-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>2. Study Plan & Cost Parameters</CardTitle>
-              <CardDescription>
-                Define your international tuition, living costs, and duration. All amounts are automatically normalized to INR.
-              </CardDescription>
-            </CardHeader>
+          <div className="neo-box-lg bg-white p-6 sm:p-8 space-y-6">
+            <div className="pb-4 border-b-2 border-black flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <NeoBadge variant="cyan" rotate="left">
+                  02 / STUDY COSTS
+                </NeoBadge>
+                <h2 className="text-2xl sm:text-3xl font-black text-black uppercase tracking-tight mt-1">
+                  STUDY PLAN & COST PARAMETERS
+                </h2>
+              </div>
+              <span className="text-xs font-black uppercase text-neutral-600">
+                STEP 2 OF 6
+              </span>
+            </div>
 
-            <CardContent className="space-y-6">
-              {/* Currency & Exchange Rate Bar */}
-              <div className="p-4 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <Select
-                  label="Program Currency"
+            {/* Currency & Exchange Rate Bar */}
+            <div className="neo-box-cyan p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-1.5 text-left">
+                <label className="text-xs font-black uppercase tracking-wider text-black">
+                  Program Currency
+                </label>
+                <select
                   value={formData.currency}
                   onChange={(e) => handleCurrencyChange(e.target.value)}
-                  options={[
-                    { value: "USD", label: "USD ($) — United States" },
-                    { value: "EUR", label: "EUR (€) — Eurozone / Germany" },
-                    { value: "GBP", label: "GBP (£) — United Kingdom" },
-                    { value: "CAD", label: "CAD ($) — Canada" },
-                    { value: "AUD", label: "AUD ($) — Australia" },
-                    { value: "SGD", label: "SGD ($) — Singapore" },
-                    { value: "INR", label: "INR (₹) — India" },
-                  ]}
-                />
-
-                <Input
-                  label="Exchange Rate to INR"
-                  type="number"
-                  step="0.01"
-                  value={formData.exchange_rate_to_inr}
-                  onChange={(e) => handleChange("exchange_rate_to_inr", parseFloat(e.target.value) || 0)}
-                  error={errors.exchange_rate_to_inr}
-                  leftIcon={<Coins className="h-4 w-4" />}
-                />
-
-                <Input
-                  label="Duration (Months)"
-                  type="number"
-                  min={1}
-                  max={72}
-                  value={formData.duration_months}
-                  onChange={(e) => handleChange("duration_months", parseInt(e.target.value, 10) || 12)}
-                  error={errors.duration_months}
-                  helperText={`${((formData.duration_months || 24) / 12).toFixed(1)} academic years`}
-                />
+                  className="neo-input"
+                >
+                  <option value="USD">USD ($) — United States</option>
+                  <option value="EUR">EUR (€) — Germany / Eurozone</option>
+                  <option value="GBP">GBP (£) — United Kingdom</option>
+                  <option value="CAD">CAD ($) — Canada</option>
+                  <option value="AUD">AUD ($) — Australia</option>
+                  <option value="SGD">SGD ($) — Singapore</option>
+                  <option value="INR">INR (₹) — India</option>
+                </select>
               </div>
 
-              {/* Expense Breakdown */}
-              <div className="space-y-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Direct Program Expenses ({formData.currency})
-                </h4>
+              <NeoInput
+                label="Exchange Rate to INR"
+                type="number"
+                step="0.01"
+                value={formData.exchange_rate_to_inr}
+                onChange={(e) => handleChange("exchange_rate_to_inr", parseFloat(e.target.value) || 0)}
+                error={errors.exchange_rate_to_inr}
+              />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label={`Tuition Fees (${formData.currency})`}
-                    type="number"
-                    min={0}
-                    value={formData.tuition_fees_original}
-                    onChange={(e) => handleChange("tuition_fees_original", parseFloat(e.target.value) || 0)}
-                    error={errors.tuition_fees_original}
-                    required
-                  />
+              <NeoInput
+                label="Duration (Months)"
+                type="number"
+                min={1}
+                max={72}
+                value={formData.duration_months}
+                onChange={(e) => handleChange("duration_months", parseInt(e.target.value, 10) || 12)}
+                error={errors.duration_months}
+              />
+            </div>
 
-                  <Input
-                    label={`Living & Accommodation (${formData.currency})`}
-                    type="number"
-                    min={0}
-                    value={formData.living_expenses_original}
-                    onChange={(e) => handleChange("living_expenses_original", parseFloat(e.target.value) || 0)}
-                    error={errors.living_expenses_original}
-                    required
-                  />
+            {/* Expense Breakdown */}
+            <div className="space-y-4 pt-2">
+              <h4 className="text-xs font-black uppercase tracking-wider text-neutral-500">
+                DIRECT EXPENSES ({formData.currency})
+              </h4>
 
-                  <Input
-                    label={`Travel & Airfare (${formData.currency})`}
-                    type="number"
-                    min={0}
-                    value={formData.travel_expenses_original}
-                    onChange={(e) => handleChange("travel_expenses_original", parseFloat(e.target.value) || 0)}
-                    error={errors.travel_expenses_original}
-                    leftIcon={<Plane className="h-4 w-4" />}
-                  />
-
-                  <Input
-                    label={`Health Insurance (${formData.currency})`}
-                    type="number"
-                    min={0}
-                    value={formData.insurance_original}
-                    onChange={(e) => handleChange("insurance_original", parseFloat(e.target.value) || 0)}
-                    error={errors.insurance_original}
-                    leftIcon={<Shield className="h-4 w-4" />}
-                  />
-
-                  <Input
-                    label={`Visa & SEVIS Fees (${formData.currency})`}
-                    type="number"
-                    min={0}
-                    value={formData.visa_fees_original}
-                    onChange={(e) => handleChange("visa_fees_original", parseFloat(e.target.value) || 0)}
-                    error={errors.visa_fees_original}
-                    leftIcon={<FileCheck className="h-4 w-4" />}
-                  />
-
-                  <Input
-                    label={`Books & Tech Misc (${formData.currency})`}
-                    type="number"
-                    min={0}
-                    value={formData.miscellaneous_original}
-                    onChange={(e) => handleChange("miscellaneous_original", parseFloat(e.target.value) || 0)}
-                    error={errors.miscellaneous_original}
-                  />
-                </div>
-              </div>
-
-              {/* Annual Inflation Buffer */}
-              <div className="pt-2">
-                <Input
-                  label="Annual Living & Tuition Inflation Buffer (%)"
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <NeoInput
+                  label={`Tuition Fees (${formData.currency})`}
                   type="number"
-                  step="0.5"
                   min={0}
-                  max={25}
-                  value={formData.inflation_rate_percent}
-                  onChange={(e) => handleChange("inflation_rate_percent", parseFloat(e.target.value) || 0)}
-                  error={errors.inflation_rate_percent}
-                  helperText="Recommended 3-5% for multi-year programs to protect against foreign cost-of-living rises."
+                  value={formData.tuition_fees_original}
+                  onChange={(e) => handleChange("tuition_fees_original", parseFloat(e.target.value) || 0)}
+                  error={errors.tuition_fees_original}
+                  required
+                />
+
+                <NeoInput
+                  label={`Living & Accommodation (${formData.currency})`}
+                  type="number"
+                  min={0}
+                  value={formData.living_expenses_original}
+                  onChange={(e) => handleChange("living_expenses_original", parseFloat(e.target.value) || 0)}
+                  error={errors.living_expenses_original}
+                  required
+                />
+
+                <NeoInput
+                  label={`Travel & Airfare (${formData.currency})`}
+                  type="number"
+                  min={0}
+                  value={formData.travel_expenses_original}
+                  onChange={(e) => handleChange("travel_expenses_original", parseFloat(e.target.value) || 0)}
+                  error={errors.travel_expenses_original}
+                />
+
+                <NeoInput
+                  label={`Health Insurance (${formData.currency})`}
+                  type="number"
+                  min={0}
+                  value={formData.insurance_original}
+                  onChange={(e) => handleChange("insurance_original", parseFloat(e.target.value) || 0)}
+                  error={errors.insurance_original}
+                />
+
+                <NeoInput
+                  label={`Visa & SEVIS Fees (${formData.currency})`}
+                  type="number"
+                  min={0}
+                  value={formData.visa_fees_original}
+                  onChange={(e) => handleChange("visa_fees_original", parseFloat(e.target.value) || 0)}
+                  error={errors.visa_fees_original}
+                />
+
+                <NeoInput
+                  label={`Books & Misc (${formData.currency})`}
+                  type="number"
+                  min={0}
+                  value={formData.miscellaneous_original}
+                  onChange={(e) => handleChange("miscellaneous_original", parseFloat(e.target.value) || 0)}
+                  error={errors.miscellaneous_original}
                 />
               </div>
-            </CardContent>
+            </div>
 
-            <CardFooter className="justify-between">
+            {/* Annual Inflation Buffer */}
+            <div className="pt-2">
+              <NeoInput
+                label="Annual Inflation Buffer (%)"
+                type="number"
+                step="0.5"
+                min={0}
+                max={25}
+                value={formData.inflation_rate_percent}
+                onChange={(e) => handleChange("inflation_rate_percent", parseFloat(e.target.value) || 0)}
+                error={errors.inflation_rate_percent}
+              />
+            </div>
+
+            {/* Footer Buttons */}
+            <div className="pt-4 border-t-2 border-black flex items-center justify-between">
               {onBack ? (
-                <Button type="button" variant="outline" onClick={onBack} leftIcon={<ArrowLeft className="h-4 w-4" />}>
-                  Back to Profile
-                </Button>
+                <NeoButton type="button" variant="white" onClick={onBack}>
+                  <ArrowLeft className="h-4 w-4" />
+                  <span>BACK TO PROFILE</span>
+                </NeoButton>
               ) : <div />}
 
-              <Button
+              <NeoButton
                 type="submit"
+                variant="primary"
                 size="lg"
-                isLoading={isLoading}
-                rightIcon={<ArrowRight className="h-4 w-4" />}
+                disabled={isLoading}
               >
-                Save Costs & Proceed to Funding
-              </Button>
-            </CardFooter>
-          </Card>
+                <span>{isLoading ? "SAVING..." : "SAVE & PROCEED TO FUNDING"}</span>
+                <ArrowUpRight className="h-4 w-4" />
+              </NeoButton>
+            </div>
+          </div>
         </div>
 
         {/* Right Col: Live Cost Summary Receipt */}
         <div className="lg:col-span-4">
-          <div className="sticky top-24 rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 p-6 shadow-xl space-y-6">
-            <div className="flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
-              <Calculator className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                Live Study Cost Receipt
+          <div className="sticky top-24 neo-box-lg bg-white p-6 space-y-5">
+            <div className="flex items-center gap-2 pb-3 border-b-2 border-black">
+              <Calculator className="h-4 w-4 text-black" />
+              <h3 className="font-black text-black uppercase tracking-tight text-sm">
+                LIVE STUDY COST RECEIPT
               </h3>
             </div>
 
-            <div className="space-y-3 text-xs">
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Tuition</span>
-                <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
+            <div className="space-y-2.5 text-xs font-bold">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">Tuition</span>
+                <span className="font-mono text-black">
                   {formData.currency} {Number(formData.tuition_fees_original || 0).toLocaleString()}
                 </span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Living Expenses</span>
-                <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">Living Expenses</span>
+                <span className="font-mono text-black">
                   {formData.currency} {Number(formData.living_expenses_original || 0).toLocaleString()}
                 </span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Travel, Visa & Misc</span>
-                <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">Travel, Visa & Misc</span>
+                <span className="font-mono text-black">
                   {formData.currency} {(
                     Number(formData.travel_expenses_original || 0) +
                     Number(formData.insurance_original || 0) +
@@ -332,23 +333,23 @@ export function StudyPlanForm({
                   ).toLocaleString()}
                 </span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">FX Conversion Rate</span>
-                <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">FX Conversion Rate</span>
+                <span className="font-mono text-black">
                   1 {formData.currency} = ₹{formData.exchange_rate_to_inr}
                 </span>
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0f382c] text-white dark:bg-emerald-950 dark:border dark:border-emerald-800 space-y-1">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-300 block">
-                Total Normalized Budget (INR)
+            <div className="neo-box-black p-4 space-y-1">
+              <span className="text-[10px] uppercase font-black tracking-wider text-[#FEF08A] block">
+                TOTAL NORMALIZED BUDGET (INR)
               </span>
-              <span className="text-2xl font-extrabold font-mono text-white dark:text-emerald-300">
+              <span className="text-2xl font-black font-mono text-white block">
                 {formatCurrency(totalInr)}
               </span>
-              <span className="text-[11px] text-emerald-200/70 block pt-1">
-                Includes {formData.duration_months} mo duration & {formData.inflation_rate_percent}% inflation buffer
+              <span className="text-[10px] font-bold text-neutral-300 block pt-1">
+                Includes {formData.duration_months} mo duration & {formData.inflation_rate_percent}% inflation
               </span>
             </div>
           </div>
