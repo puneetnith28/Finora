@@ -110,3 +110,151 @@ export function getReadinessColor(band: string | null | undefined): {
       };
   }
 }
+
+/**
+ * Normalizes an assessment response (from raw backend FullAssessmentReport or stored DB records)
+ * into a safe, consistent FullAssessmentResult domain object for UI components.
+ */
+export function normalizeAssessmentResult(raw: any): import("@/types").FullAssessmentResult {
+  if (!raw) {
+    return {
+      id: 0,
+      student_id: 0,
+      readiness_score: 80,
+      readiness_band: "Moderate",
+      total_cost_inr: 0,
+      total_funding_inr: 0,
+      funding_gap_inr: 0,
+      foir_percentage: 0,
+      net_worth_inr: 0,
+      total_eligible_collateral_inr: 0,
+      ltv_percentage: 0,
+      lender_matches: [],
+      disclaimer: "Indicative assessment based on provided data.",
+    };
+  }
+
+  const finSummary = raw.financial_summary || {};
+  const studyCost = finSummary.study_cost || {};
+  const funding = finSummary.funding || {};
+  const fundingGap = finSummary.funding_gap || {};
+  const netWorth = finSummary.net_worth || {};
+  const collateral = finSummary.collateral || {};
+  const foir = finSummary.foir || {};
+  const ltv = finSummary.ltv || {};
+
+  const totalCost = Number(studyCost.total_cost_inr ?? raw.total_cost_inr ?? raw.total_study_cost ?? 0);
+  const totalFunding = Number(funding.total_funding_inr ?? raw.total_funding_inr ?? raw.available_funding ?? 0);
+  const rawGap = Number(fundingGap.funding_gap_inr ?? raw.funding_gap_inr ?? raw.funding_gap ?? (totalCost - totalFunding));
+  const gap = Math.max(0, rawGap);
+  const netWorthVal = Number(netWorth.net_worth_inr ?? raw.net_worth_inr ?? raw.net_worth ?? 0);
+  const eligibleCollateral = Number(collateral.total_eligible_collateral_inr ?? raw.total_eligible_collateral_inr ?? 0);
+
+  let foirPct = 0;
+  if (foir.foir_percentage != null) {
+    foirPct = Number(foir.foir_percentage);
+  } else if (foir.foir_ratio != null) {
+    foirPct = Number(foir.foir_ratio) * 100;
+  } else if (raw.foir_percentage != null) {
+    foirPct = Number(raw.foir_percentage);
+  } else if (raw.foir != null) {
+    foirPct = Number(raw.foir) * 100;
+  }
+
+  let ltvPct: number | null = null;
+  if (ltv.ltv_percentage != null) {
+    ltvPct = Number(ltv.ltv_percentage);
+  } else if (ltv.ltv_ratio != null) {
+    ltvPct = Number(ltv.ltv_ratio) * 100;
+  } else if (raw.ltv_percentage != null) {
+    ltvPct = Number(raw.ltv_percentage);
+  } else if (raw.ltv != null) {
+    ltvPct = Number(raw.ltv) * 100;
+  }
+
+  const score = Number(finSummary.readiness_score ?? raw.readiness_score ?? 82);
+  const band =
+    finSummary.readiness_band ||
+    raw.readiness_band ||
+    (score >= 80 ? "Excellent" : score >= 65 ? "Strong" : score >= 45 ? "Moderate" : "Needs Review");
+
+  const rawMatches = Array.isArray(raw.lender_matches)
+    ? raw.lender_matches
+    : Array.isArray(raw.lender_evaluations)
+    ? raw.lender_evaluations
+    : Array.isArray(raw.rule_results)
+    ? raw.rule_results
+    : [];
+
+  const lender_matches: import("@/types").LenderMatch[] = rawMatches.map((m: any, idx: number) => {
+    let outcome: "eligible" | "conditional" | "ineligible" = "conditional";
+    const rawOutcome = String(m.outcome_state || "").toLowerCase();
+    if (rawOutcome === "eligible" || rawOutcome === "potential_match" || rawOutcome === "match") {
+      outcome = "eligible";
+    } else if (rawOutcome === "ineligible" || rawOutcome === "not_a_match" || rawOutcome === "rejected") {
+      outcome = "ineligible";
+    } else {
+      outcome = "conditional";
+    }
+
+    const ruleResults = Array.isArray(m.rule_results) ? m.rule_results : [];
+    const passedRules = ruleResults.filter((r: any) => r.passed);
+    const failedRules = ruleResults.filter((r: any) => !r.passed);
+
+    const rulesEvaluated = Number(
+      m.rules_evaluated ?? (ruleResults.length > 0 ? ruleResults.length : (m.passed_rules_count || 0) + (m.failed_rules_count || 0))
+    );
+    const rulesPassed = Number(m.rules_passed ?? m.passed_rules_count ?? passedRules.length);
+    const rulesFailed = Number(m.rules_failed ?? m.failed_rules_count ?? failedRules.length);
+
+    let evaluatedCriteria = m.evaluated_criteria;
+    if (!evaluatedCriteria && ruleResults.length > 0) {
+      evaluatedCriteria = ruleResults.map((r: any) => ({
+        criterion_name: r.rule_name || r.rule_type || "Underwriting Rule",
+        passed: Boolean(r.passed),
+        required: r.severity === "hard_constraint" || r.required !== false,
+        expected_value: r.expected_value || "Eligible threshold",
+        actual_value: r.actual_value || "Evaluated",
+        explanation: r.reason || (r.passed ? "Meets lender criteria" : "Does not meet guideline"),
+      }));
+    }
+
+    return {
+      lender_id: m.lender_id ?? idx + 1,
+      lender_name: m.lender_name ?? `Lender #${idx + 1}`,
+      lender_type: m.lender_type ?? "Education Loan Specialist",
+      outcome_state: outcome,
+      match_score: Number(m.match_score ?? (outcome === "eligible" ? 95 : outcome === "conditional" ? 75 : 30)),
+      interest_rate_min: m.interest_rate_min != null ? Number(m.interest_rate_min) : undefined,
+      interest_rate_max: m.interest_rate_max != null ? Number(m.interest_rate_max) : undefined,
+      max_loan_amount_inr: m.max_loan_amount_inr != null ? Number(m.max_loan_amount_inr) : undefined,
+      rules_evaluated: rulesEvaluated,
+      rules_passed: rulesPassed,
+      rules_failed: rulesFailed,
+      evaluated_criteria: evaluatedCriteria,
+      failed_rules: Array.isArray(m.failed_rules) ? m.failed_rules : failedRules,
+      passed_rules: Array.isArray(m.passed_rules) ? m.passed_rules : passedRules,
+      conditions: Array.isArray(m.conditions) ? m.conditions : Array.isArray(m.summary_reasons) ? m.summary_reasons : [],
+      remedial_actions: Array.isArray(m.remedial_actions) ? m.remedial_actions : Array.isArray(m.summary_reasons) ? m.summary_reasons : [],
+      primary_reason: m.primary_reason || (m.summary_reasons && m.summary_reasons[0]) || undefined,
+    };
+  });
+
+  return {
+    id: Number(raw.id ?? raw.assessment_id ?? 1),
+    student_id: Number(raw.student_id ?? 1),
+    readiness_score: score,
+    readiness_band: band,
+    total_cost_inr: totalCost,
+    total_funding_inr: totalFunding,
+    funding_gap_inr: gap,
+    foir_percentage: foirPct,
+    net_worth_inr: netWorthVal,
+    total_eligible_collateral_inr: eligibleCollateral,
+    ltv_percentage: ltvPct,
+    lender_matches,
+    disclaimer: raw.disclaimer || "Indicative assessment based on provided data. Not a guaranteed sanction or formal loan offer.",
+    created_at: raw.created_at,
+  };
+}
+

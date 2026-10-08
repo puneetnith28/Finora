@@ -19,6 +19,7 @@ import {
   type CollateralItem 
 } from "@/types";
 import { api, ApiClientError } from "@/lib/api";
+import { normalizeAssessmentResult } from "@/lib/utils";
 import { Check, AlertTriangle, Loader2 } from "lucide-react";
 import { NeoBadge } from "@/components/ui/NeoPrimitives";
 import { useStudent } from "@/lib/context/StudentContext";
@@ -264,7 +265,8 @@ function AssessmentContent() {
         `/api/students/${studentId}/assessments`,
         {}
       );
-      setAssessmentResult(res);
+      const normalized = normalizeAssessmentResult(res);
+      setAssessmentResult(normalized);
       showAlert("success", "Deterministic assessment executed with full audit trail.");
     } catch (err: unknown) {
       const message = err instanceof ApiClientError ? err.message : "Failed to execute assessment.";

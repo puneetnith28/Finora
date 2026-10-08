@@ -19,7 +19,7 @@ import { ReadinessScoreCard } from "@/components/assessment/ReadinessScoreCard";
 import { FinancialVisuals } from "@/components/assessment/FinancialVisuals";
 import { ExplainableLenderCard } from "@/components/assessment/ExplainableLenderCard";
 import { api, ApiClientError } from "@/lib/api";
-import { formatCurrency, formatPercent } from "@/lib/utils";
+import { formatCurrency, formatPercent, normalizeAssessmentResult } from "@/lib/utils";
 import { FullAssessmentResult } from "@/types";
 
 interface ReportPageProps {
@@ -52,7 +52,7 @@ function ReportContent({ params }: ReportPageProps) {
             throw new Error("No assessment records found.");
           }
         }
-        setAssessment(data);
+        setAssessment(normalizeAssessmentResult(data));
       } catch (err: unknown) {
         const msg =
           err instanceof ApiClientError

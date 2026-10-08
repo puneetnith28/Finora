@@ -9,7 +9,7 @@ import {
   Filter,
   ArrowRight
 } from "lucide-react";
-import { formatCurrency, formatPercent } from "@/lib/utils";
+import { formatCurrency, formatPercent, normalizeAssessmentResult } from "@/lib/utils";
 import { ExplainableLenderCard } from "@/components/assessment/ExplainableLenderCard";
 import { ReadinessScoreCard } from "@/components/assessment/ReadinessScoreCard";
 import { FinancialVisuals } from "@/components/assessment/FinancialVisuals";
@@ -20,23 +20,27 @@ export interface AssessmentResultsProps {
   onReset: () => void;
 }
 
-export function AssessmentResults({ assessment, onReset }: AssessmentResultsProps) {
+export function AssessmentResults({ assessment: rawAssessment, onReset }: AssessmentResultsProps) {
+  const assessment = normalizeAssessmentResult(rawAssessment);
   const [filter, setFilter] = useState<"all" | "eligible" | "conditional" | "ineligible">("all");
 
-  const filteredMatches = assessment.lender_matches.filter((m) => {
+  const matches = Array.isArray(assessment?.lender_matches) ? assessment.lender_matches : [];
+
+  const filteredMatches = matches.filter((m) => {
     if (filter === "all") return true;
     return m.outcome_state === filter;
   });
 
-  const eligibleCount = assessment.lender_matches.filter(
+  const eligibleCount = matches.filter(
     (m) => m.outcome_state === "eligible"
   ).length;
-  const conditionalCount = assessment.lender_matches.filter(
+  const conditionalCount = matches.filter(
     (m) => m.outcome_state === "conditional"
   ).length;
-  const ineligibleCount = assessment.lender_matches.filter(
+  const ineligibleCount = matches.filter(
     (m) => m.outcome_state === "ineligible"
   ).length;
+
 
   return (
     <div className="space-y-10 pb-16">
@@ -181,7 +185,7 @@ export function AssessmentResults({ assessment, onReset }: AssessmentResultsProp
                   : "bg-white text-black hover:bg-[#F3F4F6]"
               }`}
             >
-              All ({assessment.lender_matches.length})
+              All ({matches.length})
             </button>
             <button
               onClick={() => setFilter("eligible")}
