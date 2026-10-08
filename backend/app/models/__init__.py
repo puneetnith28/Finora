@@ -2,6 +2,7 @@
 
 from app.db.base import Base
 from app.models.asset import Asset, AssetType
+from app.models.collateral import Collateral, CollateralType, OwnershipStatus
 from app.models.financial_profile import FinancialProfile
 from app.models.funding_source import FundingSource, FundingSourceType
 from app.models.liability import Liability, LiabilityType
@@ -12,11 +13,14 @@ __all__ = [
     "Asset",
     "AssetType",
     "Base",
+    "Collateral",
+    "CollateralType",
     "FinancialProfile",
     "FundingSource",
     "FundingSourceType",
     "Liability",
     "LiabilityType",
+    "OwnershipStatus",
     "Student",
     "StudyPlan",
 ]
