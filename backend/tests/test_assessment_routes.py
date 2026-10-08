@@ -116,3 +116,22 @@ def test_assessment_api_execution_and_retrieval(client: TestClient) -> None:
     res_get = client.get(f"/api/assessments/{assessment_id}")
     assert res_get.status_code == 200
     assert res_get.json()["id"] == assessment_id
+
+    # 9. Run a second assessment with an override loan amount to test comparison
+    res_run2 = client.post(
+        f"/api/students/{student_id}/assessments",
+        json={"requested_loan_amount_inr": "2500000.00"},
+    )
+    assert res_run2.status_code == 201
+    assessment_id_2 = res_run2.json()["assessment_id"]
+
+    # 10. Compare two assessments
+    res_cmp = client.get(f"/api/assessments/compare?base_id={assessment_id}&target_id={assessment_id_2}")
+    assert res_cmp.status_code == 200
+    cmp_data = res_cmp.json()
+    assert cmp_data["baseline_assessment_id"] == assessment_id
+    assert cmp_data["target_assessment_id"] == assessment_id_2
+    assert "readiness_score" in cmp_data
+    assert "foir" in cmp_data
+    assert "summary_insight" in cmp_data
+

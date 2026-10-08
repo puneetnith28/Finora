@@ -105,3 +105,22 @@ class AssessmentResponse(AssessmentBase):
 AssessmentRead = AssessmentResponse
 AssessmentResultRead = AssessmentResultResponse
 AssessmentRuleResultRead = AssessmentRuleResultResponse
+
+
+class MetricDelta(BaseModel):
+    baseline: Decimal | None = None
+    target: Decimal | None = None
+    delta: Decimal | None = None
+    percentage_change: float | None = None
+    improved: bool = False
+
+
+class AssessmentComparisonResponse(BaseModel):
+    baseline_assessment_id: int
+    target_assessment_id: int
+    readiness_score: MetricDelta
+    foir: MetricDelta
+    funding_gap: MetricDelta
+    total_study_cost: MetricDelta
+    summary_insight: str
+
