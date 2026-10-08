@@ -58,6 +58,42 @@ def list_student_documents(
 
 
 @router.get(
+    "/students/{student_id}/documents/readiness",
+    summary="Evaluate document readiness against candidate profile and assessment context",
+)
+def get_student_document_readiness(
+    student_id: int,
+    db: Session = Depends(get_db),
+) -> dict:
+    """Evaluate document readiness rules and return compliance checklist."""
+    from app.services.document_readiness import evaluate_student_document_readiness
+
+    report = evaluate_student_document_readiness(db, student_id)
+    return {
+        "student_id": report.student_id,
+        "overall_readiness": report.overall_readiness.value,
+        "total_required": report.total_required,
+        "total_uploaded": report.total_uploaded,
+        "total_verified": report.total_verified,
+        "total_missing": report.total_missing,
+        "items": [
+            {
+                "document_type": item.document_type.value,
+                "title": item.title,
+                "description": item.description,
+                "mandatory": item.mandatory,
+                "status": item.status.value,
+                "uploaded_document_id": item.uploaded_document_id,
+                "file_name": item.file_name,
+                "uploaded_at": item.uploaded_at,
+                "remedial_note": item.remedial_note,
+            }
+            for item in report.items
+        ],
+    }
+
+
+@router.get(
     "/documents/{document_id}",
     response_model=DocumentResponse,
     summary="Get document metadata",
