@@ -3,21 +3,15 @@
 import React, { useState } from "react";
 import { 
   Sparkles, 
-  ArrowRight, 
+  ArrowUpRight, 
   ArrowLeft,
   Plus,
   Trash2,
-  Wallet,
   Building,
-  CreditCard,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle2
+  Check,
+  AlertTriangle
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Input, Select } from "@/components/ui/Input";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/Card";
-import { ProgressBar } from "@/components/ui/StatCard";
+import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
 import { 
   financialProfileSchema, 
   type FinancialProfileFormData, 
@@ -27,7 +21,7 @@ import {
   LIABILITY_TYPE_LABELS,
   FINANCIAL_PRESETS
 } from "@/lib/validations/financial_profile";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatPercent } from "@/lib/utils";
 
 export interface FinancialProfileFormProps {
   fundingGapInr: number;
@@ -155,7 +149,6 @@ export function FinancialProfileForm({
       const updated = [...prev.liabilities];
       updated[index] = { ...updated[index], [field]: value };
 
-      // Auto sync existing obligations sum if desired
       const totalEmis = updated.reduce((acc, l) => acc + (Number(l.monthly_emi_inr) || 0), 0);
       return {
         ...prev,
@@ -169,7 +162,6 @@ export function FinancialProfileForm({
   const totalMonthlyIncome =
     (Number(formData.monthly_income_inr) || 0) + (Number(formData.other_income_inr) || 0);
 
-  // Proposed loan EMI calculation (standard 10-year repayment at 10.5%)
   const monthlyRate = 10.5 / 12 / 100;
   const tenureMonths = 120;
   const proposedLoanEmi =
@@ -213,12 +205,12 @@ export function FinancialProfileForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Preset Quick Loader */}
-      <div className="bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5">
-        <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-            Co-Borrower Financial Profiles
-          </span>
+      <div className="neo-box-yellow p-4 sm:p-5 space-y-3">
+        <div className="flex items-center gap-2">
+          <NeoBadge variant="white" className="border-2 border-black">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>CO-BORROWER PROFILES</span>
+          </NeoBadge>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {FINANCIAL_PRESETS.map((preset) => (
@@ -226,12 +218,12 @@ export function FinancialProfileForm({
               key={preset.id}
               type="button"
               onClick={() => applyPreset(preset.id)}
-              className="text-left p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-500 hover:shadow-sm transition-all text-xs group"
+              className="text-left p-3 border-2 border-black bg-white hover:bg-neutral-50 shadow-[2px_2px_0px_0px_#000000] transition-all cursor-pointer group"
             >
-              <div className="font-bold text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
+              <div className="font-black text-xs text-black uppercase">
                 {preset.name}
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+              <div className="text-[11px] font-bold text-neutral-600 truncate mt-0.5">
                 {preset.subtitle}
               </div>
             </button>
@@ -243,158 +235,169 @@ export function FinancialProfileForm({
         {/* Left Column: Form Inputs */}
         <div className="lg:col-span-8 space-y-8">
           {/* 1. Co-borrower Income Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle>4. Co-Borrower Income & Cash Flow</CardTitle>
-              <CardDescription>
-                Education loans require an earning co-signer (parent, spouse, or sibling) whose income backs loan repayment.
-              </CardDescription>
-            </CardHeader>
+          <div className="neo-box-lg bg-white p-6 sm:p-8 space-y-6">
+            <div className="pb-4 border-b-2 border-black flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <NeoBadge variant="pink" rotate="left">
+                  04 / FINANCIAL CAPACITY
+                </NeoBadge>
+                <h2 className="text-2xl sm:text-3xl font-black text-black uppercase tracking-tight mt-1">
+                  CO-BORROWER INCOME & CASH FLOW
+                </h2>
+              </div>
+              <span className="text-xs font-black uppercase text-neutral-600">
+                STEP 4 OF 6
+              </span>
+            </div>
 
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Select
-                  label="Co-Borrower Relationship"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5 text-left">
+                <label className="text-xs font-black uppercase tracking-wider text-black">
+                  Co-Borrower Relationship
+                </label>
+                <select
                   value={formData.co_borrower_relationship}
                   onChange={(e) => handleFieldChange("co_borrower_relationship", e.target.value)}
-                  options={[
-                    { value: "father", label: "Father" },
-                    { value: "mother", label: "Mother" },
-                    { value: "spouse", label: "Spouse" },
-                    { value: "sibling", label: "Brother / Sister" },
-                    { value: "self", label: "Self (Working Professional)" },
-                    { value: "legal_guardian", label: "Legal Guardian" },
-                  ]}
+                  className="neo-input"
                   required
-                />
-
-                <Input
-                  label="Co-Borrower CIBIL Score"
-                  type="number"
-                  min={300}
-                  max={900}
-                  value={formData.cibil_score || ""}
-                  onChange={(e) =>
-                    handleFieldChange(
-                      "cibil_score",
-                      e.target.value ? parseInt(e.target.value, 10) : null
-                    )
-                  }
-                  error={errors.cibil_score}
-                  leftIcon={<CreditCard className="h-4 w-4" />}
-                  helperText="Prime banks prefer ≥720-750."
-                />
-
-                <Input
-                  label="Primary Monthly Salary / Business Income (₹)"
-                  type="number"
-                  min={0}
-                  value={formData.monthly_income_inr}
-                  onChange={(e) =>
-                    handleFieldChange("monthly_income_inr", parseFloat(e.target.value) || 0)
-                  }
-                  error={errors.monthly_income_inr}
-                  leftIcon={<Wallet className="h-4 w-4" />}
-                  required
-                />
-
-                <Input
-                  label="Other Monthly Income (Rent, Agriculture, Dividends) (₹)"
-                  type="number"
-                  min={0}
-                  value={formData.other_income_inr}
-                  onChange={(e) =>
-                    handleFieldChange("other_income_inr", parseFloat(e.target.value) || 0)
-                  }
-                  error={errors.other_income_inr}
-                  leftIcon={<TrendingUp className="h-4 w-4" />}
-                />
-
-                <Input
-                  label="Existing Monthly Loan EMIs (₹)"
-                  type="number"
-                  min={0}
-                  value={formData.existing_monthly_obligations_inr}
-                  onChange={(e) =>
-                    handleFieldChange(
-                      "existing_monthly_obligations_inr",
-                      parseFloat(e.target.value) || 0
-                    )
-                  }
-                  error={errors.existing_monthly_obligations_inr}
-                  helperText="Sum of home, auto, personal loan EMIs currently active."
-                />
-
-                <Input
-                  label="Monthly Family Living Expenses (₹)"
-                  type="number"
-                  min={0}
-                  value={formData.monthly_living_expenses_inr}
-                  onChange={(e) =>
-                    handleFieldChange(
-                      "monthly_living_expenses_inr",
-                      parseFloat(e.target.value) || 0
-                    )
-                  }
-                  error={errors.monthly_living_expenses_inr}
-                />
+                >
+                  <option value="father">Father</option>
+                  <option value="mother">Mother</option>
+                  <option value="spouse">Spouse</option>
+                  <option value="sibling">Brother / Sister</option>
+                  <option value="self">Self (Working Professional)</option>
+                  <option value="legal_guardian">Legal Guardian</option>
+                </select>
               </div>
-            </CardContent>
-          </Card>
+
+              <NeoInput
+                label="Co-Borrower CIBIL Score"
+                type="number"
+                min={300}
+                max={900}
+                value={formData.cibil_score || ""}
+                onChange={(e) =>
+                  handleFieldChange(
+                    "cibil_score",
+                    e.target.value ? parseInt(e.target.value, 10) : null
+                  )
+                }
+                error={errors.cibil_score}
+              />
+
+              <NeoInput
+                label="Primary Monthly Income (₹)"
+                type="number"
+                min={0}
+                value={formData.monthly_income_inr}
+                onChange={(e) =>
+                  handleFieldChange("monthly_income_inr", parseFloat(e.target.value) || 0)
+                }
+                error={errors.monthly_income_inr}
+                required
+              />
+
+              <NeoInput
+                label="Other Monthly Income (₹)"
+                type="number"
+                min={0}
+                value={formData.other_income_inr}
+                onChange={(e) =>
+                  handleFieldChange("other_income_inr", parseFloat(e.target.value) || 0)
+                }
+                error={errors.other_income_inr}
+              />
+
+              <NeoInput
+                label="Existing Monthly Loan EMIs (₹)"
+                type="number"
+                min={0}
+                value={formData.existing_monthly_obligations_inr}
+                onChange={(e) =>
+                  handleFieldChange(
+                    "existing_monthly_obligations_inr",
+                    parseFloat(e.target.value) || 0
+                  )
+                }
+                error={errors.existing_monthly_obligations_inr}
+              />
+
+              <NeoInput
+                label="Monthly Living Expenses (₹)"
+                type="number"
+                min={0}
+                value={formData.monthly_living_expenses_inr}
+                onChange={(e) =>
+                  handleFieldChange(
+                    "monthly_living_expenses_inr",
+                    parseFloat(e.target.value) || 0
+                  )
+                }
+                error={errors.monthly_living_expenses_inr}
+              />
+            </div>
+          </div>
 
           {/* 2. Assets List */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
+          <div className="neo-box-lg bg-white p-6 sm:p-8 space-y-6">
+            <div className="pb-4 border-b-2 border-black flex items-center justify-between">
               <div>
-                <CardTitle>Family Assets & Net Worth</CardTitle>
-                <CardDescription>
-                  Tangible properties, bank deposits, and investment holdings.
-                </CardDescription>
+                <NeoBadge variant="cyan">ASSET HOLDINGS</NeoBadge>
+                <h3 className="text-xl font-black text-black uppercase tracking-tight mt-1">
+                  FAMILY ASSETS & WEALTH
+                </h3>
               </div>
-              <Button
+              <NeoButton
                 type="button"
-                variant="outline"
+                variant="white"
                 size="sm"
                 onClick={addAsset}
-                leftIcon={<Plus className="h-4 w-4" />}
               >
-                Add Asset
-              </Button>
-            </CardHeader>
+                <Plus className="h-4 w-4" />
+                <span>ADD ASSET</span>
+              </NeoButton>
+            </div>
 
-            <CardContent className="space-y-4">
+            <div className="space-y-4">
               {formData.assets.map((asset, index) => (
                 <div
                   key={index}
-                  className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 space-y-3"
+                  className="neo-box p-4 bg-[#FAF8F5] space-y-3"
                 >
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-800">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-                      Asset Item #{index + 1}
+                  <div className="flex items-center justify-between pb-2 border-b-2 border-black">
+                    <span className="text-xs font-black uppercase tracking-wider text-black">
+                      ASSET ITEM #{index + 1}
                     </span>
                     {formData.assets.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeAsset(index)}
-                        className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 p-1"
+                        className="border-2 border-black bg-[#F472B6] p-1 shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3.5 w-3.5 text-black" />
                       </button>
                     )}
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Select
-                      label="Asset Type"
-                      value={asset.asset_type}
-                      onChange={(e) => updateAsset(index, "asset_type", e.target.value)}
-                      options={Object.entries(ASSET_TYPE_LABELS).map(([val, lbl]) => ({
-                        value: val,
-                        label: lbl,
-                      }))}
-                    />
+                    <div className="space-y-1.5 text-left">
+                      <label className="text-xs font-black uppercase tracking-wider text-black">
+                        Asset Type
+                      </label>
+                      <select
+                        value={asset.asset_type}
+                        onChange={(e) => updateAsset(index, "asset_type", e.target.value)}
+                        className="neo-input"
+                      >
+                        {Object.entries(ASSET_TYPE_LABELS).map(([val, lbl]) => (
+                          <option key={val} value={val}>
+                            {lbl}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                    <Input
+                    <NeoInput
                       label="Estimated Market Value (₹)"
                       type="number"
                       min={0}
@@ -407,85 +410,92 @@ export function FinancialProfileForm({
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Input
-                      label="Description / Location"
-                      placeholder="e.g. 3BHK Apartment or HDFC Bank FD"
+                    <NeoInput
+                      label="Description / Details"
+                      placeholder="e.g. 3BHK Apartment or Bank Fixed Deposit"
                       value={asset.description || ""}
                       onChange={(e) => updateAsset(index, "description", e.target.value)}
                     />
 
                     <div className="flex items-end pb-1.5">
-                      <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
+                      <label className="flex items-center gap-2 text-xs font-black text-black uppercase cursor-pointer">
                         <input
                           type="checkbox"
                           checked={asset.is_liquid}
                           onChange={(e) => updateAsset(index, "is_liquid", e.target.checked)}
-                          className="h-4 w-4 rounded border-slate-300 text-[#0f382c] accent-[#0f382c]"
+                          className="h-4 w-4 border-2 border-black accent-black cursor-pointer"
                         />
-                        <span>Liquid Asset (Cash / Bank FD / Stocks)</span>
+                        <span>Liquid Asset (Cash / Bank FD)</span>
                       </label>
                     </div>
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* 3. Liabilities List */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
+          <div className="neo-box-lg bg-white p-6 sm:p-8 space-y-6">
+            <div className="pb-4 border-b-2 border-black flex items-center justify-between">
               <div>
-                <CardTitle>Existing Family Liabilities</CardTitle>
-                <CardDescription>
-                  Outstanding loans and ongoing debt obligations.
-                </CardDescription>
+                <NeoBadge variant="pink">DEBT REGISTER</NeoBadge>
+                <h3 className="text-xl font-black text-black uppercase tracking-tight mt-1">
+                  EXISTING FAMILY LIABILITIES
+                </h3>
               </div>
-              <Button
+              <NeoButton
                 type="button"
-                variant="outline"
+                variant="white"
                 size="sm"
                 onClick={addLiability}
-                leftIcon={<Plus className="h-4 w-4" />}
               >
-                Add Liability
-              </Button>
-            </CardHeader>
+                <Plus className="h-4 w-4" />
+                <span>ADD DEBT</span>
+              </NeoButton>
+            </div>
 
-            <CardContent className="space-y-4">
+            <div className="space-y-4">
               {formData.liabilities.map((liability, index) => (
                 <div
                   key={index}
-                  className="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 space-y-3"
+                  className="neo-box p-4 bg-[#FAF8F5] space-y-3"
                 >
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-slate-800">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-                      Debt Item #{index + 1}
+                  <div className="flex items-center justify-between pb-2 border-b-2 border-black">
+                    <span className="text-xs font-black uppercase tracking-wider text-black">
+                      DEBT ITEM #{index + 1}
                     </span>
                     {formData.liabilities.length > 1 && (
                       <button
                         type="button"
                         onClick={() => removeLiability(index)}
-                        className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 p-1"
+                        className="border-2 border-black bg-[#F472B6] p-1 shadow-[1px_1px_0px_0px_#000000] cursor-pointer"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3.5 w-3.5 text-black" />
                       </button>
                     )}
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <Select
-                      label="Debt Type"
-                      value={liability.liability_type}
-                      onChange={(e) =>
-                        updateLiability(index, "liability_type", e.target.value)
-                      }
-                      options={Object.entries(LIABILITY_TYPE_LABELS).map(([val, lbl]) => ({
-                        value: val,
-                        label: lbl,
-                      }))}
-                    />
+                    <div className="space-y-1.5 text-left">
+                      <label className="text-xs font-black uppercase tracking-wider text-black">
+                        Debt Type
+                      </label>
+                      <select
+                        value={liability.liability_type}
+                        onChange={(e) =>
+                          updateLiability(index, "liability_type", e.target.value)
+                        }
+                        className="neo-input"
+                      >
+                        {Object.entries(LIABILITY_TYPE_LABELS).map(([val, lbl]) => (
+                          <option key={val} value={val}>
+                            {lbl}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                    <Input
+                    <NeoInput
                       label="Outstanding Amount (₹)"
                       type="number"
                       min={0}
@@ -500,7 +510,7 @@ export function FinancialProfileForm({
                       required
                     />
 
-                    <Input
+                    <NeoInput
                       label="Monthly EMI (₹)"
                       type="number"
                       min={0}
@@ -516,125 +526,127 @@ export function FinancialProfileForm({
                   </div>
                 </div>
               ))}
-            </CardContent>
+            </div>
 
-            <CardFooter className="justify-between">
+            {/* Footer Buttons */}
+            <div className="pt-4 border-t-2 border-black flex items-center justify-between">
               {onBack ? (
-                <Button type="button" variant="outline" onClick={onBack} leftIcon={<ArrowLeft className="h-4 w-4" />}>
-                  Back to Funding
-                </Button>
+                <NeoButton type="button" variant="white" onClick={onBack}>
+                  <ArrowLeft className="h-4 w-4" />
+                  <span>BACK TO FUNDING</span>
+                </NeoButton>
               ) : <div />}
 
-              <Button
+              <NeoButton
                 type="submit"
+                variant="primary"
                 size="lg"
-                isLoading={isLoading}
-                rightIcon={<ArrowRight className="h-4 w-4" />}
+                disabled={isLoading}
               >
-                Save Financials & Proceed to Collateral
-              </Button>
-            </CardFooter>
-          </Card>
+                <span>{isLoading ? "SAVING..." : "SAVE & PROCEED TO COLLATERAL"}</span>
+                <ArrowUpRight className="h-4 w-4" />
+              </NeoButton>
+            </div>
+          </div>
         </div>
 
         {/* Right Column: Live FOIR and Net Worth Receipt */}
         <div className="lg:col-span-4">
-          <div className="sticky top-24 rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 p-6 shadow-xl space-y-6">
-            <div className="flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
-              <Building className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                Live Underwriting Metrics
+          <div className="sticky top-24 neo-box-lg bg-white p-6 space-y-5">
+            <div className="flex items-center gap-2 pb-3 border-b-2 border-black">
+              <Building className="h-4 w-4 text-black" />
+              <h3 className="font-black text-black uppercase tracking-tight text-sm">
+                LIVE UNDERWRITING METRICS
               </h3>
             </div>
 
             {/* Income & Obligations */}
-            <div className="space-y-3 text-xs">
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Gross Monthly Income</span>
-                <span className="font-mono font-bold text-slate-900 dark:text-white">
+            <div className="space-y-2.5 text-xs font-bold">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">Gross Monthly Income</span>
+                <span className="font-mono text-black">
                   {formatCurrency(totalMonthlyIncome)}/mo
                 </span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Existing Loan EMIs</span>
-                <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">Existing Loan EMIs</span>
+                <span className="font-mono text-black">
                   {formatCurrency(formData.existing_monthly_obligations_inr)}/mo
                 </span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Estimated Edu Loan EMI</span>
-                <span className="font-mono font-semibold text-emerald-700 dark:text-emerald-400">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">Estimated Edu Loan EMI</span>
+                <span className="font-mono text-black">
                   {formatCurrency(proposedLoanEmi)}/mo
                 </span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500">Total Monthly Debt Service</span>
-                <span className="font-mono font-bold text-slate-900 dark:text-white">
+              <div className="flex justify-between py-1 border-b border-black">
+                <span className="text-neutral-600">Total Debt Service</span>
+                <span className="font-mono text-black">
                   {formatCurrency(totalMonthlyObligations)}/mo
                 </span>
               </div>
             </div>
 
             {/* FOIR Meter */}
-            <div className="space-y-2">
-              <ProgressBar
-                value={foirPercent}
-                label="Projected FOIR Ratio"
-                showPercentage
-                indicatorClassName={
-                  foirPercent <= 50
-                    ? "bg-emerald-600 dark:bg-emerald-400"
-                    : foirPercent <= 65
-                    ? "bg-amber-600 dark:bg-amber-400"
-                    : "bg-rose-600 dark:bg-rose-400"
-                }
-              />
-              <div className="flex justify-between text-[10px] font-mono text-slate-400 pt-0.5">
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-[11px] font-black uppercase">
+                <span>PROJECTED FOIR</span>
+                <span className="font-mono">{formatPercent(foirPercent)}</span>
+              </div>
+              <div className="w-full h-3 border-2 border-black bg-white overflow-hidden">
+                <div
+                  className={`h-full border-r-2 border-black ${
+                    foirPercent <= 50 ? "bg-[#86EFAC]" : foirPercent <= 65 ? "bg-[#FEF08A]" : "bg-[#F472B6]"
+                  }`}
+                  style={{ width: `${Math.min(100, foirPercent)}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-[9px] font-mono font-black text-neutral-600 pt-0.5">
                 <span>0%</span>
-                <span className="text-emerald-600 font-bold">50% (RBI Prime)</span>
-                <span className="text-amber-600 font-bold">65% (NBFC Cap)</span>
+                <span className="text-black font-bold">50% PRIME</span>
+                <span className="text-black font-bold">65% CAP</span>
                 <span>100%</span>
               </div>
             </div>
 
-            {/* Net Worth Card */}
-            <div className="p-4 rounded-2xl bg-slate-100 dark:bg-slate-800/80 space-y-2 text-xs">
+            {/* Net Worth Box */}
+            <div className="neo-box p-3.5 bg-[#FAF8F5] space-y-2 text-xs font-bold">
               <div className="flex justify-between">
-                <span className="text-slate-600 dark:text-slate-400">Total Assets</span>
-                <span className="font-mono font-bold text-slate-900 dark:text-white">
-                  {formatCurrency(totalAssetsValue)}
-                </span>
+                <span className="text-neutral-600">Total Assets</span>
+                <span className="font-mono text-black">{formatCurrency(totalAssetsValue)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-600 dark:text-slate-400">Total Liabilities</span>
-                <span className="font-mono font-bold text-rose-600 dark:text-rose-400">
-                  {formatCurrency(totalLiabilitiesValue)}
-                </span>
+                <span className="text-neutral-600">Total Liabilities</span>
+                <span className="font-mono text-neutral-800">{formatCurrency(totalLiabilitiesValue)}</span>
               </div>
-              <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
-                <span className="font-bold text-slate-900 dark:text-white uppercase text-[11px]">
-                  Family Net Worth
-                </span>
-                <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400 text-sm">
-                  {formatCurrency(netWorth)}
-                </span>
+              <div className="flex justify-between pt-1.5 border-t-2 border-black">
+                <span className="font-black uppercase text-[11px]">Net Worth</span>
+                <span className="font-mono font-black text-black">{formatCurrency(netWorth)}</span>
               </div>
             </div>
 
-            {/* Audit Advice Pill */}
-            <div className="text-xs text-slate-600 dark:text-slate-400 flex items-start gap-2 pt-1">
-              {foirPercent <= 50 ? (
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-              ) : (
-                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
-              )}
-              <span>
-                {foirPercent <= 50
-                  ? "Co-borrower income easily supports requested loan. Eligible for premier public & NBFC rates."
-                  : foirPercent <= 65
-                  ? "FOIR is in the review/conditional zone. Pledging collateral will significantly increase approval chances."
-                  : "FOIR exceeds 65% bank cap. Consider adding a second co-borrower or pledging property collateral."}
-              </span>
+            {/* Status Advice Box */}
+            <div
+              className={`p-3 border-2 border-black text-xs font-bold shadow-[2px_2px_0px_0px_#000000] ${
+                foirPercent <= 50 ? "bg-[#86EFAC]" : foirPercent <= 65 ? "bg-[#FEF08A]" : "bg-[#F472B6]"
+              }`}
+            >
+              <div className="flex items-center gap-1 font-black text-black uppercase mb-1">
+                {foirPercent <= 50 ? (
+                  <Check className="h-3.5 w-3.5 stroke-[3]" />
+                ) : (
+                  <AlertTriangle className="h-3.5 w-3.5 stroke-[3]" />
+                )}
+                <span>
+                  {foirPercent <= 50 ? "PRIME FOIR HEALTH" : foirPercent <= 65 ? "CONDITIONAL STRESS" : "HIGH DEBT STRESS"}
+                </span>
+              </div>
+              {foirPercent <= 50
+                ? "Co-borrower income easily backs proposed loan. Eligible for prime public bank slabs."
+                : foirPercent <= 65
+                ? "FOIR in review zone. Pledging property collateral will boost approval."
+                : "FOIR exceeds 65% bank cap. Consider adding collateral or second co-signer."}
             </div>
           </div>
         </div>
