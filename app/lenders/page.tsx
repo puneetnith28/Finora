@@ -326,14 +326,11 @@ export default function LendersPage() {
                   <div className="mt-6 pt-3 border-t-2 border-black flex items-center justify-between">
                     <span className="text-[10px] font-black uppercase text-black flex items-center gap-1 bg-[#86EFAC] px-1.5 py-0.5 border border-black">
                       <CheckCircle2 className="h-3 w-3 stroke-[3]" />
-                      Verified Engine
+                      Verified Policy
                     </span>
-                    <Link
-                      href={`/assessment?step=1`}
-                      className="text-xs font-black uppercase text-black hover:underline flex items-center gap-1"
-                    >
-                      Check Match <ArrowRight className="h-3.5 w-3.5 stroke-[3]" />
-                    </Link>
+                    <span className="text-[10px] font-mono font-bold text-black/60">
+                      ID: #{lender.id.toString().padStart(2, "0")}
+                    </span>
                   </div>
                 </div>
               );

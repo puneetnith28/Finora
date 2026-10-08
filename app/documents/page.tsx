@@ -158,7 +158,7 @@ export default function DocumentsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0 flex-wrap">
+          <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={loadReadiness}
               className="neo-btn bg-white text-black text-xs font-black uppercase py-2.5 px-4 flex items-center gap-2"
@@ -166,11 +166,6 @@ export default function DocumentsPage() {
               <RefreshCw className="h-4 w-4 stroke-[2.5]" />
               Refresh Vault
             </button>
-            <Link href="/assessment">
-              <button className="neo-btn bg-[#FEF08A] text-black text-xs font-black uppercase py-2.5 px-4 flex items-center gap-2">
-                Launch Assessment <ArrowRight className="h-4 w-4 stroke-[3]" />
-              </button>
-            </Link>
           </div>
         </div>
 

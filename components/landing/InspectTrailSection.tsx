@@ -151,12 +151,9 @@ export function InspectTrailSection() {
               <span className="text-black/60 block text-[9px] font-black uppercase">Readiness Score</span>
               <span className="font-black text-black text-sm">{activeCase.score}</span>
             </div>
-            <div className="flex items-end justify-end">
-              <Link href="/assessment">
-                <button className="neo-btn bg-[#FEF08A] text-black text-xs font-black uppercase py-1.5 px-3 flex items-center gap-1">
-                  Run Assessment <ArrowRight className="h-3.5 w-3.5 stroke-[3]" />
-                </button>
-              </Link>
+            <div>
+              <span className="text-black/60 block text-[9px] font-black uppercase">Underwriting Sync</span>
+              <span className="font-black text-black text-sm text-[#16A34A]">✓ Verified</span>
             </div>
           </div>
         </div>

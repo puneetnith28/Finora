@@ -31,16 +31,11 @@ export function HeroSection() {
             then generates an explainable receipt.
           </p>
 
-          <div className="pt-2 flex flex-wrap items-center gap-4">
+          <div className="pt-2 flex items-center">
             <Link href="/assessment">
               <NeoButton variant="primary" size="lg">
                 <span>EXPLORE THE RECORDED HANDOFF</span>
                 <ArrowUpRight className="h-4 w-4" />
-              </NeoButton>
-            </Link>
-            <Link href="/simulator">
-              <NeoButton variant="white" size="lg">
-                <span>RUN SIMULATOR ↗</span>
               </NeoButton>
             </Link>
           </div>
