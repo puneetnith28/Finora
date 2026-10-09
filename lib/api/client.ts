@@ -33,14 +33,14 @@ class ApiClient {
   private baseUrl: string;
   private defaultTimeoutMs: number;
 
-  constructor(baseUrl?: string, defaultTimeoutMs: number = 15000) {
+  constructor(baseUrl?: string, defaultTimeoutMs: number = 60000) {
     if (baseUrl !== undefined) {
       this.baseUrl = baseUrl.replace(/\/$/, "");
-    } else if (process.env.NEXT_PUBLIC_API_URL) {
-      this.baseUrl = process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
     } else if (typeof window !== "undefined") {
       // In the browser, use relative path so Next.js proxy rewrites handle it without CORS/port issues
       this.baseUrl = "";
+    } else if (process.env.NEXT_PUBLIC_API_URL) {
+      this.baseUrl = process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
     } else {
       this.baseUrl = "http://localhost:8000";
     }

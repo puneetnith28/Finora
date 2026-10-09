@@ -74,21 +74,33 @@ function AssessmentContent() {
       let res: { id: number };
 
       // Find if student with this email already exists in database
-      const allStudents = await api.get<Array<{ id: number; email: string }>>("/api/students");
-      const existing = allStudents.find(
-        (s) => s.email.toLowerCase() === payload.email.toLowerCase()
-      );
+      try {
+        const allStudents = await api.get<Array<{ id: number; email: string }>>("/api/students");
+        const existing = allStudents.find(
+          (s) => s.email.toLowerCase() === payload.email.toLowerCase()
+        );
 
-      if (existing) {
-        res = await api.put<{ id: number }>(`/api/students/${existing.id}`, payload);
-      } else if (studentId) {
-        try {
-          res = await api.put<{ id: number }>(`/api/students/${studentId}`, payload);
-        } catch {
+        if (existing) {
+          res = await api.put<{ id: number }>(`/api/students/${existing.id}`, payload);
+        } else if (studentId) {
+          try {
+            res = await api.put<{ id: number }>(`/api/students/${studentId}`, payload);
+          } catch {
+            res = await api.post<{ id: number }>("/api/students", payload);
+          }
+        } else {
           res = await api.post<{ id: number }>("/api/students", payload);
         }
-      } else {
-        res = await api.post<{ id: number }>("/api/students", payload);
+      } catch {
+        if (studentId) {
+          try {
+            res = await api.put<{ id: number }>(`/api/students/${studentId}`, payload);
+          } catch {
+            res = await api.post<{ id: number }>("/api/students", payload);
+          }
+        } else {
+          res = await api.post<{ id: number }>("/api/students", payload);
+        }
       }
 
       setStudentId(res.id);

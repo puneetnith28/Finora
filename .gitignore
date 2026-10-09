@@ -1,6 +1,10 @@
 # Local tracking & planning files (MUST NEVER BE COMMITTED)
 implementation.md
 plan.md
+video.md
+/video-recordings/
+
+
 
 # Environment variables
 .env
