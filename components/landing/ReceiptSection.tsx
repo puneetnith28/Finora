@@ -51,7 +51,7 @@ export function ReceiptSection() {
                 OCTOBER 8, 2026
               </span>
               <span className="text-xs sm:text-sm font-bold text-neutral-700">
-                Deterministic Engine • 4 Verified Underwriting Records
+                Deterministic Engine • 5 Verified Underwriting Records
               </span>
             </div>
           </div>
@@ -147,7 +147,7 @@ export function ReceiptSection() {
                   Market Value: ₹90,00,000 • Haircut: 20% • Eligible Lending Value: ₹72,00,000
                 </div>
                 <div className="text-xs sm:text-sm font-bold text-neutral-700">
-                  Pledge satisfies 100% tangible security requirement for Secured Global Bank.
+                  Pledge satisfies 100% tangible security requirement for Public Sector Lenders (e.g. SBI / BOB).
                 </div>
               </div>
             </div>
@@ -159,7 +159,7 @@ export function ReceiptSection() {
               SAME REPORT ID. SAME RECORDED IDS.
             </div>
             <p className="text-xs sm:text-sm font-bold text-neutral-950 leading-relaxed">
-              The same assessment was re-evaluated against the 4 lender criteria sets. The rerun
+              The same assessment was re-evaluated against the 5 benchmark lender criteria sets. The rerun
               produced zero drift — exactly matching all threshold rules and scores.
             </p>
           </div>

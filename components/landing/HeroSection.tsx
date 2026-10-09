@@ -116,21 +116,21 @@ export function HeroSection() {
             <div className="space-y-2.5 text-xs font-bold">
               <div className="flex items-center justify-between pb-2 border-b-2 border-black">
                 <div className="flex items-center gap-2">
-                  <span className="font-black">Global Ed Bank</span>
+                  <span className="font-black">SBI Global Ed-Vantage</span>
                 </div>
-                <span className="text-neutral-800 font-bold">Eligible • Up to ₹75L</span>
+                <span className="text-neutral-800 font-bold">Eligible • Up to ₹1.5 Cr</span>
               </div>
 
               <div className="flex items-center justify-between pb-2 border-b-2 border-black">
                 <div className="flex items-center gap-2">
-                  <span className="font-black">STEM NBFC</span>
+                  <span className="font-black">HDFC Credila</span>
                 </div>
                 <span className="text-neutral-800 font-bold">Approved • 60% FOIR ceiling</span>
               </div>
 
               <div className="flex items-center justify-between pb-2 border-b-2 border-black">
                 <div className="flex items-center gap-2">
-                  <span className="font-black">Secured Bank</span>
+                  <span className="font-black">Bank of Baroda Scholar</span>
                 </div>
                 <span className="text-neutral-800 font-bold">Collateral Title Deed required</span>
               </div>
@@ -167,7 +167,7 @@ export function HeroSection() {
               03 / POLICY RULES
             </span>
             <span className="text-xs sm:text-sm font-black text-black block">
-              4 Benchmark Lenders
+              5 Benchmark Lenders
             </span>
           </div>
           <div className="bg-white/80 border-2 border-black p-2.5 sm:p-3 shadow-[2px_2px_0px_0px_#000000]">

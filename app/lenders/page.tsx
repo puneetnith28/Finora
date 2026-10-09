@@ -26,6 +26,8 @@ export default function LendersPage() {
                 nameLower.includes("sbi") ||
                 nameLower.includes("state bank") ||
                 nameLower.includes("baroda") ||
+                nameLower.includes("bank of india") ||
+                nameLower.includes("boi") ||
                 nameLower.includes("punjab")
               ) {
                 derivedType = "public_bank";

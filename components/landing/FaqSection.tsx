@@ -26,7 +26,7 @@ const FAQS: FaqItem[] = [
     id: "real-records",
     question: "Are these real banking criteria?",
     answer:
-      "All lender criteria are calibrated against real-world Indian public bank (e.g. SBI), private NBFC (e.g. HDFC Credila), and international USD lender (e.g. Prodigy) underwriting policies for indicative evaluation.",
+      "All lender criteria are calibrated against the official GradGuide education loan benchmarks, Indian public sector banks (SBI, Bank of Baroda, Bank of India), and premier education NBFCs (HDFC Credila, Auxilo Finserve) for pre-underwriting assessment.",
   },
   {
     id: "open-records",
