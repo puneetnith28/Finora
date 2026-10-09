@@ -53,6 +53,8 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     let animFrameId: number | null = null;
     let resizeObserver: ResizeObserver | null = null;
 
+    let mutationObserver: MutationObserver | null = null;
+
     const startTrackingLoop = (el: HTMLElement) => {
       const startTime = performance.now();
       const trackDuration = 900; // ms to track smooth scrolling continuously
@@ -73,6 +75,15 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       const el = document.querySelector(selector) as HTMLElement | null;
 
       if (el) {
+        const rect = el.getBoundingClientRect();
+
+        // If element exists but has zero/tiny height (loading async content), wait and retry
+        if (rect.height < 30 && retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(locateAndHighlight, 120);
+          return;
+        }
+
         setIsNavigating(false);
         targetElementRef.current = el;
 
@@ -90,6 +101,16 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
             }
           });
           resizeObserver.observe(el);
+        }
+
+        // Observe DOM mutations inside element
+        if (typeof MutationObserver !== "undefined") {
+          mutationObserver = new MutationObserver(() => {
+            if (targetElementRef.current) {
+              setTargetRect(targetElementRef.current.getBoundingClientRect());
+            }
+          });
+          mutationObserver.observe(document.body, { childList: true, subtree: true });
         }
       } else if (retryCount < maxRetries) {
         retryCount++;
@@ -109,6 +130,9 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       }
       if (resizeObserver) {
         resizeObserver.disconnect();
+      }
+      if (mutationObserver) {
+        mutationObserver.disconnect();
       }
     };
   }, [isOpen, currentStepIndex, pathname, currentStep]);

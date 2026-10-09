@@ -177,12 +177,13 @@ export default function LendersPage() {
         </div>
 
         {/* Grid of Lenders */}
-        {loading ? (
-          <div className="neo-box p-12 text-center text-sm font-black uppercase bg-[#FFFDF9]">
-            Loading underwriting rules database...
-          </div>
-        ) : (
-          <div data-tour="lenders-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div data-tour="lenders-grid" className="w-full">
+          {loading ? (
+            <div className="neo-box p-12 text-center text-sm font-black uppercase bg-[#FFFDF9]">
+              Loading underwriting rules database...
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((lender) => {
               const typeLabel = (lender.lender_type || "FINANCIAL_INSTITUTION").toUpperCase().replace(/_/g, " ");
 
@@ -254,6 +255,7 @@ export default function LendersPage() {
             })}
           </div>
         )}
+        </div>
       </div>
     </div>
   );
