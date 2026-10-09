@@ -122,9 +122,9 @@ export function InteractiveSpotlightTour() {
     }
 
     // 2. Desktop Layout
-    const popoverWidth = Math.min(470, viewportWidth - 40);
+    const popoverWidth = Math.min(520, viewportWidth - 48);
     const maxAllowedHeight = Math.min(520, viewportHeight - 32);
-    const margin = 20;
+    const margin = 24;
 
     if (!targetRect) {
       // Centered fallback
@@ -406,15 +406,15 @@ export function InteractiveSpotlightTour() {
         </div>
 
         {/* Footer Navigation Bar (flex-shrink: 0, ALWAYS 100% VISIBLE) */}
-        <div className="shrink-0 p-3 sm:p-3.5 bg-white border-t-3 border-black flex flex-col sm:flex-row items-center justify-between gap-2.5">
+        <div className="shrink-0 px-3.5 py-2.5 sm:px-4 sm:py-3 bg-white border-t-3 border-black flex items-center justify-between gap-2 overflow-hidden">
           {/* Step dots */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 shrink-0">
             {Array.from({ length: totalSteps }).map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => goToStep(idx)}
-                className={`w-2.5 h-2.5 border border-black transition-all ${
+                className={`w-2 h-2 border border-black transition-all ${
                   idx === currentStepIndex
                     ? "bg-black scale-125 shadow-[1px_1px_0px_#000]"
                     : "bg-white hover:bg-neutral-200"
@@ -422,18 +422,18 @@ export function InteractiveSpotlightTour() {
                 aria-label={`Jump to step ${idx + 1}`}
               />
             ))}
-            <span className="text-[10px] font-mono font-bold text-neutral-500 ml-2 hidden sm:inline">
-              [← / → / Enter]
+            <span className="text-[9px] font-mono font-bold text-neutral-500 ml-1.5 hidden xl:inline">
+              [Enter ↵]
             </span>
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+          <div className="flex items-center gap-2 shrink-0">
             {!isFirstStep ? (
               <button
                 type="button"
                 onClick={prevStep}
-                className="neo-btn bg-white hover:bg-neutral-100 text-black py-1.5 px-3 text-xs flex items-center gap-1"
+                className="neo-btn bg-white hover:bg-neutral-100 text-black py-1.5 px-2.5 text-xs font-black uppercase flex items-center gap-1 shrink-0"
               >
                 <ArrowLeft className="h-3 w-3 stroke-[3]" />
                 <span>Back</span>
@@ -442,9 +442,9 @@ export function InteractiveSpotlightTour() {
               <button
                 type="button"
                 onClick={closeTour}
-                className="text-xs font-black uppercase text-neutral-600 hover:text-black py-1 px-2 underline decoration-black underline-offset-4"
+                className="text-xs font-black uppercase text-neutral-600 hover:text-black py-1 px-1.5 underline decoration-black underline-offset-4 shrink-0"
               >
-                Skip Tour
+                Skip
               </button>
             )}
 
@@ -452,18 +452,18 @@ export function InteractiveSpotlightTour() {
               <button
                 type="button"
                 onClick={finishTour}
-                className="neo-btn bg-[#86EFAC] hover:bg-[#4ADE80] text-black py-2 px-4 text-xs font-black uppercase flex items-center gap-1 shadow-[3px_3px_0px_0px_#000]"
+                className="neo-btn bg-[#86EFAC] hover:bg-[#4ADE80] text-black py-1.5 px-3.5 text-xs font-black uppercase flex items-center gap-1 shadow-[2px_2px_0px_0px_#000] shrink-0 whitespace-nowrap cursor-pointer"
               >
-                <span>Finish Tour 🎉</span>
+                <span>Finish 🎉</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={nextStep}
-                className="neo-btn bg-black text-white py-2 px-4 text-xs font-black uppercase flex items-center gap-1.5 shadow-[3px_3px_0px_0px_#FEF08A] hover:bg-neutral-900 transition-all cursor-pointer"
+                className="neo-btn bg-black text-white hover:bg-neutral-800 text-white py-1.5 px-3.5 text-xs font-black uppercase flex items-center gap-1.5 shadow-[2px_2px_0px_0px_#FEF08A] shrink-0 whitespace-nowrap cursor-pointer"
               >
                 <span>Next</span>
-                <ArrowRight className="h-3 w-3 stroke-[3]" />
+                <ArrowRight className="h-3.5 w-3.5 stroke-[3]" />
               </button>
             )}
           </div>
