@@ -8,7 +8,7 @@ import { NeoBadge, NeoButton } from "../ui/NeoPrimitives";
 export function HeroSection() {
 
   return (
-    <section className="w-full bg-[#FEF08A] border-b-2 border-black py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
+    <section className="w-full bg-[#FEF08A] border-b-2 border-black min-h-[calc(100vh-64px)] flex items-center py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
         {/* Left Editorial Headline */}
         <div className="lg:col-span-7 space-y-6">
