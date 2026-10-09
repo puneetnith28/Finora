@@ -4,12 +4,6 @@ import { Sparkles, ShieldCheck, ArrowUpRight } from "lucide-react";
 import { NeoBadge, NeoButton } from "@/components/ui/NeoPrimitives";
 import Link from "next/link";
 
-export const metadata = {
-  title: "FOIR & Education Loan EMI Simulator | Finora",
-  description:
-    "Simulate education loan terms, analyze Fixed Obligation to Income Ratio (FOIR), and evaluate borrowing capacity.",
-};
-
 export default function SimulatorPage() {
   return (
     <div className="w-full bg-[#FEF3C7] min-h-screen py-10 sm:py-16 px-4 sm:px-6 lg:px-8">

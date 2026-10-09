@@ -21,9 +21,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Finora — Education Loan Assessment & Financial Readiness Platform",
-  description:
-    "Deterministic financial evaluation, currency normalization, funding gap analysis, and transparent lender matching for study-abroad students.",
+  title: "Finora",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
