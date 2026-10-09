@@ -39,50 +39,56 @@
 
 ---
 
-## ✨ Core Features & Differentiators
+## 📋 Hiring Assignment Feature Write-Up & Compliance
 
-### 1. 🎓 6-Step Guided Assessment Wizard
-- **Candidate Profile:** Target country, university, degree, and study level.
-- **Study Cost Model:** Multi-currency tuition, living expenses, travel, and currency conversion.
-- **Funding Sources:** Multi-source capital categorization (savings, family contributions, scholarships).
-- **Financial Profile:** Co-borrower monthly income, existing debt obligations, and automatic proposed EMI calculation.
-- **Asset & Collateral Register:** Immovable property, fixed deposits, mutual funds with standard conservative lender haircuts (20% real estate, 10% FDs, 30% equities).
-- **Evaluation & Synthesis:** Instant multi-lender audit synthesis and scorecard generation.
+This repository implements the full requirements of the **GradGuide Education Loan Assessment Tool** assignment.
 
-### 2. 📊 Explainable Multi-Lender Match Engine
-- **Categorized Results:** Classifies lenders into **Match Eligible**, **Needs Review**, and **Hard Constraint Failures**.
-- **Rule Audit Matrix:** Every criterion (minimum CIBIL, maximum FOIR, required collateral, target country eligibility) displays actual value vs. threshold requirement and human-readable explanation.
+### 1. Mandatory Functional Coverage
+| Assignment Area | Description | Implementation in Finora |
+| :--- | :--- | :--- |
+| **Study** | Country, university, course, tuition, living costs | Multi-currency course fee breakdown with automated exchange rate conversion and inflation buffer. |
+| **Funding** | Savings, scholarship, fees paid, family contribution | Multi-item liquid capital register with real-time net loan requirement (funding gap) calculation. |
+| **Financial Profile** | Income, ITRs, assets, liabilities, net worth | Co-borrower income, existing debts, categorized assets & liabilities, net worth summary, and FOIR ratio. |
+| **Collateral** | Property / other assets and available value | Immovable/liquid security registry with conservative lender haircut modeling and live LTV percentage. |
+| **Documents** | ITR, bank statements, salary slips, CA net worth, property docs | Pre-underwriting document vault with magic-byte MIME validation, status tracking, and OCR discrepancy engine. |
+| **Loan Assessment** | Funding gap, collateral vs non-collateral route, lender criteria | Deterministic evaluation engine matching candidate profiles against bank & NBFC policies with complete explainability. |
 
-### 3. 🎯 Transparent Readiness Score Indicator (0–100)
-- **5-Pillar Weighted Scorecard:**
-  - **Academic & University Prestige (20%)**
-  - **Financial Capacity & FOIR Health (25%)**
-  - **Collateral & Security Adequacy (25%)**
-  - **Co-Borrower Credit Reliability (15%)**
-  - **Document Completeness (15%)**
-- Visual radial gauges, contextual status badges (Optimal, Stretched, Critical), and actionable remedial checklists.
+---
 
-### 4. 🎛 Real-Time FOIR & Lender Impact Simulator
-- Live slider-driven loan amount, interest rate, tenure, and co-borrower income adjustments.
-- Real-time recalculation of monthly EMI, debt obligations, FOIR status badges, and lender eligibility impacts without mutating candidate records.
+### 2. 🌟 The 3 Original Features
 
-### 5. 📑 Document Intelligence & OCR Discrepancy Engine
-- Mandatory vs. optional checklist mapping per candidate risk profile.
-- Automated payload extraction (Salary Slip net pay, ITR gross total income, Bank statement balance).
-- Configurable tolerance-based discrepancy detection alerting counselors to revenue misdeclarations.
+The assignment asks to build three original features and explain the problem solved, why it matters, and how the solution works:
 
-### 6. ⚖ Scenario Comparison Delta Engine
-- Side-by-side assessment version diffing comparing score shifts, FOIR deltas, funding gap variance, and newly unlocked lender options.
+#### Feature 1: Interactive Real-Time FOIR & Loan EMI Stress-Testing Simulator (`/simulator`)
+- **What Problem It Solves:** Students and counselors often apply for loan amounts without knowing if their co-borrower's income can service the debt under bank Fixed Obligation to Income Ratio (FOIR) limits.
+- **Why It Matters:** High FOIR (>50%) is the single leading reason for education loan rejections across Indian public & private banks.
+- **How the Solution Works:** A slider-driven simulator that computes exact monthly amortizing EMIs and total monthly obligations in real-time, displaying dynamic risk badges (`Safe ≤40%`, `Moderate 40-50%`, `Stretched 50-60%`, `High Risk >60%`) and automated remedial suggestions (e.g., tenure expansion, adding co-borrowers, clearing personal loans).
 
-### 7. 🖨 Counselor-Ready Printable PDF Reports
-- Clean print-optimized layout hiding navigation UI, rendering crisp vector charts, breakdown tables, and formal evaluation disclosures.
+#### Feature 2: Explainable Deterministic Rule-by-Rule Underwriting Dossier (`/assessment/[id]/report`)
+- **What Problem It Solves:** Traditional aggregator websites act as opaque black boxes that display generic "Eligible / Rejected" badges without mathematical reasons.
+- **Why It Matters:** Counselors need transparent audit trails (exact CIBIL cutoffs, collateral haircuts, university tier requirements) to provide credible advice and fix candidate bottlenecks.
+- **How the Solution Works:** Evaluates every criterion independently into **Direct Approval**, **Conditional Approval**, or **Ineligible**, accompanied by an itemized criteria checklist, root-cause diagnostics, and a counselor-ready printable PDF report.
 
-### 8. 🚀 5 Built-in Demo Scenarios
-- **Scenario A:** High-Flyer Ivy League (STEM USA, Full collateral, high income).
-- **Scenario B:** High Deficit Borderline (UK Masters, tight funding gap, borderline FOIR).
-- **Scenario C:** Unsecured Tier-1 German Candidate (Zero collateral, NBFC target).
-- **Scenario D:** Co-Borrower Stretched Debt (Over-leveraged liabilities).
-- **Scenario E:** Complete Perfect Profile (Ready for institutional sanction).
+#### Feature 3: Pre-Underwriting Document Intelligence & OCR Discrepancy Reconciliation (`/documents`)
+- **What Problem It Solves:** Data misdeclarations between typed form numbers and actual uploaded financial evidence (salary slips, ITR-V, bank statements) cause weeks of underwriting delays and sudden rejections.
+- **Why It Matters:** Catching and reconciling financial discrepancies *before* submitting to bank credit underwriters protects the student's credit score and expedites sanctions.
+- **How the Solution Works:** Validates file magic bytes to prevent spoofed uploads, extracts financial figures (monthly net income, bank balances, tuition fees), and calculates percentage variance against form entries with configurable tolerance thresholds.
+
+---
+
+### 3. 🏦 Reference Lender Database
+
+Finora's deterministic rule engine is seeded directly from the provided **GradGuide Education Loan Lender Database**:
+
+| Lender | Non-Collateral Rate | Collateral Rate | Min CIBIL | Conditions / Policy |
+| :--- | :--- | :--- | :---: | :--- |
+| **State Bank of India (SBI)** | 9.40% | 8.40% | **750** | Non-collateral restricted to Top 100 Universities. |
+| **Bank of Baroda (BOB)** | 8.45% | 8.95% (Boys) / 8.75% (Girls) | **700** | Non-collateral restricted to Top 100 Universities. |
+| **Bank of India (BOI)** | *Not Possible* | 9.00% (Boys) / 8.60% (Girls) | **670** | Hard constraint: Collateral mandatory. |
+| **HDFC Credila** | 10.75% | 9.25% – 9.75% | **680** | Dedicated NBFC education loan terms. |
+| **Auxilo Finserve** | 10.25% | 10.00% | **650** | Unsecured & secured custom student slabs. |
+
+> **⚠️ Regulatory Decision-Support Notice:** Finora is an indicative decision-support and assessment product built on deterministic underwriting rules. It does not claim to guarantee formal loan sanctions or rejections.
 
 ---
 
