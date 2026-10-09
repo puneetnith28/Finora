@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { 
   X, 
   ArrowRight, 
@@ -60,13 +60,32 @@ export function InteractiveSpotlightTour() {
   const isFirstStep = currentStepIndex === 0;
   const isLastStep = currentStepIndex === totalSteps - 1;
 
-  // Derive high-precision positioning synchronously
+  // Add Enter key listener to advance tour easily
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (isLastStep) {
+          finishTour();
+        } else {
+          nextStep();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, isLastStep, nextStep, finishTour]);
+
+  // Derive high-precision positioning synchronously so footer is ALWAYS visible
   const popoverStyle = React.useMemo<React.CSSProperties>(() => {
     if (typeof window === "undefined") {
       return { position: "fixed", zIndex: 9999 };
     }
 
-    // Mobile specific layout: dock cleanly to top or bottom based on target position
+    // 1. Mobile Layout: dock cleanly to top or bottom based on target position
     if (isMobile) {
       if (!targetRect) {
         return {
@@ -74,7 +93,7 @@ export function InteractiveSpotlightTour() {
           bottom: "16px",
           left: "12px",
           right: "12px",
-          maxHeight: "65vh",
+          maxHeight: `${Math.min(480, viewportHeight - 32)}px`,
           zIndex: 9999,
         };
       }
@@ -87,7 +106,7 @@ export function InteractiveSpotlightTour() {
           top: "16px",
           left: "12px",
           right: "12px",
-          maxHeight: "65vh",
+          maxHeight: `${Math.min(480, viewportHeight - 32)}px`,
           zIndex: 9999,
         };
       } else {
@@ -96,107 +115,108 @@ export function InteractiveSpotlightTour() {
           bottom: "16px",
           left: "12px",
           right: "12px",
-          maxHeight: "65vh",
+          maxHeight: `${Math.min(480, viewportHeight - 32)}px`,
           zIndex: 9999,
         };
       }
     }
 
-    // Desktop Layout
-    const popoverWidth = Math.min(490, viewportWidth - 40);
-    const popoverHeight = 340;
+    // 2. Desktop Layout
+    const popoverWidth = Math.min(470, viewportWidth - 40);
+    const maxAllowedHeight = Math.min(520, viewportHeight - 32);
     const margin = 20;
 
     if (!targetRect) {
       // Centered fallback
-      const top = Math.max(margin, (viewportHeight - popoverHeight) / 2);
-      const left = Math.max(margin, (viewportWidth - popoverWidth) / 2);
       return {
         position: "fixed",
-        top: `${Math.round(top)}px`,
-        left: `${Math.round(left)}px`,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
         width: `${popoverWidth}px`,
-        maxHeight: "85vh",
+        maxHeight: `${maxAllowedHeight}px`,
         zIndex: 9999,
       };
     }
 
     const spaceBelow = viewportHeight - targetRect.bottom - margin;
     const spaceAbove = targetRect.top - margin;
-    const spaceRight = viewportWidth - targetRect.right - margin;
-    const spaceLeft = targetRect.left - margin;
     const targetCenterX = targetRect.left + targetRect.width / 2;
-    const targetCenterY = targetRect.top + targetRect.height / 2;
 
-    let top: number;
-    let left: number;
+    const isExtraTall = targetRect.height > viewportHeight * 0.55;
+    const isExtraWide = targetRect.width > viewportWidth * 0.70;
 
-    const isExtraTall = targetRect.height > viewportHeight * 0.58;
-    const isExtraWide = targetRect.width > viewportWidth * 0.72;
-
-    if (isExtraTall || (isExtraTall && isExtraWide)) {
-      // For large container sections (like the 6-stage assessment wizard, matrix or documents vault)
-      // Floating HUD docked to the bottom-right or top-right with safe clearance
-      if (spaceRight >= popoverWidth) {
-        top = Math.max(margin, Math.min(targetRect.top + 20, viewportHeight - popoverHeight - margin));
-        left = targetRect.right + margin;
-      } else {
-        // Dock to bottom-right corner as a floating guide
-        top = viewportHeight - popoverHeight - margin;
-        left = viewportWidth - popoverWidth - margin;
-      }
-    } else {
-      // Standard target element positioning
-      const preferredPlacement = currentStep.placement || "bottom";
-
-      if (preferredPlacement === "bottom" && spaceBelow >= popoverHeight) {
-        top = targetRect.bottom + margin;
-        left = targetCenterX - popoverWidth / 2;
-      } else if (preferredPlacement === "top" && spaceAbove >= popoverHeight) {
-        top = targetRect.top - popoverHeight - margin;
-        left = targetCenterX - popoverWidth / 2;
-      } else if (preferredPlacement === "right" && spaceRight >= popoverWidth) {
-        top = targetCenterY - popoverHeight / 2;
-        left = targetRect.right + margin;
-      } else if (preferredPlacement === "left" && spaceLeft >= popoverWidth) {
-        top = targetCenterY - popoverHeight / 2;
-        left = targetRect.left - popoverWidth - margin;
-      } else {
-        // Smart fallback to the side with most available clearance
-        if (spaceBelow >= popoverHeight) {
-          top = targetRect.bottom + margin;
-          left = targetCenterX - popoverWidth / 2;
-        } else if (spaceAbove >= popoverHeight) {
-          top = targetRect.top - popoverHeight - margin;
-          left = targetCenterX - popoverWidth / 2;
-        } else if (spaceRight >= popoverWidth) {
-          top = targetCenterY - popoverHeight / 2;
-          left = targetRect.right + margin;
-        } else if (spaceLeft >= popoverWidth) {
-          top = targetCenterY - popoverHeight / 2;
-          left = targetRect.left - popoverWidth - margin;
-        } else {
-          // If tight on all sides, place in side with maximum headroom
-          if (spaceBelow >= spaceAbove) {
-            top = Math.min(targetRect.bottom + margin, viewportHeight - popoverHeight - margin);
-          } else {
-            top = Math.max(margin, targetRect.top - popoverHeight - margin);
-          }
-          left = targetCenterX - popoverWidth / 2;
-        }
-      }
+    // For large containers (e.g. Receipt box, 6-step form, Lender matrix), dock safely to bottom-right
+    if (isExtraTall || isExtraWide) {
+      return {
+        position: "fixed",
+        bottom: `${margin}px`,
+        right: `${margin}px`,
+        width: `${popoverWidth}px`,
+        maxHeight: `${maxAllowedHeight}px`,
+        zIndex: 9999,
+      };
     }
 
-    // STRICT SAFETY CLAMP: Keep strictly within visible viewport boundaries
-    top = Math.max(margin, Math.min(top, viewportHeight - popoverHeight - margin));
-    left = Math.max(margin, Math.min(left, viewportWidth - popoverWidth - margin));
+    // For standard elements, check preferred placement
+    const preferredPlacement = currentStep.placement || "bottom";
 
+    if (preferredPlacement === "bottom" && spaceBelow >= 360) {
+      const left = Math.max(margin, Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin));
+      return {
+        position: "fixed",
+        top: `${Math.round(targetRect.bottom + 12)}px`,
+        left: `${Math.round(left)}px`,
+        width: `${popoverWidth}px`,
+        maxHeight: `${Math.min(maxAllowedHeight, spaceBelow - 12)}px`,
+        zIndex: 9999,
+      };
+    }
+
+    if (preferredPlacement === "top" && spaceAbove >= 360) {
+      const left = Math.max(margin, Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin));
+      return {
+        position: "fixed",
+        bottom: `${Math.round(viewportHeight - targetRect.top + 12)}px`,
+        left: `${Math.round(left)}px`,
+        width: `${popoverWidth}px`,
+        maxHeight: `${Math.min(maxAllowedHeight, spaceAbove - 12)}px`,
+        zIndex: 9999,
+      };
+    }
+
+    // Fallback: place below if room, else above, else bottom-right corner
+    if (spaceBelow >= 360) {
+      const left = Math.max(margin, Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin));
+      return {
+        position: "fixed",
+        top: `${Math.round(targetRect.bottom + 12)}px`,
+        left: `${Math.round(left)}px`,
+        width: `${popoverWidth}px`,
+        maxHeight: `${Math.min(maxAllowedHeight, spaceBelow - 12)}px`,
+        zIndex: 9999,
+      };
+    }
+
+    if (spaceAbove >= 360) {
+      const left = Math.max(margin, Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin));
+      return {
+        position: "fixed",
+        bottom: `${Math.round(viewportHeight - targetRect.top + 12)}px`,
+        left: `${Math.round(left)}px`,
+        width: `${popoverWidth}px`,
+        maxHeight: `${Math.min(maxAllowedHeight, spaceAbove - 12)}px`,
+        zIndex: 9999,
+      };
+    }
+
+    // Default safe floating HUD docked to bottom-right
     return {
       position: "fixed",
-      top: `${Math.round(top)}px`,
-      left: `${Math.round(left)}px`,
+      bottom: `${margin}px`,
+      right: `${margin}px`,
       width: `${popoverWidth}px`,
-      maxHeight: "85vh",
+      maxHeight: `${maxAllowedHeight}px`,
       zIndex: 9999,
     };
   }, [targetRect, currentStep, viewportWidth, viewportHeight, isMobile]);
@@ -275,15 +295,15 @@ export function InteractiveSpotlightTour() {
         ref={popoverRef}
         style={{
           ...popoverStyle,
-          transition: "top 0.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.4s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s ease-out, max-height 0.3s ease-out, opacity 0.25s ease-out",
+          transition: "top 0.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.4s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1), right 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s ease-out, max-height 0.3s ease-out, opacity 0.25s ease-out",
         }}
         className="neo-box-lg bg-[#FFFDF9] flex flex-col overflow-hidden shadow-[8px_8px_0px_0px_#000000] z-[9999]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="tour-step-title"
       >
-        {/* Header Ribbon */}
-        <div className={`p-3.5 sm:p-4 border-b-3 border-black flex items-center justify-between ${bgVariantClass} transition-colors duration-200`}>
+        {/* Header Ribbon (flex-shrink: 0) */}
+        <div className={`shrink-0 p-3 sm:p-3.5 border-b-3 border-black flex items-center justify-between ${bgVariantClass} transition-colors duration-200`}>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 bg-black text-white flex items-center justify-center border-2 border-black font-black text-xs shadow-[2px_2px_0px_0px_#000] shrink-0">
               <Compass className="h-3.5 w-3.5 text-[#FEF08A]" />
@@ -316,8 +336,8 @@ export function InteractiveSpotlightTour() {
           </div>
         </div>
 
-        {/* Step Progress Bar */}
-        <div className="w-full bg-neutral-200 h-1.5 border-b-2 border-black flex overflow-hidden">
+        {/* Step Progress Bar (flex-shrink: 0) */}
+        <div className="shrink-0 w-full bg-neutral-200 h-1.5 border-b-2 border-black flex overflow-hidden">
           {Array.from({ length: totalSteps }).map((_, idx) => (
             <div
               key={idx}
@@ -328,32 +348,32 @@ export function InteractiveSpotlightTour() {
           ))}
         </div>
 
-        {/* Content Body with Animated Switch */}
-        <div className="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1 text-left">
+        {/* Content Body (flex-1 min-h-0 overflow-y-auto so header & footer never get pushed off) */}
+        <div className="p-3.5 sm:p-4 overflow-y-auto flex-1 min-h-0 text-left">
           {isNavigating ? (
-            <div className="py-8 flex flex-col items-center justify-center space-y-2 text-center">
+            <div className="py-6 flex flex-col items-center justify-center space-y-2 text-center">
               <Loader2 className="h-6 w-6 animate-spin text-black" />
               <span className="text-xs font-black uppercase text-black">
                 Navigating to {currentStep.route}...
               </span>
             </div>
           ) : (
-            <div key={currentStep.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-3">
+            <div key={currentStep.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-2.5">
               {/* Title & Subtitle */}
               <div>
                 <h2 
                   id="tour-step-title"
-                  className="text-lg sm:text-xl font-black uppercase tracking-tight text-black leading-tight"
+                  className="text-base sm:text-lg font-black uppercase tracking-tight text-black leading-tight"
                 >
                   {currentStep.title}
                 </h2>
-                <p className="text-xs font-bold text-neutral-800 mt-0.5">
+                <p className="text-[11px] sm:text-xs font-bold text-neutral-800 mt-0.5">
                   {currentStep.subtitle}
                 </p>
               </div>
 
               {/* Description Box */}
-              <p className="text-xs font-medium text-neutral-900 leading-relaxed bg-[#FFFBEB] p-3 border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+              <p className="text-xs font-medium text-neutral-900 leading-relaxed bg-[#FFFBEB] p-2.5 border-2 border-black shadow-[2px_2px_0px_0px_#000]">
                 {currentStep.description}
               </p>
 
@@ -364,7 +384,7 @@ export function InteractiveSpotlightTour() {
                 </span>
                 <ul className="space-y-1">
                   {currentStep.keyTakeaways.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-1.5 text-xs font-bold text-black">
+                    <li key={idx} className="flex items-start gap-1.5 text-[11px] sm:text-xs font-bold text-black">
                       <span className="w-3.5 h-3.5 bg-[#86EFAC] border border-black flex items-center justify-center shrink-0 mt-0.5 shadow-[1px_1px_0px_#000]">
                         <CheckCircle2 className="h-2.5 w-2.5 text-black stroke-[3]" />
                       </span>
@@ -385,8 +405,8 @@ export function InteractiveSpotlightTour() {
           )}
         </div>
 
-        {/* Footer Navigation Bar */}
-        <div className="p-3 sm:p-4 bg-white border-t-3 border-black flex flex-col sm:flex-row items-center justify-between gap-2.5">
+        {/* Footer Navigation Bar (flex-shrink: 0, ALWAYS 100% VISIBLE) */}
+        <div className="shrink-0 p-3 sm:p-3.5 bg-white border-t-3 border-black flex flex-col sm:flex-row items-center justify-between gap-2.5">
           {/* Step dots */}
           <div className="flex items-center gap-1.5">
             {Array.from({ length: totalSteps }).map((_, idx) => (
@@ -403,7 +423,7 @@ export function InteractiveSpotlightTour() {
               />
             ))}
             <span className="text-[10px] font-mono font-bold text-neutral-500 ml-2 hidden sm:inline">
-              [← / → keys]
+              [← / → / Enter]
             </span>
           </div>
 
@@ -440,7 +460,7 @@ export function InteractiveSpotlightTour() {
               <button
                 type="button"
                 onClick={nextStep}
-                className="neo-btn bg-black text-white py-2 px-4 text-xs font-black uppercase flex items-center gap-1.5 shadow-[3px_3px_0px_0px_#FEF08A]"
+                className="neo-btn bg-black text-white py-2 px-4 text-xs font-black uppercase flex items-center gap-1.5 shadow-[3px_3px_0px_0px_#FEF08A] hover:bg-neutral-900 transition-all cursor-pointer"
               >
                 <span>Next</span>
                 <ArrowRight className="h-3 w-3 stroke-[3]" />
