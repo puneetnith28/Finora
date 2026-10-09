@@ -34,11 +34,19 @@ class ApiClient {
   private defaultTimeoutMs: number;
 
   constructor(
-    baseUrl: string = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
+    baseUrl?: string,
     defaultTimeoutMs: number = 15000
   ) {
-    // Remove trailing slash if present
-    this.baseUrl = baseUrl.replace(/\/$/, "");
+    if (baseUrl !== undefined) {
+      this.baseUrl = baseUrl.replace(/\/$/, "");
+    } else if (process.env.NEXT_PUBLIC_API_URL) {
+      this.baseUrl = process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
+    } else if (typeof window !== "undefined") {
+      // In the browser, use relative path so Next.js proxy rewrites handle it without CORS/port issues
+      this.baseUrl = "";
+    } else {
+      this.baseUrl = "http://localhost:8000";
+    }
     this.defaultTimeoutMs = defaultTimeoutMs;
   }
 
@@ -47,7 +55,14 @@ class ApiClient {
     params?: Record<string, string | number | boolean | undefined | null>
   ): string {
     const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-    const url = new URL(`${this.baseUrl}${cleanEndpoint}`);
+    const urlString = `${this.baseUrl}${cleanEndpoint}`;
+
+    let url: URL;
+    if (typeof window !== "undefined" && !this.baseUrl.startsWith("http")) {
+      url = new URL(urlString, window.location.origin);
+    } else {
+      url = new URL(urlString.startsWith("http") ? urlString : `http://localhost:8000${urlString}`);
+    }
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
