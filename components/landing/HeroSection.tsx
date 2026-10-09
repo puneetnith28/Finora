@@ -2,12 +2,10 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowUpRight, Compass } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { NeoBadge, NeoButton } from "../ui/NeoPrimitives";
-import { useTour } from "@/lib/context/TourContext";
 
 export function HeroSection() {
-  const { startTour } = useTour();
 
   return (
     <section className="w-full bg-[#FEF08A] border-b-2 border-black py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
@@ -34,22 +32,13 @@ export function HeroSection() {
             then generates an explainable receipt.
           </p>
 
-          <div data-tour="hero-cta" className="pt-2 flex flex-wrap items-center gap-3">
+          <div data-tour="hero-cta" className="pt-2 flex items-center">
             <Link href="/assessment">
               <NeoButton variant="primary" size="lg">
                 <span>EXPLORE THE RECORDED HANDOFF</span>
                 <ArrowUpRight className="h-4 w-4" />
               </NeoButton>
             </Link>
-
-            <button
-              type="button"
-              onClick={() => startTour(0)}
-              className="neo-btn bg-[#FFFDF9] hover:bg-[#86EFAC] text-black px-5 py-3.5 text-sm font-black uppercase tracking-wider flex items-center gap-2 border-2 border-black shadow-[3px_3px_0px_0px_#000000]"
-            >
-              <Compass className="h-4 w-4 stroke-[2.5]" />
-              <span>TAKE PRODUCT TOUR (2 MIN)</span>
-            </button>
           </div>
 
           <p className="text-xs font-bold text-neutral-800 pt-2">

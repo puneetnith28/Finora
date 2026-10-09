@@ -9,7 +9,6 @@ import { Suspense } from "react";
 
 import { TourProvider } from "@/lib/context/TourContext";
 import { InteractiveSpotlightTour } from "@/components/tour/InteractiveSpotlightTour";
-import { TourFloatingTrigger } from "@/components/tour/TourFloatingTrigger";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,7 +47,6 @@ export default function RootLayout({
                 <main className="flex-1 w-full">{children}</main>
                 <Footer />
                 <InteractiveSpotlightTour />
-                <TourFloatingTrigger />
               </TourProvider>
             </Suspense>
           </ToastProvider>
