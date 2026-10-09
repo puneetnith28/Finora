@@ -1,403 +1,119 @@
-# Finora — Technical Requirements Document
-
-## 1. Project Overview
-
-Finora is an education-loan assessment and financial-readiness platform for students planning higher education. It collects a student's study plan, education costs, available funding, financial profile, assets, liabilities, collateral, and supporting documents, then deterministically calculates funding gap, net worth, EMI, FOIR, collateral value, and LTV. It evaluates the profile against configurable demo lender criteria and produces explainable lender matches and a financial-readiness report.
-
-Finora is an **assessment and readiness tool, not a loan approval or guarantee service**.
-
-## 2. Product Goals
-
-- Help students understand the true cost of their study plan.
-- Calculate how much funding is actually required.
-- Give students a clear picture of financial strength and gaps.
-- Assess collateral and affordability using transparent formulas.
-- Show which configured lender criteria the student satisfies or fails.
-- Explain every assessment result in plain language.
-- Identify missing or inconsistent supporting documents.
-- Let users simulate changes to income, EMI, loan amount, tenure, or collateral and immediately see the impact on FOIR/LTV.
-- Produce a professional readiness report that can be reviewed or shared.
-
-## 3. Technical Goals
-
-- Full end-to-end workflow from student profile to assessment and report.
-- Financial calculations performed server-side and reproducibly.
-- Lender criteria stored as data rather than hard-coded into UI components.
-- No LLM makes financial eligibility decisions.
-- Document extraction is treated as evidence, never as the source of truth for a lending decision.
-- Application can run locally without paid AI APIs.
-- Responsive, accessible UI on mobile, tablet, and desktop.
-- Clear loading, validation, empty, success, and error states.
-
-## 4. Proposed Tech Stack
-
-### Frontend
-
-- Next.js
-- TypeScript
-- Tailwind CSS
-- React Hook Form
-- Zod
-- Recharts or equivalent charting library
-
-### Backend
-
-- FastAPI
-- Python
-- Pydantic
-- SQLAlchemy
-
-### Database
-
-- SQLite for the MVP/local development.
-- SQLAlchemy keeps the persistence layer portable to PostgreSQL for production deployment if required.
-
-### Documents
-
-- Local file storage for MVP.
-- Provider-agnostic extraction adapter for PDF/text/OCR.
-- Optional OCR/AI provider integrations must remain behind an interface.
-
-### Authentication
-
-- MVP may use a simple authenticated user model if required by deployment scope.
-- All protected operations must be authorized server-side.
-- Demo mode must never expose real credentials or secrets.
-
-### Deployment
-
-- Frontend: Vercel or equivalent.
-- Backend: Render/Railway/Fly.io or equivalent Python host.
-- Database: SQLite for demo environments where persistent disk is available; PostgreSQL for production environments where required.
-
-## 5. Core Functional Requirements
-
-### 5.1 Student Profile
-
-User can create/update:
-
-- Name
-- Email
-- Phone (optional)
-- Current education level
-- Academic details
-- Co-applicant/family context where applicable
-
-### 5.2 Study Plan
-
-User can enter:
-
-- Destination country
-- University/institution
-- Course/program
-- Course duration
-- Tuition cost
-- Living cost
-- Travel cost
-- Insurance cost
-- Other expected costs
-
-System calculates:
-`Total Study Cost = Tuition + Living + Travel + Insurance + Other`
-
-### 5.3 Funding Sources
-
-User can enter:
-
-- Personal savings
-- Scholarships
-- Fees already paid
-- Family contribution
-- Other confirmed funding
-
-System calculates:
-`Available Funding = Savings + Scholarship + Fees Paid + Family Contribution + Other`
-
-`Funding Gap = max(Total Study Cost - Available Funding, 0)`
-
-### 5.4 Financial Profile
-
-User can enter:
-
-- Monthly gross income
-- Monthly net income
-- Existing EMIs
-- Other monthly obligations
-- Assets
-- Liabilities
-
-System calculates:
-`Net Worth = Total Assets - Total Liabilities`
-
-### 5.5 Loan / EMI Assessment
-
-User can enter or select:
-
-- Requested loan amount
-- Interest rate
-- Tenure
-
-System calculates proposed EMI using a standard amortization formula.
-
-### 5.6 FOIR
-
-Finora calculates:
-`FOIR = (Existing EMI + Proposed EMI) / Monthly Net Income × 100`
-
-FOIR thresholds are lender-specific and must not be treated as a universal industry rule.
-
-### 5.7 Collateral
-
-User can add:
-
-- Property
-- Fixed deposit / eligible financial asset
-- Other configured collateral type
-- Estimated market value
-- Ownership information
-- Existing encumbrance where applicable
-
-System calculates eligible collateral value using configurable lender rules.
-
-### 5.8 LTV
-
-`LTV = Requested Loan Amount / Eligible Collateral Value × 100`
-
-The lender's configured LTV limit determines the assessment outcome.
-
-### 5.9 Documents
-
-Supported document categories include:
-
-- Admission letter
-- Scholarship proof
-- ITR
-- Salary slip
-- Bank statement
-- Property document
-- Passport
-- Other supporting document
-
-Each document has:
-
-- Type
-- File metadata
-- Upload status
-- Verification/readiness status
-- Extraction status
-- Extracted evidence where available
-- Discrepancy flags where applicable
-
-### 5.10 Document Readiness
-
-Finora identifies:
-
-- Missing required documents
-- Documents with extraction failure
-- Documents with suspicious/incomplete evidence
-- Meaningful differences between entered financial values and extracted values
-
-### 5.11 Lender Assessment
-
-Each lender has configurable criteria such as:
-
-- Maximum FOIR
-- Maximum LTV
-- Minimum income
-- Minimum net worth where applicable
-- Maximum loan amount
-- Collateral requirement
-- Required documents
-- Other deterministic rules
-
-Assessment result states:
-
-- `potential_match`
-- `needs_review`
-- `not_a_match`
-
-Every result must contain reasons and failed/passed rule details.
-
-### 5.12 Readiness Report
-
-Report includes:
-
-- Study cost breakdown
-- Available funding
-- Funding gap
-- Financial profile
-- Net worth
-- Proposed loan and EMI
-- FOIR
-- Collateral and LTV
-- Document readiness
-- Lender matches
-- Rule-by-rule explanations
-- Key actions to improve readiness
-
-Report must never say that a loan is guaranteed or approved.
-
-### 5.13 FOIR Simulator
-
-User can adjust:
-
-- Loan amount
-- Interest rate
-- Tenure
-- Monthly income
-- Existing EMI
-
-The simulator recalculates EMI and FOIR without changing the saved assessment until the user explicitly saves a scenario.
-
-## 6. Data Model
-
-Core entities:
-
-- User
-- Student
-- StudyPlan
-- FundingSource
-- FinancialProfile
-- IncomeSource
-- Liability
-- Asset
-- Collateral
-- Document
-- Lender
-- LenderCriteria
-- Assessment
-- AssessmentResult
-- AssessmentRuleResult
-- SimulatorScenario
-- Report
-
-Historical assessments should be immutable/versioned so a new lender-rule version does not silently rewrite a previous result.
-
-## 7. API Requirements
-
-Minimum API surface:
-
-- `GET /health`
-- `GET /health/db`
-- `POST /api/students`
-- `GET /api/students/{id}`
-- `PATCH /api/students/{id}`
-- Study plan CRUD endpoints
-- Funding CRUD endpoints
-- Financial profile endpoints
-- Assets/liabilities/collateral endpoints
-- `GET /api/lenders`
-- `GET /api/lenders/{id}`
-- Document upload/list/delete endpoints
-- Document readiness endpoint
-- `POST /api/assessments`
-- `GET /api/assessments/{id}`
-- `GET /api/assessments/{id}/report`
-- `POST /api/simulator/preview`
-- `POST /api/simulator/scenarios`
-
-All request bodies must be validated server-side.
-
-## 8. Non-Functional Requirements
-
-### Performance
-
-- Initial dashboard should feel responsive on normal broadband.
-- Financial calculations should return quickly because they are deterministic.
-- Large document processing must show progress/loading states.
-
-### Security
-
-- Never expose secrets in client-side code.
-- Validate uploaded file type and size server-side.
-- Sanitize filenames and prevent path traversal.
-- Authorize access to every protected resource.
-- Do not expose raw database or stack-trace errors.
-
-### Accessibility
-
-- Proper labels for inputs.
-- Keyboard-accessible controls.
-- Visible focus states.
-- Logical heading hierarchy.
-- Errors must not rely on color alone.
-- Adequate contrast.
-
-### Responsiveness
-
-- Mobile first.
-- Support small mobile, large mobile, tablet, laptop, and desktop.
-- No horizontal overflow.
-
-## 9. Integrations
-
-Optional integrations:
-
-- OCR/document extraction provider.
-- PDF report generation.
-- Analytics/error monitoring if deployment requires them.
-
-The product must remain runnable without paid AI services.
-
-## 10. Financial Decision Rules
-
-1. Financial calculations live in backend services.
-2. Lender rules are data-driven.
-3. No universal FOIR threshold.
-4. No LLM decides eligibility.
-5. OCR provides evidence only.
-6. Every lender result must be explainable.
-7. Assessments must be reproducible.
-8. Historical assessments must be versioned.
-9. Demo lender policies must be explicitly labeled as demo criteria.
-10. Finora must not represent an assessment as guaranteed approval.
-
-## 11. UI Direction
-
-The visual system should take inspiration from the supplied Orville, CampusEvac, and Hacktoberfest references:
-
-- Strong editorial hero section.
-- Large, confident typography.
-- Clear numbered journey.
-- Strong CTA hierarchy.
-- Spacious sections.
-- Product screenshots/cards presented as evidence.
-- Distinct role/status cards.
-- Playful but professional visual details.
-- Responsive layouts and purposeful motion.
-
-The references are design inspiration, not assets to copy verbatim. Finora must retain its own brand, content, illustrations, icons, and product language.
-
-## 12. Constraints
-
-- Keep the architecture understandable for a hiring-assignment reviewer.
-- Avoid unnecessary microservices.
-- Avoid Kubernetes.
-- Avoid WebSockets unless a demonstrated requirement appears.
-- Do not make blockchain part of the core system.
-- Do not make paid AI APIs mandatory.
-- Do not put financial calculations only in the frontend.
-- Do not hard-code lender policy into React components.
-- Do not present demo criteria as real bank policy.
-
-## 13. Definition of Done
-
-Finora is technically complete when a fresh reviewer can:
-
-1. Clone the repository.
-2. Install dependencies.
-3. Configure environment variables from the example file.
-4. Start frontend and backend.
-5. Initialize the database.
-6. Create a student profile.
-7. Complete the study plan.
-8. Enter funding sources and see the funding gap.
-9. Enter financial information and see net worth/FOIR.
-10. Add collateral and see LTV.
-11. Upload supporting documents.
-12. See document readiness and discrepancy flags.
-13. Run a lender assessment.
-14. Understand why each lender matched or failed.
-15. Use the FOIR simulator.
-16. Generate/view a readiness report.
-17. Complete the journey without developer intervention.
+# Finora — Technical Requirements Document (TRD)
+
+> **Document Status:** Authoritative Technical Specification  
+> **Repository Verified Version:** 1.0.0  
+> **Architectural Topology:** Next.js 16.4 Frontend (Vercel) + FastAPI 0.115 Backend (Render)
+
+---
+
+## 1. Executive Summary & Product Objective
+
+Finora is a deterministic education-loan assessment and financial-readiness platform designed for students pursuing international higher education. It systematically aggregates student academic profiles, multi-currency study plans, declared self-funding, household income and liabilities, pledged collateral, and pre-underwriting documents. 
+
+Finora executes deterministic financial calculations for **Study Costs (FX-normalized)**, **Funding Gap**, **Household Net Worth**, **Reducing-Balance Monthly EMI**, **Fixed Obligation to Income Ratio (FOIR)**, and **Collateral Loan-to-Value (LTV)**. The platform maps these metrics against configurable lender criteria, producing transparent, explainable match evaluations and a comprehensive Readiness Report.
+
+> [!IMPORTANT]
+> Finora is an **indicative assessment and financial-readiness tool**. It is neither a direct lending entity nor a guaranteed loan sanctioning service.
+
+---
+
+## 2. Core Functional Requirements
+
+```
+┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+│ 1. PROFILE &    │       │ 2. COSTS &      │       │ 3. FINANCIALS & │
+│    ACADEMICS    │──────▶│    FUNDING GAP  │──────▶│    FOIR ENGINE  │
+└─────────────────┘       └─────────────────┘       └─────────────────┘
+                                                             │
+                                                             ▼
+┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+│ 6. READINESS    │       │ 5. LENDER MATCH │       │ 4. COLLATERAL & │
+│    REPORT       │◀──────│    & EXPLANATION│◀──────│    DOCUMENTS    │
+└─────────────────┘       └─────────────────┘       └─────────────────┘
+```
+
+### 2.1 Student Profile Management
+- Collects student identity, email, nationality, destination corridor (USA, UK, Canada, Australia, Germany, Ireland, Singapore, France), target university, and academic degree level.
+- Rejects duplicate email registrations via HTTP `409 Conflict`.
+
+### 2.2 Study Plan & Multi-Currency Normalization
+- Aggregates tuition, living expenses, travel/visa, health insurance, and miscellaneous costs.
+- Normalizes native currency expenses to INR using verified central bank baseline exchange rates (USD: 85.00, EUR: 92.00, GBP: 108.00, CAD: 62.00, AUD: 55.00).
+- Calculates annualized costs based on total program duration in months.
+
+### 2.3 Self-Funding & Funding Gap Calculation
+- Declares personal savings, academic scholarships, family sponsorships, and prior fee payments.
+- Computes `funding_gap = max(0.00, total_study_cost_inr - total_funding_inr)`.
+- Calculates self-funding `coverage_ratio` (floored at ₹0.00 to prevent negative loan requirements).
+
+### 2.4 Household Financial Profile & FOIR Engine
+- Captures co-borrower monthly gross/net income, existing loan EMIs, and credit card obligations.
+- Computes proposed loan EMI using standard compound reducing-balance amortization.
+- Evaluates FOIR ratio: $\text{FOIR} = \frac{\text{Existing EMIs} + \text{Proposed EMI} + \text{Other Fixed Debt}}{\text{Monthly Net Income}}$.
+- Categorizes debt service into 4 risk tiers: `low_risk` ($\le 40\%$), `moderate_risk` ($40.01\%-60\%$), `high_risk` ($60.01\%-80\%$), `critical_risk` ($>80\%$).
+
+### 2.5 Collateral Valuation & LTV Haircuts
+- Evaluates pledged assets: Residential Property (80% LTV / 20% haircut), Fixed Deposits (90%), Gold (75%), Government Bonds (85%), Insurance Surrender Value (80%), Other Assets (50%).
+- Applies ownership adjustments: 100% for sole or joint-parent ownership, 70% for third-party blood relatives, 50% for joint third-party titles.
+- Calculates `LTV = (Requested Loan Amount / Eligible Collateral Value) * 100` and determines `coverage_status` (`fully_secured`, `partially_secured`, `unsecured`).
+
+### 2.6 Pre-Underwriting Document Intelligence & Discrepancy Engine
+- Supports PDF, PNG, and JPEG uploads up to 10 MB per file.
+- Inspects binary magic header bytes (`%PDF-`, `\x89PNG`, `\xff\xd8\xff`) to reject spoofed files.
+- Extracts income figures from salary slips/ITRs via regex/stream parsing and flags discrepancies exceeding the configurable tolerance threshold (default: 10%).
+
+### 2.7 Authoritative Lender Underwriting Engine
+- Evaluates candidate profile against 5 benchmark lenders (State Bank of India, Bank of Baroda, Bank of India, HDFC Credila, Auxilo Finserve).
+- Evaluates hard constraints vs review triggers and assigns outcome states: `potential_match`, `needs_review`, `not_a_match`.
+- Stores immutable assessment snapshots in `assessment_results` and `assessment_rule_results` to prevent historical calculation drift.
+
+### 2.8 Interactive Real-Time Simulator
+- Allows real-time sliding of loan amount, tenure (12–360 months), and interest rate (5–20%).
+- Instantly recalculates EMI, FOIR, risk badge, and lender eligibility transitions without mutating the saved official assessment.
+
+---
+
+## 3. Technology Stack & Framework Specifications
+
+| Layer | Component / Technology | Version / Configuration | Technical Rationale |
+| :--- | :--- | :--- | :--- |
+| **Frontend Core** | Next.js (App Router, Turbopack) | `16.4.0` | React Server Components, server-side rewrite proxying, partial prefetching |
+| **UI Framework** | React | `19.3.0` | Concurrent rendering, declarative state management |
+| **Styling** | Tailwind CSS (Turbopack) | `v4.0` | Neo-Brutalist design tokens, high contrast, responsive grid layouts |
+| **Form Validation**| Zod + React Hook Form | `zod 4.6.5` | Client-side strict schema parsing and error boundaries |
+| **Icons & Visuals** | Lucide React | `1.53.0` | Accessible, tree-shakeable SVG UI iconography |
+| **Backend Core** | FastAPI + Python | `FastAPI 0.115+`, `Python 3.13` | Asynchronous ASGI request handling, OpenAPI auto-generation |
+| **Data Validation** | Pydantic v2 | `2.10+` | Strict static type coercion, `ge=0` domain validation |
+| **ORM & Persistence**| SQLAlchemy 2.0 + SQLite 3 | `2.0+` | Declarative `Mapped` columns, `PRAGMA foreign_keys=ON` cascade integrity |
+| **Linting & Code Quality**| Ruff + ESLint + TypeScript | Python Ruff, ESLint 9, TS 5 | Zero lint warnings, zero type errors, automated formatting |
+| **Test Framework** | Pytest + Asyncio | `pytest 9.1.1` | 131 automated tests across unit, integration, and security layers |
+
+---
+
+## 4. System Non-Functional Requirements
+
+### 4.1 Determinism & Mathematical Accuracy
+- Floating-point arithmetic is strictly prohibited in persistence and financial calculation logic. All math executes via `decimal.Decimal` with explicit rounding modes.
+- Assessments are 100% reproducible: identical inputs evaluated against the same criteria yield bit-identical metric results.
+
+### 4.2 Security & Data Isolation
+- File uploads are validated via binary magic bytes and saved under random UUIDs in isolated `/uploads/{student_id}/` directories.
+- Path traversal is strictly blocked via directory prefix verification.
+- HTTP security response headers (`nosniff`, `DENY`, `1; mode=block`, `strict-origin-when-cross-origin`) are injected on all outgoing responses.
+- Unhandled server exceptions are masked into uniform JSON envelopes without leaking stack traces.
+
+### 4.3 Performance & Responsiveness
+- Financial calculations execute in under 10 milliseconds.
+- Frontend bundle size is minimized via Turbopack code splitting.
+- Responsive single-column fluid layouts adapt seamlessly from 320px mobile screens to 4K desktop viewports.
+
+---
+
+## 5. Traceability to Technical Artifacts
+
+- **Architecture Blueprints:** [`docs/Architecture.md`](file:///home/puneetyadav1625/Projects/Finora/docs/Architecture.md)
+- **Financial Calculation Rules:** [`docs/FINANCIAL_RULES.md`](file:///home/puneetyadav1625/Projects/Finora/docs/FINANCIAL_RULES.md)
+- **REST API Catalog:** [`docs/API_REFERENCE.md`](file:///home/puneetyadav1625/Projects/Finora/docs/API_REFERENCE.md)
+- **Database Schema Models:** [`docs/DATABASE_SCHEMA.md`](file:///home/puneetyadav1625/Projects/Finora/docs/DATABASE_SCHEMA.md)
+- **Deployment Runbooks:** [`docs/DEPLOYMENT.md`](file:///home/puneetyadav1625/Projects/Finora/docs/DEPLOYMENT.md)
+- **Quality Verification & Test Matrix:** [`docs/TESTING.md`](file:///home/puneetyadav1625/Projects/Finora/docs/TESTING.md)

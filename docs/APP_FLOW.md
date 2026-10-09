@@ -1,467 +1,128 @@
-# Finora — Application Flow
+# Finora — Application Flow & User Journey Specification
+
+> **Document Status:** Authoritative UX & Flow Specification  
+> **Interface Architecture:** Next.js App Router Single-Page Stepper Wizard + Spotlight Onboarding Tour  
+> **Target Audiences:** Product Managers, Frontend Engineers, QA Engineers, Assignment Reviewers
+
+---
+
+## 1. End-to-End User Journey Overview
+
+```mermaid
+flowchart TD
+    Landing["Landing Page (/)"] -->|Start Assessment / Tour| Wizard["6-Step Assessment Wizard (/assessment)"]
+    
+    subgraph WizardSteps["Assessment Stepper Workflow"]
+        Step1["Step 1: Student Profile\n(Name, Target University, Country)"] --> Step2["Step 2: Study Plan & Costs\n(Tuition, Living, FX Normalization)"]
+        Step2 --> Step3["Step 3: Funding & Gap\n(Savings, Scholarships, Net Gap)"]
+        Step3 --> Step4["Step 4: Financial Profile\n(Income, EMIs, FOIR Engine)"]
+        Step4 --> Step5["Step 5: Collateral & LTV\n(Property, FD, Gold, Haircuts)"]
+        Step5 --> Step6["Step 6: Documents & OCR\n(Uploads, Readiness, Discrepancies)"]
+    end
+    
+    Wizard --> WizardSteps
+    Step6 -->|Run Assessment| Report["Readiness Assessment Report (/assessment#results)"]
+    Report -->|Stress Test Scenarios| Simulator["Real-Time Loan Simulator (/simulator)"]
+    Report -->|Explore Lenders| LendersCatalog["Lender Criteria Explorer (/lenders)"]
+```
+
+---
+
+## 2. Global Navigation & Guided Spotlight Tour
+
+### 2.1 Navigation Bar Elements
+- **Brand Identity:** Finora Neo-Brutalist logo linking to `/`.
+- **Primary Routes:**
+  - `Assessment` (`/assessment`): Core 6-step readiness stepper.
+  - `Simulator` (`/simulator`): Interactive FOIR stress-testing sandbox.
+  - `Lenders` (`/lenders`): Transparent rulebook explorer for the 5 partner institutions.
+  - `Documents` (`/documents`): Central pre-underwriting document vault.
+- **Header CTAs:**
+  - `Take Tour`: Triggers the 14-step spotlight onboarding walkthrough.
+  - `Load Demo`: Populates pre-configured candidate profiles (e.g. Aarav Mehta) for instant evaluation.
+
+### 2.2 14-Step Guided Spotlight Tour
+The spotlight tour highlights critical UI components in sequence:
+1. **Hero Value Proposition:** Introduction to deterministic loan assessment.
+2. **Step Stepper:** Explains the 6 progressive evaluation phases.
+3. **Multi-Currency Inputs:** Highlights automated FX conversion.
+4. **Funding Gap Card:** Explains the floored net gap metric.
+5. **FOIR Indicator:** Demonstrates monthly debt service vs income ratio.
+6. **LTV Calculator:** Highlights collateral haircuts and security coverage.
+7. **Document Vault:** Explains magic-byte verification and OCR extraction.
+8. **Discrepancy Engine:** Demonstrates declared income vs salary slip comparison.
+9. **Lender Matching:** Explains hard constraints vs review triggers.
+10. **Lender Card Details:** Inspects granular reason codes (SBI, BOB, BOI, HDFC Credila, Auxilo).
+11. **Readiness Band:** Explains the 4 readiness tiers (Strong, Moderate, Conditional, High Risk).
+12. **Recommendations Engine:** Highlights actionable improvement steps.
+13. **FOIR Simulator:** Demonstrates real-time parameter sliding.
+14. **PDF Export & Share:** Walks through report export capabilities.
+
+---
+
+## 3. Step-by-Step Wizard Specification
+
+### Step 1: Student Profile & Destination
+- **User Actions:** Enter student legal name, contact email, country of origin (default: India), destination country (USA, UK, Canada, Australia, Germany, Ireland, Singapore, France), target university, and program name.
+- **System Actions:** Validates input via Zod schema, creates or updates student record via `POST /api/students`, stores student ID in React wizard state.
+- **Validation Rules:** Valid email format required; prevents duplicate email collisions (`409 Conflict`).
+
+### Step 2: Study Plan & Academic Costs
+- **User Actions:** Enter tuition fee, living expenses, travel/relocation costs, health insurance, and miscellaneous fees; select native currency (USD, EUR, GBP, CAD, AUD) and course duration (months).
+- **System Actions:** Calls `POST /api/students/{id}/study-plan`, deterministically applies exchange rate, calculates total and annualized costs in both native currency and INR.
+- **Validation Rules:** All expenses must be $\ge 0.00$; negative values rejected immediately.
+
+### Step 3: Self-Funding & Gap Analysis
+- **User Actions:** Add declared funding items across 4 categories: Personal Savings, Scholarships, Family Contributions, and Other confirmed sources.
+- **System Actions:** Normalizes all sources to INR via `POST /api/students/{id}/funding`, calculates `total_funding_inr`, computes `funding_gap = max(0, total_study_cost - total_funding)`.
+- **UI Presentation:** Displays prominent Neo-Brutalist metric card showing Total Cost, Available Funding, and Net Funding Gap.
+
+### Step 4: Household Financial Profile & FOIR
+- **User Actions:** Enter primary/co-borrower monthly net income, existing monthly EMIs, household living expenses, requested loan amount, loan tenure (months), and indicative interest rate (%).
+- **System Actions:** Computes proposed monthly EMI via standard compound reducing-balance formula, calculates FOIR ratio and percentage, assigns risk tier badge (`low_risk`, `moderate_risk`, `high_risk`, `critical_risk`).
+- **UI Presentation:** Displays live color-coded FOIR gauge with clear plain-language debt burden interpretation.
+
+### Step 5: Collateral Valuation & LTV Haircuts
+- **User Actions:** Add pledged collateral assets (Residential/Commercial Property, Fixed Deposits, Gold, Government Bonds, Insurance Policies, Other Assets), specify ownership status (Sole, Joint Parent, Joint Third Party, Third Party), market value, and existing encumbrance/mortgage.
+- **System Actions:** Calls `POST /api/students/{id}/collateral`, deducts encumbrances, applies asset-specific haircuts and ownership factors, computes `eligible_collateral_value_inr`, evaluates LTV ratio and `coverage_status` (`fully_secured`, `partially_secured`, `unsecured`).
+
+### Step 6: Pre-Underwriting Documents & Discrepancy Reconciliation
+- **User Actions:** Upload supporting files (Admission Offer Letter, Passport, Salary Slips, Bank Statements, ITR, Property Deeds).
+- **System Actions:** Validates binary magic header bytes via `POST /api/students/{id}/documents`, saves file to isolated storage, triggers local OCR/regex extraction via `POST /api/documents/{id}/extract`, evaluates income discrepancies via `GET /api/students/{id}/discrepancies`.
+- **UI Presentation:** Displays document readiness checklist matrix and highlights any detected income variance flags exceeding tolerance (default: 10%).
+
+---
+
+## 4. Assessment Results & Report Generation
+
+### 4.1 Orchestration Trigger (`Run Assessment`)
+When the applicant clicks **"Run Loan Readiness Assessment"**:
+1. Frontend submits `POST /api/students/{id}/assessments`.
+2. Backend orchestrator evaluates the candidate's financial snapshot against the 5 partner lenders (SBI, BOB, BOI, HDFC Credila, Auxilo Finserve).
+3. Evaluates all hard constraints and review triggers, computing a weighted match score (0–100%) and assigning outcome states (`potential_match`, `needs_review`, `not_a_match`).
+4. Creates an immutable point-in-time snapshot in `assessments`, `assessment_results`, and `assessment_rule_results`.
 
-## 1. Primary Journey
+### 4.2 Report Sections
+- **Executive Summary:** Readiness Band badge, overall readiness score, matched lenders count.
+- **Financial Breakdown:** Side-by-side cards for Total Study Cost, Self-Funding, Funding Gap, Monthly EMI, FOIR, and LTV.
+- **Lender Cards:** Expandable cards for each lender detailing interest rate ranges, loan maximums, passed rules, failed constraints, and review triggers.
+- **Actionable Remediation Checklist:** Specific suggestions to improve approval probability (e.g. adding collateral, extending tenure, adding co-borrower).
+- **Export Capabilities:** Printable view / PDF export layout formatted for banking review.
 
-Landing Page
-→ Start Assessment
-→ Student Profile
-→ Study Plan
-→ Study Cost Summary
-→ Funding Sources
-→ Funding Gap
-→ Financial Profile
-→ Assets & Liabilities
-→ Loan Configuration
-→ FOIR Summary
-→ Collateral
-→ LTV Summary
-→ Document Vault
-→ Document Readiness
-→ Lender Assessment
-→ Explainable Lender Matches
-→ Readiness Report
-→ FOIR Simulator
-→ Assessment Complete
+---
 
-## 2. Entry Points
+## 5. Interactive Simulator Workflow
 
-- Landing page CTA: `Start my assessment`
-- Returning user: dashboard → continue assessment
-- Direct assessment link: resume an existing draft
+Located at `/simulator`:
+- **Real-Time Sliders:** Loan Amount slider, Tenure slider (12 to 360 months), Interest Rate slider (5% to 20%), Income adjustment.
+- **Instant Response:** Calls `POST /api/simulator/foir` and `POST /api/simulator/lender-impact` with zero latency.
+- **Sandbox Isolation:** Simulator experimentation never overwrites or mutates the official historical assessment report.
 
-## 3. Global Navigation
+---
 
-Primary product navigation:
+## 6. State Preservation & Error Recovery
 
-- Overview
-- Study Plan
-- Funding
-- Financial Profile
-- Collateral
-- Documents
-- Lender Assessment
-- Simulator
-- Report
-
-A visible progress indicator should communicate where the user is in the journey.
-
-## 4. Landing Page
-
-### Purpose
-
-Explain Finora in one clear statement and move users into the assessment.
-
-### Primary CTA
-
-`Check my financial readiness`
-
-### Secondary CTA
-
-`See how it works`
-
-### Sections
-
-1. Hero
-2. How Finora works — numbered 01–05 flow
-3. What Finora calculates
-4. Explainable assessment preview
-5. Document readiness preview
-6. FOIR simulator preview
-7. Final CTA
-
-### States
-
-- Normal
-- Loading when starting an assessment
-- Error if the assessment cannot be created
-
-## 5. Assessment Start
-
-System creates a draft assessment/student context.
-
-### Failure
-
-- Preserve any existing data.
-- Show a recoverable error.
-- Allow retry.
-
-## 6. Student Profile
-
-### Inputs
-
-- Name
-- Email
-- Academic level
-- Optional family/co-applicant details
-
-### Actions
-
-- Continue
-- Back
-- Save draft
-
-### Validation
-
-- Required fields cannot be skipped.
-- Email must be valid when provided.
-
-### Important behavior
-
-Going back must preserve saved data.
-
-## 7. Study Plan
-
-### Inputs
-
-- Country
-- University
-- Course
-- Duration
-- Tuition
-- Living costs
-- Travel
-- Insurance
-- Other costs
-
-### System response
-
-Show a live cost breakdown and total study cost.
-
-### Empty state
-
-Show helpful examples instead of a blank dashboard.
-
-### Validation
-
-Costs must be numeric and non-negative.
-
-## 8. Study Cost Summary
-
-Display:
-
-- Tuition
-- Living
-- Travel
-- Insurance
-- Other
-- Total study cost
-
-Primary action: `Continue to funding`
-
-## 9. Funding Sources
-
-### Inputs
-
-- Savings
-- Scholarship
-- Fees paid
-- Family contribution
-- Other confirmed funding
-
-### System response
-
-Show:
-`Total Study Cost`
-minus
-`Available Funding`
-=
-
-`Funding Gap`
-
-The funding gap becomes a major visual metric.
-
-## 10. Financial Profile
-
-### Inputs
-
-- Gross income
-- Net income
-- Existing EMI
-- Other obligations
-- Assets
-- Liabilities
-
-### System response
-
-Calculate and explain net worth.
-
-## 11. Loan Configuration
-
-### Inputs
-
-- Requested loan amount
-- Interest rate
-- Tenure
-
-### System response
-
-Calculate proposed EMI.
-
-### Validation
-
-- Loan amount cannot be negative.
-- Interest rate cannot be negative.
-- Tenure must be within configured safe bounds.
-
-## 12. FOIR Summary
-
-Display:
-
-- Monthly net income
-- Existing EMI
-- Proposed EMI
-- Total EMI obligation
-- FOIR percentage
-
-Add an explanation:
-`FOIR shows how much of monthly net income is committed to EMI obligations.`
-
-Do not label a result as approved/rejected solely from a universal FOIR number.
-
-## 13. Collateral
-
-### Inputs
-
-- Collateral type
-- Description
-- Ownership
-- Market value
-- Existing encumbrance
-
-### System response
-
-Calculate eligible collateral value according to lender configuration.
-
-## 14. LTV Summary
-
-Display:
-
-- Requested loan
-- Eligible collateral value
-- LTV percentage
-- Lender-specific threshold when available
-
-Explain the result in plain language.
-
-## 15. Document Vault
-
-### Upload categories
-
-- Admission letter
-- Scholarship proof
-- ITR
-- Salary slip
-- Bank statement
-- Property document
-- Passport
-- Other
-
-### Upload states
-
-- Selecting
-- Uploading
-- Uploaded
-- Extracting
-- Ready
-- Needs review
-- Failed
-
-### Errors
-
-- Unsupported type
-- File too large
-- Upload failure
-- Extraction failure
-
-Never lose previously entered assessment data because a document fails.
-
-## 16. Document Readiness
-
-Display:
-
-- Required documents
-- Uploaded documents
-- Missing documents
-- Extraction status
-- Discrepancy flags
-
-Example discrepancy:
-`Entered monthly net income: ₹85,000`
-`Extracted salary evidence: ₹78,000`
-`Difference: ₹7,000`
-
-The system flags the discrepancy for review rather than deciding fraud or eligibility.
-
-## 17. Lender Assessment
-
-### Entry action
-
-`Run assessment`
-
-### System steps
-
-1. Validate required data.
-2. Load lender criteria.
-3. Calculate financial metrics.
-4. Evaluate deterministic rules.
-5. Store an immutable assessment snapshot/version.
-6. Generate rule-level results.
-7. Rank/display configured matches.
-
-### Loading state
-
-Show progress such as:
-
-- Checking affordability
-- Checking collateral
-- Checking documents
-- Comparing lender criteria
-- Preparing explanation
-
-### Failure
-
-- Keep existing data.
-- Explain what failed.
-- Allow retry.
-
-## 18. Explainable Lender Matches
-
-Each lender card shows:
-
-- Assessment state
-- Key positive factors
-- Failed/uncertain criteria
-- FOIR result
-- LTV result
-- Loan amount check
-- Document readiness
-- Next actions
-
-States:
-
-- Potential match
-- Needs review
-- Not a match
-
-Never show a fake approval badge.
-
-## 19. Readiness Report
-
-Sections:
-
-1. Student summary
-2. Study cost
-3. Funding
-4. Funding gap
-5. Financial profile
-6. Loan affordability
-7. Collateral
-8. Documents
-9. Lender assessment
-10. Improvement actions
-
-Actions:
-
-- View full report
-- Export PDF
-- Return to dashboard
-
-## 20. FOIR Simulator
-
-Simulator starts from the saved assessment but does not mutate it.
-
-Adjustable inputs:
-
-- Loan amount
-- Interest rate
-- Tenure
-- Monthly income
-- Existing EMI
-
-Live outputs:
-
-- EMI
-- Total EMI burden
-- FOIR
-- Change versus current scenario
-
-Action:
-`Save scenario`
-
-Saved scenarios are labeled separately from the official assessment.
-
-## 21. Returning User Flow
-
-Sign in → Dashboard → Existing Assessment → Continue / Review / Re-run assessment / Open report
-
-## 22. Dashboard Flow
-
-Dashboard should summarize:
-
-- Assessment progress
-- Funding gap
-- FOIR
-- LTV
-- Document readiness
-- Assessment status
-- Last updated time
-
-Primary CTA changes based on progress:
-
-- Continue assessment
-- Complete documents
-- Review assessment
-- View report
-
-## 23. Recovery / Secondary Flows
-
-### Back
-
-Return to previous screen without losing saved data.
-
-### Refresh
-
-Reload persisted data.
-
-### Network failure
-
-Show retry while preserving local form state where practical.
-
-### Session expiration
-
-Redirect to authentication and preserve a safe continuation path.
-
-### Assessment rerun
-
-Create a new assessment version rather than silently modifying historical results.
-
-### Delete document
-
-Ask for confirmation before destructive deletion.
-
-## 24. Important States
-
-Every important screen must define:
-
-- Loading
-- Empty
-- Validation error
-- Network error
-- Success/saved
-- Permission error
-- Processing
-- Needs review
-
-## 25. Mobile Flow
-
-On mobile:
-
-- Use a single-column layout.
-- Keep primary CTA sticky where appropriate.
-- Make progress visible but compact.
-- Ensure financial cards do not overflow.
-- Allow tables/rule details to collapse into cards.
-
-## 26. UX Rule
-
-The user should never have to understand lending terminology before seeing the explanation. Show the number first, then explain what it means and what action can improve it.
+- **Backward/Forward Navigation:** Navigating between steps preserves all form state without data loss.
+- **Page Refresh:** The wizard restores persisted candidate data from the backend using the active `student_id`.
+- **Network Resilience:** Transient network dropouts display retry banners while retaining unsubmitted user inputs.
+- **Input Boundaries:** Form inputs block non-numeric characters in monetary fields and prevent negative expense values.
