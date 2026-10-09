@@ -30,25 +30,6 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
   const currentStep: TourStep = TOUR_STEPS[currentStepIndex] || TOUR_STEPS[0];
   const targetElementRef = useRef<HTMLElement | null>(null);
 
-  // Measure and update target element bounding box
-  const updateTargetRect = useCallback(() => {
-    if (!isOpen) {
-      setTargetRect(null);
-      return;
-    }
-
-    const selector = currentStep.targetElementSelector;
-    const el = document.querySelector(selector) as HTMLElement | null;
-    targetElementRef.current = el;
-
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      setTargetRect(rect);
-    } else {
-      setTargetRect(null);
-    }
-  }, [isOpen, currentStep]);
-
   // Navigate to a specific step, handling cross-page transitions
   const executeStepTransition = useCallback((targetIndex: number) => {
     const validIndex = Math.max(0, Math.min(targetIndex, TOUR_STEPS.length - 1));
@@ -68,7 +49,24 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     if (!isOpen) return;
 
     let retryCount = 0;
-    const maxRetries = 20; // 2 seconds max polling for page render
+    const maxRetries = 30; // 3 seconds max polling for page render
+    let animFrameId: number | null = null;
+    let resizeObserver: ResizeObserver | null = null;
+
+    const startTrackingLoop = (el: HTMLElement) => {
+      const startTime = performance.now();
+      const trackDuration = 900; // ms to track smooth scrolling continuously
+
+      const stepTrack = (now: number) => {
+        const rect = el.getBoundingClientRect();
+        setTargetRect(rect);
+        if (now - startTime < trackDuration) {
+          animFrameId = requestAnimationFrame(stepTrack);
+        }
+      };
+
+      animFrameId = requestAnimationFrame(stepTrack);
+    };
 
     const locateAndHighlight = () => {
       const selector = currentStep.targetElementSelector;
@@ -77,14 +75,22 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       if (el) {
         setIsNavigating(false);
         targetElementRef.current = el;
-        
+
         // Smooth scroll element into view
         el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-        
-        // Measure after scroll has initiated
-        setTimeout(() => {
-          updateTargetRect();
-        }, 150);
+
+        // Run continuous 60fps tracking during smooth scroll
+        startTrackingLoop(el);
+
+        // Also observe element size mutations
+        if (typeof ResizeObserver !== "undefined") {
+          resizeObserver = new ResizeObserver(() => {
+            if (targetElementRef.current) {
+              setTargetRect(targetElementRef.current.getBoundingClientRect());
+            }
+          });
+          resizeObserver.observe(el);
+        }
       } else if (retryCount < maxRetries) {
         retryCount++;
         setTimeout(locateAndHighlight, 100);
@@ -96,7 +102,16 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     };
 
     locateAndHighlight();
-  }, [isOpen, currentStepIndex, pathname, currentStep, updateTargetRect]);
+
+    return () => {
+      if (animFrameId !== null) {
+        cancelAnimationFrame(animFrameId);
+      }
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, [isOpen, currentStepIndex, pathname, currentStep]);
 
   // Listen to window scroll and resize to keep spotlight synced
   useEffect(() => {

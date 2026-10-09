@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useRef } from "react";
 import { 
   X, 
   ArrowRight, 
@@ -12,6 +12,23 @@ import {
   Sparkles
 } from "lucide-react";
 import { useTour } from "@/lib/context/TourContext";
+
+function subscribeToWindow(callback: () => void) {
+  window.addEventListener("resize", callback);
+  window.addEventListener("scroll", callback, { passive: true });
+  return () => {
+    window.removeEventListener("resize", callback);
+    window.removeEventListener("scroll", callback);
+  };
+}
+
+function getWindowSnapshot() {
+  return typeof window === "undefined" ? "0x0" : `${window.innerWidth}x${window.innerHeight}`;
+}
+
+function getWindowServerSnapshot() {
+  return "1280x800";
+}
 
 export function InteractiveSpotlightTour() {
   const {
@@ -28,87 +45,161 @@ export function InteractiveSpotlightTour() {
     finishTour,
   } = useTour();
 
-  const [popoverStyle, setPopoverStyle] = useState<React.CSSProperties>({});
-  const [arrowPosition, setArrowPosition] = useState<"top" | "bottom" | "none">("none");
   const popoverRef = useRef<HTMLDivElement>(null);
+  const windowDims = React.useSyncExternalStore(
+    subscribeToWindow,
+    getWindowSnapshot,
+    getWindowServerSnapshot
+  );
+
+  const [vw, vh] = windowDims.split("x").map(Number);
+  const viewportWidth = vw || 1280;
+  const viewportHeight = vh || 800;
+  const isMobile = viewportWidth < 768;
 
   const isFirstStep = currentStepIndex === 0;
   const isLastStep = currentStepIndex === totalSteps - 1;
 
-  // Calculate popover positioning relative to target element
-  useEffect(() => {
-    if (!isOpen) return;
+  // Derive high-precision positioning synchronously
+  const popoverStyle = React.useMemo<React.CSSProperties>(() => {
+    if (typeof window === "undefined") {
+      return { position: "fixed", zIndex: 9999 };
+    }
 
-    const calculatePosition = () => {
-      if (!targetRect || typeof window === "undefined") {
-        // Center fallback
-        setPopoverStyle({
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          maxWidth: "38rem",
-          width: "92vw",
-          zIndex: 9999,
-        });
-        setArrowPosition("none");
-        return;
-      }
-
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const popoverWidth = Math.min(560, viewportWidth - 32);
-      const isMobile = viewportWidth < 768;
-
-      if (isMobile) {
-        // On mobile, dock cleanly at bottom of viewport to leave element visible
-        setPopoverStyle({
+    // Mobile specific layout: dock cleanly to top or bottom based on target position
+    if (isMobile) {
+      if (!targetRect) {
+        return {
           position: "fixed",
           bottom: "16px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "calc(100vw - 32px)",
-          maxWidth: "480px",
+          left: "12px",
+          right: "12px",
           maxHeight: "65vh",
           zIndex: 9999,
-        });
-        setArrowPosition("none");
-        return;
+        };
       }
 
-      const spaceBelow = viewportHeight - targetRect.bottom;
-      const spaceAbove = targetRect.top;
-
-      let top: number;
-      let left = targetRect.left + (targetRect.width / 2) - (popoverWidth / 2);
-
-      // Clamp horizontal within screen margins
-      left = Math.max(16, Math.min(left, viewportWidth - popoverWidth - 16));
-
-      if (spaceBelow >= 320 || spaceBelow >= spaceAbove) {
-        // Place below element
-        top = targetRect.bottom + 16;
-        setArrowPosition("top");
+      // If target element is in lower half of the screen, dock card at top so element is visible
+      const targetCenterY = targetRect.top + targetRect.height / 2;
+      if (targetCenterY > viewportHeight * 0.45) {
+        return {
+          position: "fixed",
+          top: "16px",
+          left: "12px",
+          right: "12px",
+          maxHeight: "65vh",
+          zIndex: 9999,
+        };
       } else {
-        // Place above element
-        top = Math.max(16, targetRect.top - 360);
-        setArrowPosition("bottom");
+        return {
+          position: "fixed",
+          bottom: "16px",
+          left: "12px",
+          right: "12px",
+          maxHeight: "65vh",
+          zIndex: 9999,
+        };
       }
+    }
 
-      setPopoverStyle({
+    // Desktop Layout
+    const popoverWidth = Math.min(490, viewportWidth - 40);
+    const popoverHeight = 340;
+    const margin = 20;
+
+    if (!targetRect) {
+      // Centered fallback
+      const top = Math.max(margin, (viewportHeight - popoverHeight) / 2);
+      const left = Math.max(margin, (viewportWidth - popoverWidth) / 2);
+      return {
         position: "fixed",
-        top: `${top}px`,
-        left: `${left}px`,
+        top: `${Math.round(top)}px`,
+        left: `${Math.round(left)}px`,
         width: `${popoverWidth}px`,
         maxHeight: "85vh",
         zIndex: 9999,
-      });
-    };
+      };
+    }
 
-    calculatePosition();
-    window.addEventListener("resize", calculatePosition);
-    return () => window.removeEventListener("resize", calculatePosition);
-  }, [isOpen, targetRect, currentStepIndex]);
+    const spaceBelow = viewportHeight - targetRect.bottom - margin;
+    const spaceAbove = targetRect.top - margin;
+    const spaceRight = viewportWidth - targetRect.right - margin;
+    const spaceLeft = targetRect.left - margin;
+    const targetCenterX = targetRect.left + targetRect.width / 2;
+    const targetCenterY = targetRect.top + targetRect.height / 2;
+
+    let top: number;
+    let left: number;
+
+    const isExtraTall = targetRect.height > viewportHeight * 0.58;
+    const isExtraWide = targetRect.width > viewportWidth * 0.72;
+
+    if (isExtraTall || (isExtraTall && isExtraWide)) {
+      // For large container sections (like the 6-stage assessment wizard, matrix or documents vault)
+      // Floating HUD docked to the bottom-right or top-right with safe clearance
+      if (spaceRight >= popoverWidth) {
+        top = Math.max(margin, Math.min(targetRect.top + 20, viewportHeight - popoverHeight - margin));
+        left = targetRect.right + margin;
+      } else {
+        // Dock to bottom-right corner as a floating guide
+        top = viewportHeight - popoverHeight - margin;
+        left = viewportWidth - popoverWidth - margin;
+      }
+    } else {
+      // Standard target element positioning
+      const preferredPlacement = currentStep.placement || "bottom";
+
+      if (preferredPlacement === "bottom" && spaceBelow >= popoverHeight) {
+        top = targetRect.bottom + margin;
+        left = targetCenterX - popoverWidth / 2;
+      } else if (preferredPlacement === "top" && spaceAbove >= popoverHeight) {
+        top = targetRect.top - popoverHeight - margin;
+        left = targetCenterX - popoverWidth / 2;
+      } else if (preferredPlacement === "right" && spaceRight >= popoverWidth) {
+        top = targetCenterY - popoverHeight / 2;
+        left = targetRect.right + margin;
+      } else if (preferredPlacement === "left" && spaceLeft >= popoverWidth) {
+        top = targetCenterY - popoverHeight / 2;
+        left = targetRect.left - popoverWidth - margin;
+      } else {
+        // Smart fallback to the side with most available clearance
+        if (spaceBelow >= popoverHeight) {
+          top = targetRect.bottom + margin;
+          left = targetCenterX - popoverWidth / 2;
+        } else if (spaceAbove >= popoverHeight) {
+          top = targetRect.top - popoverHeight - margin;
+          left = targetCenterX - popoverWidth / 2;
+        } else if (spaceRight >= popoverWidth) {
+          top = targetCenterY - popoverHeight / 2;
+          left = targetRect.right + margin;
+        } else if (spaceLeft >= popoverWidth) {
+          top = targetCenterY - popoverHeight / 2;
+          left = targetRect.left - popoverWidth - margin;
+        } else {
+          // If tight on all sides, place in side with maximum headroom
+          if (spaceBelow >= spaceAbove) {
+            top = Math.min(targetRect.bottom + margin, viewportHeight - popoverHeight - margin);
+          } else {
+            top = Math.max(margin, targetRect.top - popoverHeight - margin);
+          }
+          left = targetCenterX - popoverWidth / 2;
+        }
+      }
+    }
+
+    // STRICT SAFETY CLAMP: Keep strictly within visible viewport boundaries
+    top = Math.max(margin, Math.min(top, viewportHeight - popoverHeight - margin));
+    left = Math.max(margin, Math.min(left, viewportWidth - popoverWidth - margin));
+
+    return {
+      position: "fixed",
+      top: `${Math.round(top)}px`,
+      left: `${Math.round(left)}px`,
+      width: `${popoverWidth}px`,
+      maxHeight: "85vh",
+      zIndex: 9999,
+    };
+  }, [targetRect, currentStep, viewportWidth, viewportHeight, isMobile]);
 
   if (!isOpen) return null;
 
@@ -121,25 +212,26 @@ export function InteractiveSpotlightTour() {
     black: "bg-black text-white",
   }[currentStep.accentColor];
 
-  const paddingBox = 8;
+  const paddingBox = 10;
 
   return (
     <div className="fixed inset-0 z-[9990] pointer-events-auto select-none">
-      {/* 1. Dark Backdrop Overlay with Spotlight Cutout */}
+      {/* 1. Dark Backdrop Overlay with Smooth Spotlight Cutout */}
       {targetRect ? (
         <svg className="fixed inset-0 w-full h-full pointer-events-none z-[9991]">
           <defs>
             <mask id="spotlight-mask">
-              {/* White background enables mask */}
               <rect x="0" y="0" width="100%" height="100%" fill="white" />
-              {/* Black cutout punches hole around targetRect */}
               <rect
-                x={targetRect.left - paddingBox}
-                y={targetRect.top - paddingBox}
-                width={targetRect.width + paddingBox * 2}
-                height={targetRect.height + paddingBox * 2}
-                rx="6"
+                x={Math.max(0, targetRect.left - paddingBox)}
+                y={Math.max(0, targetRect.top - paddingBox)}
+                width={Math.max(0, targetRect.width + paddingBox * 2)}
+                height={Math.max(0, targetRect.height + paddingBox * 2)}
+                rx="8"
                 fill="black"
+                style={{
+                  transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
               />
             </mask>
           </defs>
@@ -153,7 +245,7 @@ export function InteractiveSpotlightTour() {
           />
         </svg>
       ) : (
-        <div className="fixed inset-0 bg-black/65 backdrop-blur-[1px] z-[9991]" />
+        <div className="fixed inset-0 bg-black/65 backdrop-blur-[1px] z-[9991] transition-opacity duration-300" />
       )}
 
       {/* 2. Spotlight Animated Target Frame & Corner Beacons */}
@@ -166,8 +258,9 @@ export function InteractiveSpotlightTour() {
             width: targetRect.width + paddingBox * 2,
             height: targetRect.height + paddingBox * 2,
             zIndex: 9992,
+            transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
-          className="pointer-events-none border-3 border-black shadow-[0_0_0_4px_#FEF08A] rounded-sm animate-pulse"
+          className="pointer-events-none border-3 border-black shadow-[0_0_0_4px_#FEF08A] rounded-sm"
         >
           {/* 4 Corner Neo-Brutalist Beacons */}
           <span className="absolute -top-2 -left-2 w-4 h-4 bg-[#FEF08A] border-2 border-black shadow-[1px_1px_0px_#000]" />
@@ -177,17 +270,20 @@ export function InteractiveSpotlightTour() {
         </div>
       )}
 
-      {/* 3. Anchored Guided Popover Card */}
+      {/* 3. Anchored Guided Popover Card with Smooth Viewport Tracking */}
       <div
         ref={popoverRef}
-        style={popoverStyle}
-        className="neo-box-lg bg-[#FFFDF9] flex flex-col overflow-hidden shadow-[8px_8px_0px_0px_#000000] z-[9999] transition-all duration-200"
+        style={{
+          ...popoverStyle,
+          transition: "top 0.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.4s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s ease-out, max-height 0.3s ease-out, opacity 0.25s ease-out",
+        }}
+        className="neo-box-lg bg-[#FFFDF9] flex flex-col overflow-hidden shadow-[8px_8px_0px_0px_#000000] z-[9999]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="tour-step-title"
       >
         {/* Header Ribbon */}
-        <div className={`p-3.5 sm:p-4 border-b-3 border-black flex items-center justify-between ${bgVariantClass} transition-colors duration-150`}>
+        <div className={`p-3.5 sm:p-4 border-b-3 border-black flex items-center justify-between ${bgVariantClass} transition-colors duration-200`}>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 bg-black text-white flex items-center justify-center border-2 border-black font-black text-xs shadow-[2px_2px_0px_0px_#000] shrink-0">
               <Compass className="h-3.5 w-3.5 text-[#FEF08A]" />
@@ -232,8 +328,8 @@ export function InteractiveSpotlightTour() {
           ))}
         </div>
 
-        {/* Content Body */}
-        <div className="p-4 sm:p-5 overflow-y-auto space-y-3.5 flex-1 text-left">
+        {/* Content Body with Animated Switch */}
+        <div className="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1 text-left">
           {isNavigating ? (
             <div className="py-8 flex flex-col items-center justify-center space-y-2 text-center">
               <Loader2 className="h-6 w-6 animate-spin text-black" />
@@ -242,7 +338,7 @@ export function InteractiveSpotlightTour() {
               </span>
             </div>
           ) : (
-            <>
+            <div key={currentStep.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-3">
               {/* Title & Subtitle */}
               <div>
                 <h2 
@@ -262,9 +358,9 @@ export function InteractiveSpotlightTour() {
               </p>
 
               {/* Key Takeaways */}
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <span className="text-[10px] font-black uppercase tracking-wider text-black block">
-                  Key Takeaways:
+                  Key Highlights:
                 </span>
                 <ul className="space-y-1">
                   {currentStep.keyTakeaways.map((item, idx) => (
@@ -285,7 +381,7 @@ export function InteractiveSpotlightTour() {
                   <span>{currentStep.actionTip}</span>
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
 
@@ -356,3 +452,4 @@ export function InteractiveSpotlightTour() {
     </div>
   );
 }
+
