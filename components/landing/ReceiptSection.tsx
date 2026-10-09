@@ -6,7 +6,7 @@ import { NeoBadge } from "../ui/NeoPrimitives";
 
 export function ReceiptSection() {
   return (
-    <section className="w-full bg-[#BAE6FD] border-b-2 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+    <section id="receipt-section" className="w-full bg-[#BAE6FD] border-b-2 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Top Header Split */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6">
