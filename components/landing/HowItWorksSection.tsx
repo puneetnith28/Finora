@@ -58,7 +58,7 @@ export function HowItWorksSection() {
                   {step.title}
                 </h3>
 
-                <p className="text-xs sm:text-sm font-medium text-black/90 leading-relaxed">
+                <p className="text-sm sm:text-base font-bold text-black leading-relaxed">
                   {step.description}
                 </p>
               </div>
@@ -67,7 +67,7 @@ export function HowItWorksSection() {
         </div>
 
         {/* Explanatory Footnote */}
-        <p className="text-xs sm:text-sm font-bold text-black/80 max-w-4xl pt-2 leading-relaxed">
+        <p className="text-sm sm:text-base font-bold text-black/90 max-w-4xl pt-2 leading-relaxed">
           The rule engine proposes the eligibility match; deterministic code validates it. A valid profile is not proof that the match is irrevocably sanctioned, and ambiguous matches are flagged for human advisor review.
         </p>
       </div>

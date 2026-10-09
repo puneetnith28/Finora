@@ -41,19 +41,19 @@ export function PillarsSection() {
               className="grid grid-cols-1 md:grid-cols-12 gap-6 py-8 sm:py-10 border-b-2 border-black items-start"
             >
               <div className="md:col-span-1">
-                <span className="font-mono font-black text-sm text-black">
+                <span className="font-mono font-black text-base sm:text-lg text-black">
                   {p.num}
                 </span>
               </div>
 
               <div className="md:col-span-5">
-                <h3 className="text-xl sm:text-2xl font-black text-black uppercase tracking-tight leading-snug">
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-black uppercase tracking-tight leading-snug">
                   {p.title}
                 </h3>
               </div>
 
               <div className="md:col-span-6">
-                <p className="text-xs sm:text-sm font-bold text-neutral-800 leading-relaxed">
+                <p className="text-sm sm:text-base lg:text-lg font-bold text-neutral-900 leading-relaxed">
                   {p.description}
                 </p>
               </div>
