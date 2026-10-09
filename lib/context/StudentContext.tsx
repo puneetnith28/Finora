@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 interface StudentContextType {
   activeStudentId: number | null;
@@ -25,44 +25,42 @@ const STORAGE_KEY_STUDENT_NAME = "finora_active_student_name";
 const STORAGE_KEY_ASSESSMENT_ID = "finora_active_assessment_id";
 
 export function StudentProvider({ children }: { children: React.ReactNode }) {
-  const [activeStudentId, setActiveStudentIdState] = useState<number | null>(null);
-  const [activeStudentName, setActiveStudentNameState] = useState<string | null>(null);
-  const [activeAssessmentId, setActiveAssessmentIdState] = useState<number | null>(null);
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
+  const [activeStudentId, setActiveStudentIdState] = useState<number | null>(() => {
+    if (typeof window === "undefined") return 1;
     try {
       const storedId = localStorage.getItem(STORAGE_KEY_STUDENT_ID);
-      const storedName = localStorage.getItem(STORAGE_KEY_STUDENT_NAME);
-      const storedAssessmentId = localStorage.getItem(STORAGE_KEY_ASSESSMENT_ID);
-
       if (storedId) {
         const parsed = parseInt(storedId, 10);
-        if (!isNaN(parsed) && parsed > 0) {
-          setActiveStudentIdState(parsed);
-        }
-      } else {
-        // Default initial session demo student ID if none saved
-        setActiveStudentIdState(1);
-      }
-
-      if (storedName) {
-        setActiveStudentNameState(storedName);
-      }
-
-      if (storedAssessmentId) {
-        const parsed = parseInt(storedAssessmentId, 10);
-        if (!isNaN(parsed) && parsed > 0) {
-          setActiveAssessmentIdState(parsed);
-        }
+        if (!isNaN(parsed) && parsed > 0) return parsed;
       }
     } catch {
-      // LocalStorage access fallback
-      setActiveStudentIdState(1);
-    } finally {
-      setIsHydrated(true);
+      // Ignore
     }
-  }, []);
+    return 1;
+  });
+
+  const [activeStudentName, setActiveStudentNameState] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      return localStorage.getItem(STORAGE_KEY_STUDENT_NAME);
+    } catch {
+      return null;
+    }
+  });
+
+  const [activeAssessmentId, setActiveAssessmentIdState] = useState<number | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_ASSESSMENT_ID);
+      if (stored) {
+        const parsed = parseInt(stored, 10);
+        if (!isNaN(parsed) && parsed > 0) return parsed;
+      }
+    } catch {
+      // Ignore
+    }
+    return null;
+  });
 
   const setActiveStudentId = (id: number | null) => {
     setActiveStudentIdState(id);

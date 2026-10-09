@@ -37,7 +37,6 @@ export function DiscrepancyViewer({
 
   useEffect(() => {
     if (propDiscrepancies && propDiscrepancies.length > 0) {
-      setDiscrepancies(propDiscrepancies);
       return;
     }
 
@@ -45,22 +44,22 @@ export function DiscrepancyViewer({
     const fetchDiscrepancies = async () => {
       setLoading(true);
       try {
-        const data = await api.get<any[]>(`/api/students/${targetStudentId}/discrepancies`);
+        const data = await api.get<Record<string, unknown>[]>(`/api/students/${targetStudentId}/discrepancies`);
         if (isMounted) {
           if (Array.isArray(data) && data.length > 0) {
             const mapped: DiscrepancyItem[] = data.map((d, i) => ({
-              id: d.id || `disc-${i + 1}`,
-              field_name: d.field_name || "Income Verification",
-              document_type: d.document_type || "Income Evidence",
-              user_entered_value: d.user_entered_value ?? d.claimed_value ?? "—",
-              extracted_value: d.extracted_value ?? d.verified_value ?? "—",
-              variance_percentage: d.variance_percentage ?? d.variance_pct ?? 0,
-              tolerance_percentage: d.tolerance_percentage ?? 10,
-              severity: d.severity || (d.needs_human_review ? "major" : "none"),
-              needs_human_review: !!d.needs_human_review,
-              confidence_score: d.confidence_score ?? 0.95,
-              review_note: d.review_note || d.notes || "Automated OCR extraction comparison completed.",
-              extraction_method: d.extraction_method || "stream_parser",
+              id: (d.id as string) || `disc-${i + 1}`,
+              field_name: (d.field_name as string) || "Income Verification",
+              document_type: (d.document_type as string) || "Income Evidence",
+              user_entered_value: String(d.user_entered_value ?? d.claimed_value ?? "—"),
+              extracted_value: String(d.extracted_value ?? d.verified_value ?? "—"),
+              variance_percentage: Number(d.variance_percentage ?? d.variance_pct ?? 0),
+              tolerance_percentage: Number(d.tolerance_percentage ?? 10),
+              severity: (d.severity === "minor" ? "minor" : d.severity === "none" ? "none" : "major") as "none" | "minor" | "major",
+              needs_human_review: Boolean(d.needs_human_review),
+              confidence_score: Number(d.confidence_score ?? 0.95),
+              review_note: String(d.review_note || d.notes || "Automated OCR extraction comparison completed."),
+              extraction_method: (d.extraction_method === "tesseract_ocr" ? "tesseract_ocr" : d.extraction_method === "regex_anchor" ? "regex_anchor" : "pdf_stream") as "pdf_stream" | "tesseract_ocr" | "regex_anchor",
             }));
             setDiscrepancies(mapped);
           } else {

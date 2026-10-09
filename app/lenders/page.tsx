@@ -63,6 +63,7 @@ export default function LendersPage() {
               min_cibil_score: minCibil,
               requires_collateral: requiresCollateral,
               active: l.active ?? true,
+              description: l.description,
             };
           });
           setLenders(normalized);
@@ -212,6 +213,11 @@ export default function LendersPage() {
                     </div>
 
                     <div className="space-y-2 text-xs border-t-2 border-black pt-3">
+                      {lender.description && (
+                        <div className="p-2 bg-[#F3F4F6] border border-black text-[11px] font-medium text-black leading-snug">
+                          {lender.description}
+                        </div>
+                      )}
                       <div className="flex justify-between">
                         <span className="font-bold text-black/70">Indicative Rate:</span>
                         <span className="font-mono font-black text-black">

@@ -115,8 +115,8 @@ export function getReadinessColor(band: string | null | undefined): {
  * Normalizes an assessment response (from raw backend FullAssessmentReport or stored DB records)
  * into a safe, consistent FullAssessmentResult domain object for UI components.
  */
-export function normalizeAssessmentResult(raw: any): import("@/types").FullAssessmentResult {
-  if (!raw) {
+export function normalizeAssessmentResult(raw: unknown): import("@/types").FullAssessmentResult {
+  if (!raw || typeof raw !== "object") {
     return {
       id: 0,
       student_id: 0,
@@ -134,31 +134,32 @@ export function normalizeAssessmentResult(raw: any): import("@/types").FullAsses
     };
   }
 
-  const finSummary = raw.financial_summary || {};
-  const studyCost = finSummary.study_cost || {};
-  const funding = finSummary.funding || {};
-  const fundingGap = finSummary.funding_gap || {};
-  const netWorth = finSummary.net_worth || {};
-  const collateral = finSummary.collateral || {};
-  const foir = finSummary.foir || {};
-  const ltv = finSummary.ltv || {};
+  const rawObj = raw as Record<string, unknown>;
+  const finSummary = (rawObj.financial_summary as Record<string, unknown>) || {};
+  const studyCost = (finSummary.study_cost as Record<string, unknown>) || {};
+  const funding = (finSummary.funding as Record<string, unknown>) || {};
+  const fundingGap = (finSummary.funding_gap as Record<string, unknown>) || {};
+  const netWorth = (finSummary.net_worth as Record<string, unknown>) || {};
+  const collateral = (finSummary.collateral as Record<string, unknown>) || {};
+  const foir = (finSummary.foir as Record<string, unknown>) || {};
+  const ltv = (finSummary.ltv as Record<string, unknown>) || {};
 
-  const totalCost = Number(studyCost.total_cost_inr ?? raw.total_cost_inr ?? raw.total_study_cost ?? 0);
-  const totalFunding = Number(funding.total_funding_inr ?? raw.total_funding_inr ?? raw.available_funding ?? 0);
-  const rawGap = Number(fundingGap.funding_gap_inr ?? raw.funding_gap_inr ?? raw.funding_gap ?? (totalCost - totalFunding));
+  const totalCost = Number(studyCost.total_cost_inr ?? rawObj.total_cost_inr ?? rawObj.total_study_cost ?? 0);
+  const totalFunding = Number(funding.total_funding_inr ?? rawObj.total_funding_inr ?? rawObj.available_funding ?? 0);
+  const rawGap = Number(fundingGap.funding_gap_inr ?? rawObj.funding_gap_inr ?? rawObj.funding_gap ?? (totalCost - totalFunding));
   const gap = Math.max(0, rawGap);
-  const netWorthVal = Number(netWorth.net_worth_inr ?? raw.net_worth_inr ?? raw.net_worth ?? 0);
-  const eligibleCollateral = Number(collateral.total_eligible_collateral_inr ?? raw.total_eligible_collateral_inr ?? 0);
+  const netWorthVal = Number(netWorth.net_worth_inr ?? rawObj.net_worth_inr ?? rawObj.net_worth ?? 0);
+  const eligibleCollateral = Number(collateral.total_eligible_collateral_inr ?? rawObj.total_eligible_collateral_inr ?? 0);
 
   let foirPct = 0;
   if (foir.foir_percentage != null) {
     foirPct = Number(foir.foir_percentage);
   } else if (foir.foir_ratio != null) {
     foirPct = Number(foir.foir_ratio) * 100;
-  } else if (raw.foir_percentage != null) {
-    foirPct = Number(raw.foir_percentage);
-  } else if (raw.foir != null) {
-    foirPct = Number(raw.foir) * 100;
+  } else if (rawObj.foir_percentage != null) {
+    foirPct = Number(rawObj.foir_percentage);
+  } else if (rawObj.foir != null) {
+    foirPct = Number(rawObj.foir) * 100;
   }
 
   let ltvPct: number | null = null;
@@ -166,27 +167,27 @@ export function normalizeAssessmentResult(raw: any): import("@/types").FullAsses
     ltvPct = Number(ltv.ltv_percentage);
   } else if (ltv.ltv_ratio != null) {
     ltvPct = Number(ltv.ltv_ratio) * 100;
-  } else if (raw.ltv_percentage != null) {
-    ltvPct = Number(raw.ltv_percentage);
-  } else if (raw.ltv != null) {
-    ltvPct = Number(raw.ltv) * 100;
+  } else if (rawObj.ltv_percentage != null) {
+    ltvPct = Number(rawObj.ltv_percentage);
+  } else if (rawObj.ltv != null) {
+    ltvPct = Number(rawObj.ltv) * 100;
   }
 
-  const score = Number(finSummary.readiness_score ?? raw.readiness_score ?? 82);
+  const score = Number(finSummary.readiness_score ?? rawObj.readiness_score ?? 82);
   const band =
-    finSummary.readiness_band ||
-    raw.readiness_band ||
-    (score >= 80 ? "Excellent" : score >= 65 ? "Strong" : score >= 45 ? "Moderate" : "Needs Review");
+    String(finSummary.readiness_band ||
+    rawObj.readiness_band ||
+    (score >= 80 ? "Excellent" : score >= 65 ? "Strong" : score >= 45 ? "Moderate" : "Needs Review"));
 
-  const rawMatches = Array.isArray(raw.lender_matches)
-    ? raw.lender_matches
-    : Array.isArray(raw.lender_evaluations)
-    ? raw.lender_evaluations
-    : Array.isArray(raw.rule_results)
-    ? raw.rule_results
+  const rawMatches = Array.isArray(rawObj.lender_matches)
+    ? (rawObj.lender_matches as Record<string, unknown>[])
+    : Array.isArray(rawObj.lender_evaluations)
+    ? (rawObj.lender_evaluations as Record<string, unknown>[])
+    : Array.isArray(rawObj.rule_results)
+    ? (rawObj.rule_results as Record<string, unknown>[])
     : [];
 
-  const lender_matches: import("@/types").LenderMatch[] = rawMatches.map((m: any, idx: number) => {
+  const lender_matches: import("@/types").LenderMatch[] = rawMatches.map((m: Record<string, unknown>, idx: number) => {
     let outcome: "eligible" | "conditional" | "ineligible" = "conditional";
     const rawOutcome = String(m.outcome_state || "").toLowerCase();
     if (rawOutcome === "eligible" || rawOutcome === "potential_match" || rawOutcome === "match") {
@@ -197,32 +198,34 @@ export function normalizeAssessmentResult(raw: any): import("@/types").FullAsses
       outcome = "conditional";
     }
 
-    const ruleResults = Array.isArray(m.rule_results) ? m.rule_results : [];
-    const passedRules = ruleResults.filter((r: any) => r.passed);
-    const failedRules = ruleResults.filter((r: any) => !r.passed);
+    const ruleResults = Array.isArray(m.rule_results) ? (m.rule_results as Record<string, unknown>[]) : [];
+    const passedRules = ruleResults.filter((r: Record<string, unknown>) => Boolean(r.passed));
+    const failedRules = ruleResults.filter((r: Record<string, unknown>) => !r.passed);
 
     const rulesEvaluated = Number(
-      m.rules_evaluated ?? (ruleResults.length > 0 ? ruleResults.length : (m.passed_rules_count || 0) + (m.failed_rules_count || 0))
+      m.rules_evaluated ?? (ruleResults.length > 0 ? ruleResults.length : (Number(m.passed_rules_count) || 0) + (Number(m.failed_rules_count) || 0))
     );
     const rulesPassed = Number(m.rules_passed ?? m.passed_rules_count ?? passedRules.length);
     const rulesFailed = Number(m.rules_failed ?? m.failed_rules_count ?? failedRules.length);
 
-    let evaluatedCriteria = m.evaluated_criteria;
+    let evaluatedCriteria = m.evaluated_criteria as import("@/types").EvaluatedCriterion[] | undefined;
     if (!evaluatedCriteria && ruleResults.length > 0) {
-      evaluatedCriteria = ruleResults.map((r: any) => ({
-        criterion_name: r.rule_name || r.rule_type || "Underwriting Rule",
+      evaluatedCriteria = ruleResults.map((r: Record<string, unknown>) => ({
+        criterion_name: String(r.rule_name || r.rule_type || "Underwriting Rule"),
         passed: Boolean(r.passed),
         required: r.severity === "hard_constraint" || r.required !== false,
-        expected_value: r.expected_value || "Eligible threshold",
-        actual_value: r.actual_value || "Evaluated",
-        explanation: r.reason || (r.passed ? "Meets lender criteria" : "Does not meet guideline"),
+        expected_value: String(r.expected_value || "Eligible threshold"),
+        actual_value: String(r.actual_value || "Evaluated"),
+        explanation: String(r.reason || (r.passed ? "Meets lender criteria" : "Does not meet guideline")),
       }));
     }
 
+    const summaryReasons = Array.isArray(m.summary_reasons) ? (m.summary_reasons as string[]) : [];
+
     return {
-      lender_id: m.lender_id ?? idx + 1,
-      lender_name: m.lender_name ?? `Lender #${idx + 1}`,
-      lender_type: m.lender_type ?? "Education Loan Specialist",
+      lender_id: Number(m.lender_id ?? idx + 1),
+      lender_name: String(m.lender_name ?? `Lender #${idx + 1}`),
+      lender_type: String(m.lender_type ?? "Education Loan Specialist"),
       outcome_state: outcome,
       match_score: Number(m.match_score ?? (outcome === "eligible" ? 95 : outcome === "conditional" ? 75 : 30)),
       interest_rate_min: m.interest_rate_min != null ? Number(m.interest_rate_min) : undefined,
@@ -232,17 +235,17 @@ export function normalizeAssessmentResult(raw: any): import("@/types").FullAsses
       rules_passed: rulesPassed,
       rules_failed: rulesFailed,
       evaluated_criteria: evaluatedCriteria,
-      failed_rules: Array.isArray(m.failed_rules) ? m.failed_rules : failedRules,
-      passed_rules: Array.isArray(m.passed_rules) ? m.passed_rules : passedRules,
-      conditions: Array.isArray(m.conditions) ? m.conditions : Array.isArray(m.summary_reasons) ? m.summary_reasons : [],
-      remedial_actions: Array.isArray(m.remedial_actions) ? m.remedial_actions : Array.isArray(m.summary_reasons) ? m.summary_reasons : [],
-      primary_reason: m.primary_reason || (m.summary_reasons && m.summary_reasons[0]) || undefined,
+      failed_rules: Array.isArray(m.failed_rules) ? (m.failed_rules as import("@/types").FailedRuleAudit[]) : undefined,
+      passed_rules: Array.isArray(m.passed_rules) ? (m.passed_rules as import("@/types").PassedRuleAudit[]) : undefined,
+      conditions: Array.isArray(m.conditions) ? (m.conditions as string[]) : summaryReasons,
+      remedial_actions: Array.isArray(m.remedial_actions) ? (m.remedial_actions as string[]) : summaryReasons,
+      primary_reason: (m.primary_reason as string) || (summaryReasons.length > 0 ? summaryReasons[0] : undefined),
     };
   });
 
   return {
-    id: Number(raw.id ?? raw.assessment_id ?? 1),
-    student_id: Number(raw.student_id ?? 1),
+    id: Number(rawObj.id ?? rawObj.assessment_id ?? 1),
+    student_id: Number(rawObj.student_id ?? 1),
     readiness_score: score,
     readiness_band: band,
     total_cost_inr: totalCost,
@@ -253,8 +256,8 @@ export function normalizeAssessmentResult(raw: any): import("@/types").FullAsses
     total_eligible_collateral_inr: eligibleCollateral,
     ltv_percentage: ltvPct,
     lender_matches,
-    disclaimer: raw.disclaimer || "Indicative assessment based on provided data. Not a guaranteed sanction or formal loan offer.",
-    created_at: raw.created_at,
+    disclaimer: String(rawObj.disclaimer || "Indicative assessment based on provided data. Not a guaranteed sanction or formal loan offer."),
+    created_at: rawObj.created_at ? String(rawObj.created_at) : undefined,
   };
 }
 

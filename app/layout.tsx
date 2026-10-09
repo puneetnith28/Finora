@@ -7,6 +7,10 @@ import { ToastProvider } from "@/components/ui/NeoToast";
 import { StudentProvider } from "@/lib/context/StudentContext";
 import { Suspense } from "react";
 
+import { TourProvider } from "@/lib/context/TourContext";
+import { ProductTourModal } from "@/components/tour/ProductTourModal";
+import { TourFloatingTrigger } from "@/components/tour/TourFloatingTrigger";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -36,11 +40,15 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[#FFFDF9] text-black">
         <StudentProvider>
           <ToastProvider>
-            <Suspense fallback={<div className="h-16 bg-white border-b-2 border-black" />}>
-              <Navbar />
-            </Suspense>
-            <main className="flex-1 w-full">{children}</main>
-            <Footer />
+            <TourProvider>
+              <Suspense fallback={<div className="h-16 bg-white border-b-2 border-black" />}>
+                <Navbar />
+              </Suspense>
+              <main className="flex-1 w-full">{children}</main>
+              <Footer />
+              <ProductTourModal />
+              <TourFloatingTrigger />
+            </TourProvider>
           </ToastProvider>
         </StudentProvider>
       </body>
