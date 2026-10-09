@@ -33,7 +33,7 @@ export default function SimulatorPage() {
         </div>
 
         {/* Informational Callout Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+        <div data-tour="foir-risk-benchmarks" className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
           <div className="neo-box p-5 bg-white space-y-2">
             <h3 className="text-xs font-black uppercase text-black flex items-center gap-1.5">
               <ShieldCheck className="h-4 w-4" />

@@ -345,7 +345,7 @@ function AssessmentContent() {
               maxStepUnlocked={maxStepUnlocked}
             />
 
-            <div>
+            <div data-tour="assessment-form-container">
               {currentStep === 1 && (
                 <StudentProfileForm
                   initialData={student || undefined}

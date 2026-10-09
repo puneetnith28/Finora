@@ -28,7 +28,7 @@ export function HowItWorksSection() {
   ];
 
   return (
-    <section className="w-full bg-[#86EFAC] border-b-3 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+    <section data-tour="how-it-works-section" className="w-full bg-[#86EFAC] border-b-3 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Sticker Badge */}
         <div>

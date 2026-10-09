@@ -151,7 +151,7 @@ export default function DocumentsPage() {
         </div>
 
         {/* Upload Zone */}
-        <div className="neo-box p-4 sm:p-6 bg-[#FFFDF9]">
+        <div data-tour="document-upload-zone" className="neo-box p-4 sm:p-6 bg-[#FFFDF9]">
           <form onSubmit={handleFileUpload} className="space-y-4">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -350,7 +350,9 @@ export default function DocumentsPage() {
         )}
 
         {/* OCR Discrepancy Audit Engine */}
-        <DiscrepancyViewer studentId={studentId} />
+        <div data-tour="ocr-discrepancy-section">
+          <DiscrepancyViewer studentId={studentId} />
+        </div>
 
         {/* Modal Preview Drawer */}
         {previewDocId && (

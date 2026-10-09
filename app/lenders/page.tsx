@@ -110,7 +110,7 @@ export default function LendersPage() {
         </div>
 
         {/* Filters & Search */}
-        <div className="neo-box p-4 sm:p-5 bg-[#FFFDF9] flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+        <div data-tour="lenders-filter-bar" className="neo-box p-4 sm:p-5 bg-[#FFFDF9] flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
           <div className="w-full md:w-96 relative">
             <input
               type="text"
@@ -182,7 +182,7 @@ export default function LendersPage() {
             Loading underwriting rules database...
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div data-tour="lenders-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((lender) => {
               const typeLabel = (lender.lender_type || "FINANCIAL_INSTITUTION").toUpperCase().replace(/_/g, " ");
 
