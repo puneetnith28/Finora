@@ -6,14 +6,6 @@ import { ArrowUpRight } from "lucide-react";
 import { NeoBadge, NeoButton } from "../ui/NeoPrimitives";
 
 export function HeroSection() {
-  const scrollToReceipt = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const target = document.getElementById("receipt-section");
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <section className="w-full bg-[#FEF08A] border-b-2 border-black min-h-[calc(100vh-64px)] min-h-[calc(100dvh-64px)] flex flex-col justify-between py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8">
       {/* Main Content Grid (Vertically Centered in Available Space) */}
@@ -61,12 +53,12 @@ export function HeroSection() {
               </Link>
             </div>
 
-            <button
+            {/* <button
               onClick={scrollToReceipt}
               className="text-xs sm:text-sm font-black uppercase underline underline-offset-4 hover:bg-black hover:text-[#FEF08A] px-3 py-2 transition-colors border border-transparent hover:border-black cursor-pointer"
             >
               See Live Audit Breakdown ↓
-            </button>
+            </button> */}
           </div>
 
           <div className="flex items-center gap-2 text-xs font-black text-neutral-800 pt-1">
