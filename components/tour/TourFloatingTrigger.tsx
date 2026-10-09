@@ -1,19 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Compass, Sparkles, X } from "lucide-react";
 import { useTour } from "@/lib/context/TourContext";
 
 export function TourFloatingTrigger() {
   const { startTour, isOpen, hasSeenTour } = useTour();
   const [dismissedPrompt, setDismissedPrompt] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (isOpen) return null;
 
   return (
     <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2 pointer-events-auto">
-      {/* Subtle intro chip if user hasn't seen the tour and hasn't dismissed */}
-      {!hasSeenTour && !dismissedPrompt && (
+      {/* Subtle intro chip rendered only after client mount to prevent hydration mismatch */}
+      {mounted && !hasSeenTour && !dismissedPrompt && (
         <div className="neo-box p-2.5 bg-[#FEF08A] max-w-xs flex items-center justify-between gap-2 shadow-[4px_4px_0px_0px_#000000] animate-bounce duration-1000">
           <div className="flex items-center gap-1.5 text-[11px] font-black uppercase text-black leading-tight">
             <Sparkles className="h-3.5 w-3.5 text-black shrink-0" />
