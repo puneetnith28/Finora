@@ -11,6 +11,7 @@ from app.routes.api import api_router
 from app.routes.health import router as health_router
 
 
+import app.models  # noqa: F401 - Register all models with Base.metadata
 from app.db.base import Base
 from app.db.seed_lenders import seed_demo_lenders
 from app.db.session import SessionLocal, engine
