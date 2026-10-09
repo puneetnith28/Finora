@@ -1,12 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import {
   FileText,
   UploadCloud,
-  ArrowRight,
-  Sparkles,
   CheckCircle2,
   AlertTriangle,
   Eye,
@@ -14,12 +11,10 @@ import {
   Trash2,
   RefreshCw,
   Plus,
-  ShieldCheck,
-  Lock,
 } from "lucide-react";
 import { api, ApiClientError } from "@/lib/api";
 import { DiscrepancyViewer } from "@/components/documents/DiscrepancyViewer";
-import { ReadinessItem, ReadinessReport } from "@/types";
+import { ReadinessReport } from "@/types";
 import { useStudent } from "@/lib/context/StudentContext";
 
 export default function DocumentsPage() {
@@ -63,7 +58,7 @@ export default function DocumentsPage() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [studentId]);
 
   const handleFileUpload = async (e: React.FormEvent) => {
     e.preventDefault();

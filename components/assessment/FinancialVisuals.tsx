@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Wallet, TrendingUp, PiggyBank, Building, PieChart, BarChart3 } from "lucide-react";
+import { Wallet, PiggyBank, Building, BarChart3 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
 interface FinancialVisualsProps {

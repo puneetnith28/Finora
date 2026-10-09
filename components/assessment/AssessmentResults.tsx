@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Download, RotateCcw, Sparkles, ShieldCheck, Filter, ArrowRight } from "lucide-react";
+import { Download, RotateCcw, ShieldCheck } from "lucide-react";
 import { formatCurrency, formatPercent, normalizeAssessmentResult } from "@/lib/utils";
 import { ExplainableLenderCard } from "@/components/assessment/ExplainableLenderCard";
 import { ReadinessScoreCard } from "@/components/assessment/ReadinessScoreCard";

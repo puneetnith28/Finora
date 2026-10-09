@@ -61,12 +61,12 @@ export function HeroSection() {
               </Link>
             </div>
 
-            {/* <button
+            <button
               onClick={scrollToReceipt}
-              className="text-xs sm:text-sm font-black uppercase underline underline-offset-4 hover:bg-black hover:text-[#FEF08A] px-3 py-2 transition-colors border border-transparent hover:border-black"
+              className="text-xs sm:text-sm font-black uppercase underline underline-offset-4 hover:bg-black hover:text-[#FEF08A] px-3 py-2 transition-colors border border-transparent hover:border-black cursor-pointer"
             >
               See Live Audit Breakdown ↓
-            </button> */}
+            </button>
           </div>
 
           <div className="flex items-center gap-2 text-xs font-black text-neutral-800 pt-1">

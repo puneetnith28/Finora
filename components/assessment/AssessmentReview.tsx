@@ -10,8 +10,6 @@ import {
   GraduationCap,
   DollarSign,
   Wallet,
-  Shield,
-  FileText,
   Play,
 } from "lucide-react";
 import { NeoBadge, NeoButton } from "@/components/ui/NeoPrimitives";
@@ -19,11 +17,7 @@ import { type StudentFormData } from "@/lib/validations/student";
 import { type StudyPlanFormData } from "@/lib/validations/study_plan";
 import { type FundingSourceItem, FUNDING_SOURCE_LABELS } from "@/lib/validations/funding";
 import { type FinancialProfileFormData } from "@/lib/validations/financial_profile";
-import {
-  type CollateralItem,
-  COLLATERAL_TYPE_LABELS,
-  COLLATERAL_HAIRCUTS,
-} from "@/lib/validations/collateral";
+import { type CollateralItem } from "@/lib/validations/collateral";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 
 export interface AssessmentReviewProps {
@@ -79,13 +73,6 @@ export function AssessmentReview({
       : 0;
   const totalMonthlyDebt = (financialProfile?.existing_monthly_obligations_inr || 0) + proposedEmi;
   const foir = monthlyIncomeInr > 0 ? (totalMonthlyDebt / monthlyIncomeInr) * 100 : 0;
-
-  const totalEligibleCollateralInr = collaterals.reduce((acc, c) => {
-    const mkt = Number(c.market_value_inr) || 0;
-    const enc = Number(c.existing_encumbrance_inr) || 0;
-    const haircut = COLLATERAL_HAIRCUTS[c.collateral_type] || 0.8;
-    return acc + Math.max(0, mkt * haircut - enc);
-  }, 0);
 
   const isReadyForAssessment =
     student &&
@@ -316,6 +303,14 @@ export function AssessmentReview({
                   <span className="text-neutral-600">Existing EMIs:</span>
                   <span className="font-mono text-neutral-800">
                     {formatCurrency(financialProfile.existing_monthly_obligations_inr)}/mo
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-neutral-600">Pledged Collateral:</span>
+                  <span className="font-bold text-neutral-800">
+                    {collaterals && collaterals.length > 0
+                      ? `${collaterals.length} Asset${collaterals.length > 1 ? "s" : ""}`
+                      : "Unsecured"}
                   </span>
                 </div>
                 <div className="flex justify-between pt-1 border-t border-black font-black">

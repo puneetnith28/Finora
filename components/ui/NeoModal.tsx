@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { X } from "lucide-react";
-import { NeoBadge, NeoButton } from "./NeoPrimitives";
+import { NeoBadge } from "./NeoPrimitives";
 
 interface NeoModalProps {
   isOpen: boolean;

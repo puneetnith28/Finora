@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, Loader2, Check, Sparkles } from "lucide-react";
-import { NeoBadge, NeoButton, NeoCard } from "@/components/ui/NeoPrimitives";
+import { NeoBadge, NeoButton } from "@/components/ui/NeoPrimitives";
 import { api } from "@/lib/api";
 import { CANONICAL_DEMO_PERSONAS } from "@/lib/constants/demo";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Calculator, Sparkles, ArrowUpRight, ArrowLeft, Coins } from "lucide-react";
+import { Calculator, Sparkles, ArrowUpRight, ArrowLeft } from "lucide-react";
 import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
 import {
   studyPlanSchema,

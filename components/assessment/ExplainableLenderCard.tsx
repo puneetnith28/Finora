@@ -11,7 +11,6 @@ import {
   Percent,
   Sparkles,
   Info,
-  ExternalLink,
 } from "lucide-react";
 import { LenderMatch } from "@/types";
 

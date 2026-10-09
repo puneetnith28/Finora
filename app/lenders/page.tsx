@@ -2,15 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  Building2,
-  ArrowRight,
-  CheckCircle2,
-  Search,
-  Sparkles,
-  Percent,
-  ShieldCheck,
-} from "lucide-react";
+import { Building2, ArrowRight, CheckCircle2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { api } from "@/lib/api";
 import { LenderItem, LenderCriterion } from "@/types";

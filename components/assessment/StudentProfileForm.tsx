@@ -1,16 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  User,
-  Mail,
-  GraduationCap,
-  BookOpen,
-  Calendar,
-  CreditCard,
-  Sparkles,
-  ArrowUpRight,
-} from "lucide-react";
+import { Sparkles, ArrowUpRight } from "lucide-react";
 import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
 import { studentSchema, type StudentFormData, STUDENT_PRESETS } from "@/lib/validations/student";
 

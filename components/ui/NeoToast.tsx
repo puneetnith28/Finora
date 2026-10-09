@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { Check, AlertTriangle, X, Info } from "lucide-react";
-import { NeoBadge } from "./NeoPrimitives";
 
 type ToastType = "success" | "warning" | "error" | "info";
 

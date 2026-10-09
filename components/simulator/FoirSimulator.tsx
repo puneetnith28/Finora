@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Calculator, Info, Check, AlertTriangle } from "lucide-react";
-import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
-import { formatCurrency, formatPercent } from "@/lib/utils";
-import { DEFAULT_SIMULATOR_PARAMS, FOIR_THRESHOLDS } from "@/lib/constants/financial";
+import { Calculator, Info } from "lucide-react";
+import { NeoBadge, NeoInput } from "@/components/ui/NeoPrimitives";
+import { formatCurrency } from "@/lib/utils";
+import { DEFAULT_SIMULATOR_PARAMS } from "@/lib/constants/financial";
 
 interface SimulatorResult {
   loan_amount_inr: number;

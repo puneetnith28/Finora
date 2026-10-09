@@ -7,9 +7,6 @@ import {
   PieChart,
   Landmark,
   TrendingUp,
-  Sparkles,
-  ArrowUpRight,
-  Info,
 } from "lucide-react";
 import { NeoBadge } from "@/components/ui/NeoPrimitives";
 import { FullAssessmentResult } from "@/types";

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Building2, FileText, Calculator, Menu, X, ArrowUpRight, Compass } from "lucide-react";
-import { NeoBadge, NeoButton } from "./ui/NeoPrimitives";
+import { NeoButton } from "./ui/NeoPrimitives";
 import { useTour } from "@/lib/context/TourContext";
 
 interface NavItem {

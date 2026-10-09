@@ -2,11 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  FileSearch,
   CheckCircle2,
   AlertTriangle,
   XCircle,
-  HelpCircle,
   ChevronDown,
   ChevronUp,
   Cpu,
@@ -14,7 +12,6 @@ import {
   RefreshCw,
   ShieldCheck,
 } from "lucide-react";
-import { formatCurrency, formatPercent } from "@/lib/utils";
 import { DiscrepancyItem } from "@/types";
 import { useStudent } from "@/lib/context/StudentContext";
 import { api } from "@/lib/api";
