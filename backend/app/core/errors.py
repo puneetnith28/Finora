@@ -42,7 +42,9 @@ def register_error_handlers(app: FastAPI) -> None:
                 primary_msg = msg
 
         return JSONResponse(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT
+            if hasattr(status, "HTTP_422_UNPROCESSABLE_CONTENT")
+            else 422,
             content={
                 "error": {
                     "code": "VALIDATION_ERROR",
