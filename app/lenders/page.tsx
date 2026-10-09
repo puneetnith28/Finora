@@ -87,7 +87,7 @@ export default function LendersPage() {
 
   return (
     <div className="bg-[#FEF08A] min-h-screen py-10 sm:py-16 px-4 sm:px-6 lg:px-8 border-b-3 border-black">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div data-tour="lenders-directory" className="max-w-7xl mx-auto space-y-8">
         {/* Header Ribbon */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b-3 border-black">
           <div>

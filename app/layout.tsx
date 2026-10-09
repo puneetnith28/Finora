@@ -8,7 +8,7 @@ import { StudentProvider } from "@/lib/context/StudentContext";
 import { Suspense } from "react";
 
 import { TourProvider } from "@/lib/context/TourContext";
-import { ProductTourModal } from "@/components/tour/ProductTourModal";
+import { InteractiveSpotlightTour } from "@/components/tour/InteractiveSpotlightTour";
 import { TourFloatingTrigger } from "@/components/tour/TourFloatingTrigger";
 
 const geistSans = Geist({
@@ -40,15 +40,17 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[#FFFDF9] text-black">
         <StudentProvider>
           <ToastProvider>
-            <TourProvider>
-              <Suspense fallback={<div className="h-16 bg-white border-b-2 border-black" />}>
-                <Navbar />
-              </Suspense>
-              <main className="flex-1 w-full">{children}</main>
-              <Footer />
-              <ProductTourModal />
-              <TourFloatingTrigger />
-            </TourProvider>
+            <Suspense fallback={null}>
+              <TourProvider>
+                <Suspense fallback={<div className="h-16 bg-white border-b-2 border-black" />}>
+                  <Navbar />
+                </Suspense>
+                <main className="flex-1 w-full">{children}</main>
+                <Footer />
+                <InteractiveSpotlightTour />
+                <TourFloatingTrigger />
+              </TourProvider>
+            </Suspense>
           </ToastProvider>
         </StudentProvider>
       </body>

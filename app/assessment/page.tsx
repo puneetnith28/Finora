@@ -326,7 +326,7 @@ function AssessmentContent() {
             }}
           />
         ) : (
-          <>
+          <div data-tour="assessment-wizard" className="space-y-6">
             <div className="space-y-2">
               <NeoBadge variant="pink" rotate="left">
                 6-STEP UNDERWRITING ENGINE
@@ -407,7 +407,7 @@ function AssessmentContent() {
                 />
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

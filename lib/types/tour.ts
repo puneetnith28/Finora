@@ -1,30 +1,19 @@
 export type TourAccentColor = "yellow" | "cyan" | "mint" | "pink" | "white" | "black";
 
-export type TourIllustrationType =
-  | "welcome"
-  | "wizard"
-  | "simulator"
-  | "lenders"
-  | "vault"
-  | "audit"
-  | "ready";
+export type TourPlacement = "top" | "bottom" | "left" | "right" | "center";
 
 export interface TourStep {
   id: string;
+  route: string;
+  targetElementSelector: string;
+  placement: TourPlacement;
   title: string;
   subtitle: string;
   tag: string;
   accentColor: TourAccentColor;
-  targetElementSelector?: string;
   description: string;
   keyTakeaways: string[];
-  visualBadge?: string;
-  interactiveFeature?: {
-    label: string;
-    actionUrl: string;
-    actionText: string;
-  };
-  illustrationType: TourIllustrationType;
+  actionTip?: string;
 }
 
 export interface TourContextValue {
@@ -33,6 +22,8 @@ export interface TourContextValue {
   currentStep: TourStep;
   totalSteps: number;
   hasSeenTour: boolean;
+  isNavigating: boolean;
+  targetRect: DOMRect | null;
   startTour: (initialStepIndex?: number) => void;
   nextStep: () => void;
   prevStep: () => void;

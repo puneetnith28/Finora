@@ -25,7 +25,7 @@ export function ReceiptSection() {
         </div>
 
         {/* Large White Receipt Box */}
-        <div className="neo-box-lg bg-white p-6 sm:p-10 space-y-8">
+        <div data-tour="receipt-box" className="neo-box-lg bg-white p-6 sm:p-10 space-y-8">
           {/* Top Status Strip */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-black">
             <div className="flex items-center gap-3">

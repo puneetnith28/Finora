@@ -28,7 +28,9 @@ export default function SimulatorPage() {
           </p>
         </div>
 
-        <FoirSimulator />
+        <div data-tour="foir-simulator-card">
+          <FoirSimulator />
+        </div>
 
         {/* Informational Callout Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">

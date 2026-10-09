@@ -1,7 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { TourContextValue } from "@/lib/types/tour";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { TourContextValue, TourStep } from "@/lib/types/tour";
 import { TOUR_STEPS } from "@/lib/constants/tourSteps";
 
 const TOUR_STORAGE_KEY = "finora_tour_completed_v1";
@@ -9,8 +10,14 @@ const TOUR_STORAGE_KEY = "finora_tour_completed_v1";
 const TourContext = createContext<TourContextValue | null>(null);
 
 export function TourProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
+  const [isNavigating, setIsNavigating] = useState<boolean>(false);
+  const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+
   const [hasSeenTour, setHasSeenTour] = useState<boolean>(() => {
     if (typeof window === "undefined") return true;
     try {
@@ -20,18 +27,109 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     }
   });
 
-  const startTour = useCallback((initialStepIndex = 0) => {
-    const validIndex = Math.max(0, Math.min(initialStepIndex, TOUR_STEPS.length - 1));
+  const currentStep: TourStep = TOUR_STEPS[currentStepIndex] || TOUR_STEPS[0];
+  const targetElementRef = useRef<HTMLElement | null>(null);
+
+  // Measure and update target element bounding box
+  const updateTargetRect = useCallback(() => {
+    if (!isOpen) {
+      setTargetRect(null);
+      return;
+    }
+
+    const selector = currentStep.targetElementSelector;
+    const el = document.querySelector(selector) as HTMLElement | null;
+    targetElementRef.current = el;
+
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      setTargetRect(rect);
+    } else {
+      setTargetRect(null);
+    }
+  }, [isOpen, currentStep]);
+
+  // Navigate to a specific step, handling cross-page transitions
+  const executeStepTransition = useCallback((targetIndex: number) => {
+    const validIndex = Math.max(0, Math.min(targetIndex, TOUR_STEPS.length - 1));
+    const nextStepConfig = TOUR_STEPS[validIndex];
     setCurrentStepIndex(validIndex);
+
+    if (nextStepConfig.route && pathname !== nextStepConfig.route) {
+      setIsNavigating(true);
+      router.push(nextStepConfig.route);
+    } else {
+      setIsNavigating(false);
+    }
+  }, [pathname, router]);
+
+  // When step changes or route changes, locate the element and smooth scroll
+  useEffect(() => {
+    if (!isOpen) return;
+
+    let retryCount = 0;
+    const maxRetries = 20; // 2 seconds max polling for page render
+
+    const locateAndHighlight = () => {
+      const selector = currentStep.targetElementSelector;
+      const el = document.querySelector(selector) as HTMLElement | null;
+
+      if (el) {
+        setIsNavigating(false);
+        targetElementRef.current = el;
+        
+        // Smooth scroll element into view
+        el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        
+        // Measure after scroll has initiated
+        setTimeout(() => {
+          updateTargetRect();
+        }, 150);
+      } else if (retryCount < maxRetries) {
+        retryCount++;
+        setTimeout(locateAndHighlight, 100);
+      } else {
+        // Fallback if element not found: display centered
+        setIsNavigating(false);
+        setTargetRect(null);
+      }
+    };
+
+    locateAndHighlight();
+  }, [isOpen, currentStepIndex, pathname, currentStep, updateTargetRect]);
+
+  // Listen to window scroll and resize to keep spotlight synced
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleScrollOrResize = () => {
+      if (targetElementRef.current) {
+        setTargetRect(targetElementRef.current.getBoundingClientRect());
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollOrResize, { passive: true });
+    window.addEventListener("resize", handleScrollOrResize, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScrollOrResize);
+      window.removeEventListener("resize", handleScrollOrResize);
+    };
+  }, [isOpen]);
+
+  const startTour = useCallback((initialStepIndex = 0) => {
     setIsOpen(true);
-  }, []);
+    executeStepTransition(initialStepIndex);
+  }, [executeStepTransition]);
 
   const closeTour = useCallback(() => {
     setIsOpen(false);
+    setTargetRect(null);
   }, []);
 
   const finishTour = useCallback(() => {
     setIsOpen(false);
+    setTargetRect(null);
     setHasSeenTour(true);
     try {
       localStorage.setItem(TOUR_STORAGE_KEY, "true");
@@ -41,30 +139,26 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const restartTour = useCallback(() => {
-    setCurrentStepIndex(0);
-    setIsOpen(true);
-  }, []);
+    startTour(0);
+  }, [startTour]);
 
   const nextStep = useCallback(() => {
-    setCurrentStepIndex((prev) => {
-      if (prev < TOUR_STEPS.length - 1) {
-        return prev + 1;
-      } else {
-        finishTour();
-        return prev;
-      }
-    });
-  }, [finishTour]);
+    if (currentStepIndex < TOUR_STEPS.length - 1) {
+      executeStepTransition(currentStepIndex + 1);
+    } else {
+      finishTour();
+    }
+  }, [currentStepIndex, executeStepTransition, finishTour]);
 
   const prevStep = useCallback(() => {
-    setCurrentStepIndex((prev) => Math.max(0, prev - 1));
-  }, []);
+    if (currentStepIndex > 0) {
+      executeStepTransition(currentStepIndex - 1);
+    }
+  }, [currentStepIndex, executeStepTransition]);
 
   const goToStep = useCallback((index: number) => {
-    if (index >= 0 && index < TOUR_STEPS.length) {
-      setCurrentStepIndex(index);
-    }
-  }, []);
+    executeStepTransition(index);
+  }, [executeStepTransition]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -87,25 +181,14 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, nextStep, prevStep, closeTour]);
 
-  // Lock body scroll when tour is open
-  useEffect(() => {
-    if (isOpen) {
-      const originalStyle = window.getComputedStyle(document.body).overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = originalStyle;
-      };
-    }
-  }, [isOpen]);
-
-  const currentStep = TOUR_STEPS[currentStepIndex] || TOUR_STEPS[0];
-
   const value: TourContextValue = {
     isOpen,
     currentStepIndex,
     currentStep,
     totalSteps: TOUR_STEPS.length,
     hasSeenTour,
+    isNavigating,
+    targetRect,
     startTour,
     nextStep,
     prevStep,

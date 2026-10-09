@@ -51,7 +51,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1.5 lg:gap-2">
+          <nav data-tour="nav-menu" className="hidden md:flex items-center gap-1.5 lg:gap-2">
             {NAV_ITEMS.map((item) => {
               const isActive = pathname.startsWith(item.href);
 

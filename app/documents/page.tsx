@@ -105,7 +105,7 @@ export default function DocumentsPage() {
 
   return (
     <div className="bg-[#BAE6FD] min-h-screen py-10 sm:py-16 px-4 sm:px-6 lg:px-8 border-b-3 border-black">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div data-tour="document-vault-section" className="max-w-7xl mx-auto space-y-8">
         {/* Alert Banner */}
         {alert && (
           <div

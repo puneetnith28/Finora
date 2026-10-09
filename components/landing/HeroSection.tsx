@@ -34,7 +34,7 @@ export function HeroSection() {
             then generates an explainable receipt.
           </p>
 
-          <div className="pt-2 flex flex-wrap items-center gap-3">
+          <div data-tour="hero-cta" className="pt-2 flex flex-wrap items-center gap-3">
             <Link href="/assessment">
               <NeoButton variant="primary" size="lg">
                 <span>EXPLORE THE RECORDED HANDOFF</span>
