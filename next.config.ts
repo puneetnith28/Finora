@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const backendUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+
 const nextConfig: NextConfig = {
   /* config options here */
   compress: true,
@@ -10,7 +12,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:8000/api/:path*",
+        destination: `${backendUrl}/api/:path*`,
       },
     ];
   },
