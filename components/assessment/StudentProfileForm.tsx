@@ -39,18 +39,44 @@ export function StudentProfileForm({
     cibil_score: initialData?.cibil_score ?? 750,
   });
 
+  const EMPTY_CUSTOM_PROFILE: StudentFormData = {
+    full_name: "",
+    email: "",
+    phone: "",
+    citizenship: "India",
+    target_country: "USA",
+    target_university: "",
+    target_degree: "masters",
+    target_course: "",
+    target_stem: true,
+    intake_term: "Fall 2026",
+    cibil_score: 750,
+  };
+
+  const [selectedProfileMode, setSelectedProfileMode] = useState<string>(
+    initialData?.full_name ? "custom" : "custom"
+  );
+
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const applyPreset = (presetId: string) => {
     const preset = STUDENT_PRESETS.find((p) => p.id === presetId);
     if (preset) {
       setFormData(preset.data);
+      setSelectedProfileMode(presetId);
       setErrors({});
     }
   };
 
+  const handleCustomProfileClick = () => {
+    setFormData(EMPTY_CUSTOM_PROFILE);
+    setSelectedProfileMode("custom");
+    setErrors({});
+  };
+
   const handleChange = (field: keyof StudentFormData, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    setSelectedProfileMode("custom");
     if (errors[field]) {
       setErrors((prev) => {
         const next = { ...prev };
@@ -78,31 +104,80 @@ export function StudentProfileForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Preset Quick Loader Banner */}
-      <div className="neo-box-yellow p-4 sm:p-5 space-y-3">
-        <div className="flex items-center gap-2">
-          <NeoBadge variant="white" className="border-2 border-black">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>QUICK LOAD DEMO PROFILES</span>
-          </NeoBadge>
+      {/* Profile Selector Banner */}
+      <div className="neo-box-yellow p-4 sm:p-5 space-y-3 border-3 border-black shadow-[5px_5px_0px_0px_#000000]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <NeoBadge variant="white" className="border-2 border-black font-black text-xs">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>CHOOSE OR CREATE PROFILE</span>
+            </NeoBadge>
+            <span className="text-xs font-bold text-neutral-800 hidden sm:inline">
+              Select a demo preset or enter your custom student details
+            </span>
+          </div>
+          <span className="text-[11px] font-black uppercase bg-black text-[#FEF08A] px-2 py-0.5 border border-black shadow-[2px_2px_0px_0px_#000000] self-start sm:self-auto">
+            {selectedProfileMode === "custom" ? "MODE: CUSTOM PROFILE" : "MODE: DEMO PRESET"}
+          </span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {STUDENT_PRESETS.map((preset) => (
-            <button
-              key={preset.id}
-              type="button"
-              onClick={() => applyPreset(preset.id)}
-              className="text-left p-3 border-2 border-black bg-white hover:bg-neutral-50 shadow-[2px_2px_0px_0px_#000000] transition-all cursor-pointer group"
-            >
-              <div className="font-black text-xs text-black uppercase">
-                {preset.name}
-              </div>
-              <div className="text-[11px] font-bold text-neutral-600 truncate mt-0.5">
-                {preset.subtitle}
-              </div>
-            </button>
-          ))}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Custom Profile Option */}
+          <button
+            type="button"
+            onClick={handleCustomProfileClick}
+            className={`text-left p-3 border-2 border-black transition-all cursor-pointer ${
+              selectedProfileMode === "custom"
+                ? "bg-black text-[#FEF08A] shadow-[4px_4px_0px_0px_#000000] translate-x-[-1px] translate-y-[-1px]"
+                : "bg-white hover:bg-neutral-50 text-black shadow-[2px_2px_0px_0px_#000000]"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-black text-xs uppercase">✍️ Custom Profile</span>
+              {selectedProfileMode === "custom" && (
+                <span className="text-[9px] font-black bg-[#FEF08A] text-black px-1.5 py-0.2 border border-black">
+                  ACTIVE
+                </span>
+              )}
+            </div>
+            <div className={`text-[11px] font-bold truncate mt-0.5 ${selectedProfileMode === "custom" ? "text-neutral-300" : "text-neutral-600"}`}>
+              Start fresh & enter your own details
+            </div>
+          </button>
+
+          {/* Preset Demo Profiles */}
+          {STUDENT_PRESETS.map((preset) => {
+            const isSelected = selectedProfileMode === preset.id;
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => applyPreset(preset.id)}
+                className={`text-left p-3 border-2 border-black transition-all cursor-pointer ${
+                  isSelected
+                    ? "bg-[#86EFAC] text-black shadow-[4px_4px_0px_0px_#000000] translate-x-[-1px] translate-y-[-1px]"
+                    : "bg-white hover:bg-neutral-50 text-black shadow-[2px_2px_0px_0px_#000000]"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-black text-xs uppercase">{preset.name}</span>
+                  {isSelected && (
+                    <span className="text-[9px] font-black bg-black text-white px-1.5 py-0.2">
+                      LOADED
+                    </span>
+                  )}
+                </div>
+                <div className="text-[11px] font-bold text-neutral-600 truncate mt-0.5">
+                  {preset.subtitle}
+                </div>
+              </button>
+            );
+          })}
         </div>
+
+        <p className="text-xs font-bold text-neutral-800 pt-1">
+          💡 <strong>Want to test with your own profile?</strong> Click <strong>Custom Profile</strong> or directly edit the fields in the form below. All data is evaluated through the deterministic loan engine and saved to your session.
+        </p>
       </div>
 
       {/* Main Form Card */}
