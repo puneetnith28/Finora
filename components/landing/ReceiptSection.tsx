@@ -4,7 +4,24 @@ import React from "react";
 import { Check } from "lucide-react";
 import { NeoBadge } from "../ui/NeoPrimitives";
 
+function useFormattedDate() {
+  return React.useSyncExternalStore(
+    () => () => {},
+    () =>
+      new Date()
+        .toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })
+        .toUpperCase(),
+    () => "OCTOBER 8, 2026"
+  );
+}
+
 export function ReceiptSection() {
+  const currentDate = useFormattedDate();
+
   return (
     <section
       id="receipt-section"
@@ -48,7 +65,7 @@ export function ReceiptSection() {
             </div>
             <div className="text-left sm:text-right">
               <span className="text-sm sm:text-base font-black text-black block">
-                OCTOBER 8, 2026
+                {currentDate}
               </span>
               <span className="text-xs sm:text-sm font-bold text-neutral-700">
                 Deterministic Engine • 5 Verified Underwriting Records

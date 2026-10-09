@@ -5,7 +5,22 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { NeoBadge, NeoButton } from "../ui/NeoPrimitives";
 
+function useFormattedEdition() {
+  return React.useSyncExternalStore(
+    () => () => {},
+    () => {
+      const monthYear = new Date()
+        .toLocaleDateString("en-US", { month: "long", year: "numeric" })
+        .toUpperCase();
+      return `${monthYear} EDITION`;
+    },
+    () => "OCTOBER 2026 EDITION"
+  );
+}
+
 export function HeroSection() {
+  const currentEdition = useFormattedEdition();
+
   return (
     <section className="w-full bg-[#FEF08A] border-b-2 border-black min-h-[calc(100vh-64px)] min-h-[calc(100dvh-64px)] flex flex-col justify-between py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8">
       {/* Main Content Grid (Vertically Centered in Available Space) */}
@@ -21,7 +36,7 @@ export function HeroSection() {
               ONE REPORT. CONNECTED CONTEXT.
             </NeoBadge>
             <span className="hidden sm:inline-block text-xs font-black bg-black text-[#FEF08A] px-2 py-0.5 border border-black shadow-[2px_2px_0px_0px_#000000]">
-              OCTOBER 2026 EDITION
+              {currentEdition}
             </span>
           </div>
 
