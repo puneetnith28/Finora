@@ -6,7 +6,7 @@ import pytest
 from sqlalchemy.orm import Session
 
 from app.db.base import Base
-from app.db.seed_lenders import seed_demo_lenders
+from app.db.seed_lenders import DEMO_LENDERS_DATA, seed_demo_lenders
 from app.db.session import SessionLocal, engine
 from app.models.asset import Asset, AssetType
 from app.models.collateral import Collateral, CollateralType
@@ -129,8 +129,8 @@ def test_complete_assessment_orchestration() -> None:
         assert report.financial_summary.readiness_score > Decimal("0.00")
 
         # Check lender evaluation coverage
-        assert report.total_lenders_evaluated == 4
-        assert len(report.lender_evaluations) == 4
+        assert report.total_lenders_evaluated == len(DEMO_LENDERS_DATA)
+        assert len(report.lender_evaluations) == len(DEMO_LENDERS_DATA)
         for lender_eval in report.lender_evaluations:
             assert lender_eval.outcome_state in ["potential_match", "needs_review", "not_a_match"]
             assert len(lender_eval.rule_results) > 0
