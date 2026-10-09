@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { 
-  FileText, 
-  UploadCloud, 
-  ArrowRight, 
+import {
+  FileText,
+  UploadCloud,
+  ArrowRight,
   Sparkles,
   CheckCircle2,
   AlertTriangle,
@@ -15,7 +15,7 @@ import {
   RefreshCw,
   Plus,
   ShieldCheck,
-  Lock
+  Lock,
 } from "lucide-react";
 import { api, ApiClientError } from "@/lib/api";
 import { DiscrepancyViewer } from "@/components/documents/DiscrepancyViewer";
@@ -81,7 +81,10 @@ export default function DocumentsPage() {
 
     try {
       await api.upload(`/api/students/${studentId}/documents`, formData);
-      setAlert({ type: "success", message: `Document '${fileToUpload.name}' uploaded and validated.` });
+      setAlert({
+        type: "success",
+        message: `Document '${fileToUpload.name}' uploaded and validated.`,
+      });
       setFileToUpload(null);
       await loadReadiness();
     } catch (err: unknown) {
@@ -110,9 +113,7 @@ export default function DocumentsPage() {
         {alert && (
           <div
             className={`p-4 border-3 border-black shadow-[4px_4px_0px_#000000] flex items-center justify-between text-xs sm:text-sm font-black uppercase ${
-              alert.type === "success"
-                ? "bg-[#86EFAC] text-black"
-                : "bg-[#FECDD3] text-black"
+              alert.type === "success" ? "bg-[#86EFAC] text-black" : "bg-[#FECDD3] text-black"
             }`}
           >
             <span>{alert.message}</span>
@@ -135,7 +136,8 @@ export default function DocumentsPage() {
               DOCUMENT READINESS VAULT
             </h1>
             <p className="text-xs sm:text-sm font-bold text-black/80 mt-2 max-w-2xl">
-              Deterministic verification vault. Upload proof documents for admission, co-borrower income, tax filings, and collateral with isolated magic-byte verification.
+              Deterministic verification vault. Upload proof documents for admission, co-borrower
+              income, tax filings, and collateral with isolated magic-byte verification.
             </p>
           </div>
 
@@ -210,25 +212,33 @@ export default function DocumentsPage() {
         {report && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="neo-box p-4 bg-[#FFFDF9]">
-              <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Readiness Status</span>
+              <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">
+                Readiness Status
+              </span>
               <div className="text-xl font-black uppercase text-black mt-1">
                 {report.overall_readiness.replace("_", " ")}
               </div>
             </div>
             <div className="neo-box p-4 bg-[#FFFDF9]">
-              <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Total Required</span>
+              <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">
+                Total Required
+              </span>
               <div className="text-xl font-black font-mono text-black mt-1">
                 {report.total_required} Dossiers
               </div>
             </div>
             <div className="neo-box p-4 bg-[#86EFAC]">
-              <span className="text-[10px] font-black uppercase tracking-wider text-black block">Verified</span>
+              <span className="text-[10px] font-black uppercase tracking-wider text-black block">
+                Verified
+              </span>
               <div className="text-xl font-black font-mono text-black mt-1">
                 {report.total_uploaded} Uploaded
               </div>
             </div>
             <div className="neo-box p-4 bg-[#FECDD3]">
-              <span className="text-[10px] font-black uppercase tracking-wider text-black block">Pending Proof</span>
+              <span className="text-[10px] font-black uppercase tracking-wider text-black block">
+                Pending Proof
+              </span>
               <div className="text-xl font-black font-mono text-black mt-1">
                 {report.total_missing} Action Items
               </div>

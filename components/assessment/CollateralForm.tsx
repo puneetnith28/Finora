@@ -1,25 +1,25 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  Sparkles, 
-  ArrowUpRight, 
+import {
+  Sparkles,
+  ArrowUpRight,
   ArrowLeft,
   Plus,
   Trash2,
   Shield,
   ShieldAlert,
   Building,
-  Check
+  Check,
 } from "lucide-react";
 import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
-import { 
+import {
   collateralListSchema,
-  type CollateralItem, 
-  COLLATERAL_HAIRCUTS, 
-  COLLATERAL_TYPE_LABELS, 
+  type CollateralItem,
+  COLLATERAL_HAIRCUTS,
+  COLLATERAL_TYPE_LABELS,
   OWNERSHIP_STATUS_LABELS,
-  COLLATERAL_PRESETS 
+  COLLATERAL_PRESETS,
 } from "@/lib/validations/collateral";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 
@@ -84,11 +84,7 @@ export function CollateralForm({
     setCollaterals((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const updateCollateral = (
-    index: number,
-    field: keyof CollateralItem,
-    value: unknown
-  ) => {
+  const updateCollateral = (index: number, field: keyof CollateralItem, value: unknown) => {
     setCollaterals((prev) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], [field]: value };
@@ -145,9 +141,7 @@ export function CollateralForm({
               onClick={() => applyPreset(preset.id)}
               className="text-left p-3 border-2 border-black bg-white hover:bg-neutral-50 shadow-[2px_2px_0px_0px_#000000] transition-all cursor-pointer group"
             >
-              <div className="font-black text-xs text-black uppercase">
-                {preset.name}
-              </div>
+              <div className="font-black text-xs text-black uppercase">{preset.name}</div>
               <div className="text-[11px] font-bold text-neutral-600 truncate mt-0.5">
                 {preset.subtitle}
               </div>
@@ -169,12 +163,7 @@ export function CollateralForm({
                   PLEDGED COLLATERAL & SECURITY
                 </h2>
               </div>
-              <NeoButton
-                type="button"
-                variant="white"
-                size="sm"
-                onClick={addCollateral}
-              >
+              <NeoButton type="button" variant="white" size="sm" onClick={addCollateral}>
                 <Plus className="h-4 w-4" />
                 <span>ADD PLEDGE</span>
               </NeoButton>
@@ -189,15 +178,11 @@ export function CollateralForm({
                       NO COLLATERAL PLEDGED (UNSECURED MODE)
                     </h4>
                     <p className="text-xs font-bold text-neutral-800 max-w-md mx-auto mt-1">
-                      Evaluating collateral-free loan slabs. Lenders like Prodigy Finance and Avanse Unsecured will be evaluated on candidate merit.
+                      Evaluating collateral-free loan slabs. Lenders like Prodigy Finance and Avanse
+                      Unsecured will be evaluated on candidate merit.
                     </p>
                   </div>
-                  <NeoButton
-                    type="button"
-                    variant="white"
-                    size="sm"
-                    onClick={addCollateral}
-                  >
+                  <NeoButton type="button" variant="white" size="sm" onClick={addCollateral}>
                     <Plus className="h-4 w-4" />
                     <span>ADD PROPERTY OR FIXED DEPOSIT</span>
                   </NeoButton>
@@ -212,10 +197,7 @@ export function CollateralForm({
                   );
 
                   return (
-                    <div
-                      key={index}
-                      className="neo-box p-4 bg-[#FAF8F5] space-y-4"
-                    >
+                    <div key={index} className="neo-box p-4 bg-[#FAF8F5] space-y-4">
                       <div className="flex items-center justify-between pb-2 border-b-2 border-black">
                         <div className="flex items-center gap-2">
                           <Building className="h-4 w-4 text-black" />
@@ -304,9 +286,7 @@ export function CollateralForm({
                           label="City / Location"
                           placeholder="e.g. Bangalore"
                           value={collateral.property_city || ""}
-                          onChange={(e) =>
-                            updateCollateral(index, "property_city", e.target.value)
-                          }
+                          onChange={(e) => updateCollateral(index, "property_city", e.target.value)}
                         />
 
                         <NeoInput
@@ -368,11 +348,18 @@ export function CollateralForm({
             {/* Footer Buttons */}
             <div className="pt-4 border-t-2 border-black flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
               {onBack ? (
-                <NeoButton type="button" variant="white" onClick={onBack} className="w-full sm:w-auto justify-center">
+                <NeoButton
+                  type="button"
+                  variant="white"
+                  onClick={onBack}
+                  className="w-full sm:w-auto justify-center"
+                >
                   <ArrowLeft className="h-4 w-4 shrink-0" />
                   <span>BACK TO FINANCIALS</span>
                 </NeoButton>
-              ) : <div />}
+              ) : (
+                <div />
+              )}
 
               <NeoButton
                 type="submit"
@@ -401,9 +388,7 @@ export function CollateralForm({
             <div className="space-y-2.5 text-xs font-bold">
               <div className="flex justify-between py-1 border-b border-black">
                 <span className="text-neutral-600">Gross Market Value</span>
-                <span className="font-mono text-black">
-                  {formatCurrency(totalMarketValueInr)}
-                </span>
+                <span className="font-mono text-black">{formatCurrency(totalMarketValueInr)}</span>
               </div>
               <div className="flex justify-between py-1 border-b border-black">
                 <span className="text-neutral-600">Encumbrances</span>
@@ -435,7 +420,11 @@ export function CollateralForm({
                 <div className="w-full h-3 border-2 border-black bg-white overflow-hidden">
                   <div
                     className={`h-full border-r-2 border-black ${
-                      ltvPercent <= 75 ? "bg-[#86EFAC]" : ltvPercent <= 100 ? "bg-[#FEF08A]" : "bg-[#F472B6]"
+                      ltvPercent <= 75
+                        ? "bg-[#86EFAC]"
+                        : ltvPercent <= 100
+                          ? "bg-[#FEF08A]"
+                          : "bg-[#F472B6]"
                     }`}
                     style={{ width: `${Math.min(100, ltvPercent)}%` }}
                   />
@@ -452,15 +441,15 @@ export function CollateralForm({
                 {totalEligibleValueInr >= requestedLoanInr
                   ? "FULLY SECURED (PRIME)"
                   : totalEligibleValueInr > 0
-                  ? "PARTIALLY SECURED"
-                  : "UNSECURED / MERIT BACKED"}
+                    ? "PARTIALLY SECURED"
+                    : "UNSECURED / MERIT BACKED"}
               </span>
               <span className="text-[10px] font-bold text-neutral-300 block pt-1">
                 {totalEligibleValueInr >= requestedLoanInr
                   ? "Eligible for premier public bank slabs (SBI, BoB 9.15%-10.25%)."
                   : totalEligibleValueInr > 0
-                  ? "Eligible for hybrid collateral + co-signer NBFC products."
-                  : "Eligible for fintech & USD collateral-free loans up to lender caps."}
+                    ? "Eligible for hybrid collateral + co-signer NBFC products."
+                    : "Eligible for fintech & USD collateral-free loans up to lender caps."}
               </span>
             </div>
 

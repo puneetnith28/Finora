@@ -1,25 +1,29 @@
 "use client";
 
 import React from "react";
-import { 
-  Check, 
-  Edit3, 
-  ArrowLeft, 
-  Sparkles, 
-  User, 
-  GraduationCap, 
-  DollarSign, 
-  Wallet, 
-  Shield, 
+import {
+  Check,
+  Edit3,
+  ArrowLeft,
+  Sparkles,
+  User,
+  GraduationCap,
+  DollarSign,
+  Wallet,
+  Shield,
   FileText,
-  Play
+  Play,
 } from "lucide-react";
 import { NeoBadge, NeoButton } from "@/components/ui/NeoPrimitives";
 import { type StudentFormData } from "@/lib/validations/student";
 import { type StudyPlanFormData } from "@/lib/validations/study_plan";
 import { type FundingSourceItem, FUNDING_SOURCE_LABELS } from "@/lib/validations/funding";
 import { type FinancialProfileFormData } from "@/lib/validations/financial_profile";
-import { type CollateralItem, COLLATERAL_TYPE_LABELS, COLLATERAL_HAIRCUTS } from "@/lib/validations/collateral";
+import {
+  type CollateralItem,
+  COLLATERAL_TYPE_LABELS,
+  COLLATERAL_HAIRCUTS,
+} from "@/lib/validations/collateral";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 
 export interface AssessmentReviewProps {
@@ -105,8 +109,8 @@ export function AssessmentReview({
             READY TO RUN FULL LENDER AUDIT
           </h2>
           <p className="text-xs sm:text-sm font-bold text-neutral-800 max-w-xl leading-snug">
-            Review all applicant parameters below. Clicking &quot;Run Assessment&quot; executes every 
-            public, private, and NBFC lender rule without estimations.
+            Review all applicant parameters below. Clicking &quot;Run Assessment&quot; executes
+            every public, private, and NBFC lender rule without estimations.
           </p>
         </div>
 
@@ -133,11 +137,7 @@ export function AssessmentReview({
                   01 / APPLICANT PROFILE
                 </span>
               </div>
-              <NeoButton
-                variant="white"
-                size="sm"
-                onClick={() => onEditSection(1)}
-              >
+              <NeoButton variant="white" size="sm" onClick={() => onEditSection(1)}>
                 <Edit3 className="h-3 w-3" />
                 <span>EDIT</span>
               </NeoButton>
@@ -190,11 +190,7 @@ export function AssessmentReview({
                   02 / STUDY PLAN BUDGET
                 </span>
               </div>
-              <NeoButton
-                variant="white"
-                size="sm"
-                onClick={() => onEditSection(2)}
-              >
+              <NeoButton variant="white" size="sm" onClick={() => onEditSection(2)}>
                 <Edit3 className="h-3 w-3" />
                 <span>EDIT</span>
               </NeoButton>
@@ -211,13 +207,15 @@ export function AssessmentReview({
                 <div className="flex justify-between">
                   <span className="text-neutral-600">Living:</span>
                   <span className="font-mono text-black">
-                    {studyPlan.currency} {Number(studyPlan.living_expenses_original).toLocaleString()}
+                    {studyPlan.currency}{" "}
+                    {Number(studyPlan.living_expenses_original).toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-600">Duration & FX:</span>
                   <span className="font-mono text-black">
-                    {studyPlan.duration_months} mo • 1 {studyPlan.currency} = ₹{studyPlan.exchange_rate_to_inr}
+                    {studyPlan.duration_months} mo • 1 {studyPlan.currency} = ₹
+                    {studyPlan.exchange_rate_to_inr}
                   </span>
                 </div>
                 <div className="flex justify-between pt-1 border-t border-black font-black">
@@ -247,11 +245,7 @@ export function AssessmentReview({
                   03 / FUNDING SOURCES & GAP
                 </span>
               </div>
-              <NeoButton
-                variant="white"
-                size="sm"
-                onClick={() => onEditSection(3)}
-              >
+              <NeoButton variant="white" size="sm" onClick={() => onEditSection(3)}>
                 <Edit3 className="h-3 w-3" />
                 <span>EDIT</span>
               </NeoButton>
@@ -268,7 +262,9 @@ export function AssessmentReview({
                 {fundingSources.slice(0, 2).map((s, idx) => (
                   <div key={idx} className="flex justify-between text-neutral-600 text-[11px]">
                     <span>• {FUNDING_SOURCE_LABELS[s.source_type] || s.source_type}</span>
-                    <span className="font-mono">{formatCurrency(Number(s.amount_original) * Number(s.exchange_rate_to_inr))}</span>
+                    <span className="font-mono">
+                      {formatCurrency(Number(s.amount_original) * Number(s.exchange_rate_to_inr))}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -296,11 +292,7 @@ export function AssessmentReview({
                   04 / CO-BORROWER & FOIR
                 </span>
               </div>
-              <NeoButton
-                variant="white"
-                size="sm"
-                onClick={() => onEditSection(4)}
-              >
+              <NeoButton variant="white" size="sm" onClick={() => onEditSection(4)}>
                 <Edit3 className="h-3 w-3" />
                 <span>EDIT</span>
               </NeoButton>
@@ -316,7 +308,9 @@ export function AssessmentReview({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-600">Monthly Income:</span>
-                  <span className="font-mono text-black font-black">{formatCurrency(monthlyIncomeInr)}/mo</span>
+                  <span className="font-mono text-black font-black">
+                    {formatCurrency(monthlyIncomeInr)}/mo
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-600">Existing EMIs:</span>
@@ -326,9 +320,7 @@ export function AssessmentReview({
                 </div>
                 <div className="flex justify-between pt-1 border-t border-black font-black">
                   <span className="text-black uppercase">Projected FOIR:</span>
-                  <span className="font-mono text-sm text-black">
-                    {formatPercent(foir)}
-                  </span>
+                  <span className="font-mono text-sm text-black">{formatPercent(foir)}</span>
                 </div>
               </div>
             ) : (
@@ -344,7 +336,12 @@ export function AssessmentReview({
 
       {/* Action Footer */}
       <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 pt-6 border-t-2 border-black">
-        <NeoButton variant="white" size="md" onClick={onBack} className="w-full sm:w-auto justify-center">
+        <NeoButton
+          variant="white"
+          size="md"
+          onClick={onBack}
+          className="w-full sm:w-auto justify-center"
+        >
           <ArrowLeft className="h-4 w-4 shrink-0" />
           <span>BACK TO COLLATERAL</span>
         </NeoButton>

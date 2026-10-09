@@ -1,7 +1,15 @@
 "use client";
 
 import React from "react";
-import { Check, User, GraduationCap, DollarSign, Wallet, Shield, ClipboardCheck } from "lucide-react";
+import {
+  Check,
+  User,
+  GraduationCap,
+  DollarSign,
+  Wallet,
+  Shield,
+  ClipboardCheck,
+} from "lucide-react";
 
 export interface StepItem {
   id: number;
@@ -80,8 +88,8 @@ export function StepNavigation({
             const bgClass = isCurrent
               ? "bg-[#FEF08A] shadow-[4px_4px_0px_0px_#000000] translate-x-[-1px] translate-y-[-1px]"
               : isCompleted
-              ? "bg-[#86EFAC] shadow-[2px_2px_0px_0px_#000000]"
-              : "bg-[#FAF8F5] shadow-[2px_2px_0px_0px_#000000] opacity-80";
+                ? "bg-[#86EFAC] shadow-[2px_2px_0px_0px_#000000]"
+                : "bg-[#FAF8F5] shadow-[2px_2px_0px_0px_#000000] opacity-80";
 
             return (
               <li key={step.id} className="relative">

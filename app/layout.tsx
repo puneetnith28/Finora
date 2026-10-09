@@ -26,16 +26,9 @@ export const metadata: Metadata = {
     "Deterministic financial evaluation, currency normalization, funding gap analysis, and transparent lender matching for study-abroad students.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#FFFDF9] text-black">
         <StudentProvider>
           <ToastProvider>

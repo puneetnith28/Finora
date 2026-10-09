@@ -72,9 +72,7 @@ export function NeoModal({
 
         {/* Optional Footer */}
         {footer && (
-          <div className="pt-3 border-t-2 border-black flex justify-end gap-2">
-            {footer}
-          </div>
+          <div className="pt-3 border-t-2 border-black flex justify-end gap-2">{footer}</div>
         )}
       </div>
     </div>

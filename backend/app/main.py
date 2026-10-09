@@ -5,16 +5,14 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+import app.models  # noqa: F401 - Register all models with Base.metadata
 from app.core.config import settings
 from app.core.errors import register_error_handlers
-from app.routes.api import api_router
-from app.routes.health import router as health_router
-
-
-import app.models  # noqa: F401 - Register all models with Base.metadata
 from app.db.base import Base
 from app.db.seed_lenders import seed_demo_lenders
 from app.db.session import SessionLocal, engine
+from app.routes.api import api_router
+from app.routes.health import router as health_router
 
 
 @asynccontextmanager

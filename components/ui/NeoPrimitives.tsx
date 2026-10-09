@@ -33,10 +33,7 @@ export function NeoButton({
   }[size];
 
   return (
-    <button
-      className={`neo-btn ${variantClasses} ${sizeClasses} ${className}`}
-      {...props}
-    >
+    <button className={`neo-btn ${variantClasses} ${sizeClasses} ${className}`} {...props}>
       {children}
     </button>
   );
@@ -71,11 +68,7 @@ export function NeoBadge({
   }[rotate];
 
   return (
-    <span
-      className={`neo-pill ${variantClasses} ${rotateClasses} ${className}`}
-    >
-      {children}
-    </span>
+    <span className={`neo-pill ${variantClasses} ${rotateClasses} ${className}`}>{children}</span>
   );
 }
 
@@ -103,11 +96,7 @@ export function NeoCard({
 
   const baseClass = interactive ? "neo-box-interactive" : "neo-box";
 
-  return (
-    <div className={`${baseClass} ${variantClasses} ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`${baseClass} ${variantClasses} ${className}`}>{children}</div>;
 }
 
 interface NeoInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -117,14 +106,7 @@ interface NeoInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
 }
 
-export function NeoInput({
-  label,
-  error,
-  badge,
-  className = "",
-  id,
-  ...props
-}: NeoInputProps) {
+export function NeoInput({ label, error, badge, className = "", id, ...props }: NeoInputProps) {
   const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
 
   return (

@@ -36,10 +36,16 @@ export const liabilityItemSchema = z.object({
 });
 
 export const financialProfileSchema = z.object({
-  co_borrower_relationship: z.string().min(2, "Co-borrower relationship is required").default("father"),
+  co_borrower_relationship: z
+    .string()
+    .min(2, "Co-borrower relationship is required")
+    .default("father"),
   monthly_income_inr: z.number().min(1, "Primary monthly income must be greater than 0"),
   other_income_inr: z.number().min(0, "Other income must be 0 or greater").default(0),
-  existing_monthly_obligations_inr: z.number().min(0, "Existing obligations must be 0 or greater").default(0),
+  existing_monthly_obligations_inr: z
+    .number()
+    .min(0, "Existing obligations must be 0 or greater")
+    .default(0),
   monthly_living_expenses_inr: z.number().min(0, "Living expenses must be 0 or greater").default(0),
   cibil_score: z.number().min(300).max(900).optional().nullable(),
   assets: z.array(assetItemSchema).default([]),

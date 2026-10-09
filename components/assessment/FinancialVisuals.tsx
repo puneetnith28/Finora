@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  Wallet, 
-  TrendingUp, 
-  PiggyBank, 
-  Building,
-  PieChart,
-  BarChart3
-} from "lucide-react";
+import { Wallet, TrendingUp, PiggyBank, Building, PieChart, BarChart3 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
 interface FinancialVisualsProps {
@@ -44,21 +37,57 @@ export function FinancialVisuals({
   const other = otherExpensesInr ?? Math.max(0, totalCostInr - tuition - living);
 
   const costItems = [
-    { label: "Tuition & Academic Fees", amount: tuition, color: "bg-[#86EFAC]", hex: "#86EFAC", percent: totalCostInr > 0 ? (tuition / totalCostInr) * 100 : 65 },
-    { label: "Living, Housing & Food", amount: living, color: "bg-[#BAE6FD]", hex: "#BAE6FD", percent: totalCostInr > 0 ? (living / totalCostInr) * 100 : 25 },
-    { label: "Travel, Health & Buffer", amount: other, color: "bg-[#FEF08A]", hex: "#FEF08A", percent: totalCostInr > 0 ? (other / totalCostInr) * 100 : 10 },
+    {
+      label: "Tuition & Academic Fees",
+      amount: tuition,
+      color: "bg-[#86EFAC]",
+      hex: "#86EFAC",
+      percent: totalCostInr > 0 ? (tuition / totalCostInr) * 100 : 65,
+    },
+    {
+      label: "Living, Housing & Food",
+      amount: living,
+      color: "bg-[#BAE6FD]",
+      hex: "#BAE6FD",
+      percent: totalCostInr > 0 ? (living / totalCostInr) * 100 : 25,
+    },
+    {
+      label: "Travel, Health & Buffer",
+      amount: other,
+      color: "bg-[#FEF08A]",
+      hex: "#FEF08A",
+      percent: totalCostInr > 0 ? (other / totalCostInr) * 100 : 10,
+    },
   ];
 
   // Derive funding breakdown
   const fundingGap = Math.max(0, fundingGapInr);
-  const totalCovered = totalFundingInr || (scholarshipInr + familyContributionInr);
+  const totalCovered = totalFundingInr || scholarshipInr + familyContributionInr;
   const selfSavings = familyContributionInr || Math.round(totalCovered * 0.7);
   const scholarship = scholarshipInr || Math.round(totalCovered * 0.3);
 
   const fundingItems = [
-    { label: "Education Loan Required", amount: fundingGap, color: "bg-[#FECDD3]", hex: "#FECDD3", percent: totalCostInr > 0 ? (fundingGap / totalCostInr) * 100 : 70 },
-    { label: "Family Savings & Capital", amount: selfSavings, color: "bg-[#86EFAC]", hex: "#86EFAC", percent: totalCostInr > 0 ? (selfSavings / totalCostInr) * 100 : 20 },
-    { label: "Scholarships & Grants", amount: scholarship, color: "bg-[#BAE6FD]", hex: "#BAE6FD", percent: totalCostInr > 0 ? (scholarship / totalCostInr) * 100 : 10 },
+    {
+      label: "Education Loan Required",
+      amount: fundingGap,
+      color: "bg-[#FECDD3]",
+      hex: "#FECDD3",
+      percent: totalCostInr > 0 ? (fundingGap / totalCostInr) * 100 : 70,
+    },
+    {
+      label: "Family Savings & Capital",
+      amount: selfSavings,
+      color: "bg-[#86EFAC]",
+      hex: "#86EFAC",
+      percent: totalCostInr > 0 ? (selfSavings / totalCostInr) * 100 : 20,
+    },
+    {
+      label: "Scholarships & Grants",
+      amount: scholarship,
+      color: "bg-[#BAE6FD]",
+      hex: "#BAE6FD",
+      percent: totalCostInr > 0 ? (scholarship / totalCostInr) * 100 : 10,
+    },
   ];
 
   const collateral = totalEligibleCollateralInr;
@@ -119,7 +148,9 @@ export function FinancialVisuals({
       {activeTab === "cost" && (
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <span className="text-xs uppercase font-black tracking-wider text-black/70">Total Program Cost</span>
+            <span className="text-xs uppercase font-black tracking-wider text-black/70">
+              Total Program Cost
+            </span>
             <span className="text-2xl font-black font-mono text-black">
               {formatCurrency(totalCostInr)}
             </span>
@@ -146,9 +177,7 @@ export function FinancialVisuals({
               >
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-black border border-black shrink-0" />
-                  <span className="text-xs font-black uppercase text-black">
-                    {item.label}
-                  </span>
+                  <span className="text-xs font-black uppercase text-black">{item.label}</span>
                 </div>
                 <div className="text-xl font-black font-mono text-black">
                   {formatCurrency(item.amount)}
@@ -195,9 +224,7 @@ export function FinancialVisuals({
               >
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-black border border-black shrink-0" />
-                  <span className="text-xs font-black uppercase text-black">
-                    {item.label}
-                  </span>
+                  <span className="text-xs font-black uppercase text-black">{item.label}</span>
                 </div>
                 <div className="text-xl font-black font-mono text-black">
                   {formatCurrency(item.amount)}
@@ -217,7 +244,9 @@ export function FinancialVisuals({
           <div className="p-4 bg-[#86EFAC] border-2 border-black shadow-[3px_3px_0px_#000000] space-y-2">
             <div className="flex items-center gap-2 text-black">
               <PiggyBank className="h-5 w-5 stroke-[2.5]" />
-              <span className="text-xs font-black uppercase tracking-wider">Candidate Net Worth</span>
+              <span className="text-xs font-black uppercase tracking-wider">
+                Candidate Net Worth
+              </span>
             </div>
             <div className="text-2xl font-black font-mono text-black">
               {formatCurrency(netWorthInr)}
@@ -230,7 +259,9 @@ export function FinancialVisuals({
           <div className="p-4 bg-[#BAE6FD] border-2 border-black shadow-[3px_3px_0px_#000000] space-y-2">
             <div className="flex items-center gap-2 text-black">
               <Building className="h-5 w-5 stroke-[2.5]" />
-              <span className="text-xs font-black uppercase tracking-wider">Eligible Collateral</span>
+              <span className="text-xs font-black uppercase tracking-wider">
+                Eligible Collateral
+              </span>
             </div>
             <div className="text-2xl font-black font-mono text-black">
               {formatCurrency(collateral)}
@@ -243,7 +274,9 @@ export function FinancialVisuals({
           <div className="p-4 bg-[#FEF08A] border-2 border-black shadow-[3px_3px_0px_#000000] space-y-2">
             <div className="flex items-center gap-2 text-black">
               <Wallet className="h-5 w-5 stroke-[2.5]" />
-              <span className="text-xs font-black uppercase tracking-wider">Asset Cushion Ratio</span>
+              <span className="text-xs font-black uppercase tracking-wider">
+                Asset Cushion Ratio
+              </span>
             </div>
             <div className="text-2xl font-black font-mono text-black">
               {totalCostInr > 0 ? `${((netWorthInr / totalCostInr) * 100).toFixed(0)}%` : "N/A"}

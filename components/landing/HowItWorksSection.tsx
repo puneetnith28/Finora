@@ -28,7 +28,10 @@ export function HowItWorksSection() {
   ];
 
   return (
-    <section data-tour="how-it-works-section" className="w-full bg-[#86EFAC] border-b-3 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+    <section
+      data-tour="how-it-works-section"
+      className="w-full bg-[#86EFAC] border-b-3 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8"
+    >
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Sticker Badge */}
         <div>
@@ -39,7 +42,9 @@ export function HowItWorksSection() {
 
         {/* Big Bold Headline */}
         <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-black leading-none">
-          FROM REPORT<br />TO READ BACK.
+          FROM REPORT
+          <br />
+          TO READ BACK.
         </h2>
 
         {/* 3 Steps Grid */}
@@ -50,9 +55,7 @@ export function HowItWorksSection() {
               className={`${step.bg} border-3 border-black p-6 sm:p-7 shadow-[5px_5px_0px_#000000] flex flex-col justify-between space-y-6 transition-all hover:translate-x-[2px] hover:translate-y-[2px]`}
             >
               <div className="space-y-4">
-                <span className="font-mono font-black text-sm text-black block">
-                  {step.num}
-                </span>
+                <span className="font-mono font-black text-sm text-black block">{step.num}</span>
 
                 <h3 className="text-lg sm:text-xl font-black uppercase tracking-tight text-black">
                   {step.title}
@@ -68,7 +71,9 @@ export function HowItWorksSection() {
 
         {/* Explanatory Footnote */}
         <p className="text-sm sm:text-base font-bold text-black/90 max-w-4xl pt-2 leading-relaxed">
-          The rule engine proposes the eligibility match; deterministic code validates it. A valid profile is not proof that the match is irrevocably sanctioned, and ambiguous matches are flagged for human advisor review.
+          The rule engine proposes the eligibility match; deterministic code validates it. A valid
+          profile is not proof that the match is irrevocably sanctioned, and ambiguous matches are
+          flagged for human advisor review.
         </p>
       </div>
     </section>

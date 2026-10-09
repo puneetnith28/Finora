@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  User, 
-  Mail, 
-  GraduationCap, 
-  BookOpen, 
-  Calendar, 
-  CreditCard, 
-  Sparkles, 
-  ArrowUpRight 
+import {
+  User,
+  Mail,
+  GraduationCap,
+  BookOpen,
+  Calendar,
+  CreditCard,
+  Sparkles,
+  ArrowUpRight,
 } from "lucide-react";
 import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
 import { studentSchema, type StudentFormData, STUDENT_PRESETS } from "@/lib/validations/student";
@@ -140,7 +140,9 @@ export function StudentProfileForm({
                 </span>
               )}
             </div>
-            <div className={`text-[11px] font-bold truncate mt-0.5 ${selectedProfileMode === "custom" ? "text-neutral-300" : "text-neutral-600"}`}>
+            <div
+              className={`text-[11px] font-bold truncate mt-0.5 ${selectedProfileMode === "custom" ? "text-neutral-300" : "text-neutral-600"}`}
+            >
               Start fresh & enter your own details
             </div>
           </button>
@@ -176,7 +178,9 @@ export function StudentProfileForm({
         </div>
 
         <p className="text-xs font-bold text-neutral-800 pt-1">
-          💡 <strong>Want to test with your own profile?</strong> Click <strong>Custom Profile</strong> or directly edit the fields in the form below. All data is evaluated through the deterministic loan engine and saved to your session.
+          💡 <strong>Want to test with your own profile?</strong> Click{" "}
+          <strong>Custom Profile</strong> or directly edit the fields in the form below. All data is
+          evaluated through the deterministic loan engine and saved to your session.
         </p>
       </div>
 
@@ -191,9 +195,7 @@ export function StudentProfileForm({
               APPLICANT & UNIVERSITY TARGET
             </h2>
           </div>
-          <span className="text-xs font-black uppercase text-neutral-600">
-            STEP 1 OF 6
-          </span>
+          <span className="text-xs font-black uppercase text-neutral-600">STEP 1 OF 6</span>
         </div>
 
         {/* Section A: Personal Details */}
@@ -320,10 +322,7 @@ export function StudentProfileForm({
               placeholder="e.g. 750"
               value={formData.cibil_score || ""}
               onChange={(e) =>
-                handleChange(
-                  "cibil_score",
-                  e.target.value ? parseInt(e.target.value, 10) : null
-                )
+                handleChange("cibil_score", e.target.value ? parseInt(e.target.value, 10) : null)
               }
               error={errors.cibil_score}
             />
@@ -343,7 +342,8 @@ export function StudentProfileForm({
                   STEM-Designated Program
                 </div>
                 <div className="text-[11px] font-bold text-neutral-700">
-                  Science, Technology, Engineering, or Math. Many lenders (Prodigy, Avanse) offer specialized collateral-free slabs for STEM degrees.
+                  Science, Technology, Engineering, or Math. Many lenders (Prodigy, Avanse) offer
+                  specialized collateral-free slabs for STEM degrees.
                 </div>
               </div>
             </label>

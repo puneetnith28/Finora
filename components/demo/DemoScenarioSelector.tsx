@@ -2,12 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  ArrowUpRight, 
-  Loader2, 
-  Check, 
-  Sparkles
-} from "lucide-react";
+import { ArrowUpRight, Loader2, Check, Sparkles } from "lucide-react";
 import { NeoBadge, NeoButton, NeoCard } from "@/components/ui/NeoPrimitives";
 import { api } from "@/lib/api";
 import { CANONICAL_DEMO_PERSONAS } from "@/lib/constants/demo";
@@ -22,7 +17,10 @@ export function DemoScenarioSelector() {
   const handleSeedAll = async () => {
     setIsSeeding(true);
     try {
-      const res = await api.post<{ scenarios: Array<{ assessment_id: number }> }>("/api/demo/seed", {});
+      const res = await api.post<{ scenarios: Array<{ assessment_id: number }> }>(
+        "/api/demo/seed",
+        {}
+      );
       setSeededCount(res.scenarios?.length || 5);
       if (res.scenarios && res.scenarios.length > 0) {
         router.push(`/assessment/${res.scenarios[0].assessment_id}/report`);
@@ -91,12 +89,8 @@ export function DemoScenarioSelector() {
                 <NeoBadge variant={p.badgeColor}>{p.tag}</NeoBadge>
               </div>
 
-              <div className="text-xs font-black text-black">
-                {p.university}
-              </div>
-              <p className="text-[11px] font-bold text-neutral-600 mt-1">
-                {p.profile}
-              </p>
+              <div className="text-xs font-black text-black">{p.university}</div>
+              <p className="text-[11px] font-bold text-neutral-600 mt-1">{p.profile}</p>
             </div>
 
             <div className="pt-2 border-t-2 border-black flex items-center justify-between">

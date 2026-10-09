@@ -1,25 +1,25 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  Sparkles, 
-  ArrowUpRight, 
+import {
+  Sparkles,
+  ArrowUpRight,
   ArrowLeft,
   Plus,
   Trash2,
   Building,
   Check,
-  AlertTriangle
+  AlertTriangle,
 } from "lucide-react";
 import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
-import { 
-  financialProfileSchema, 
-  type FinancialProfileFormData, 
-  type AssetItem, 
+import {
+  financialProfileSchema,
+  type FinancialProfileFormData,
+  type AssetItem,
   type LiabilityItem,
   ASSET_TYPE_LABELS,
   LIABILITY_TYPE_LABELS,
-  FINANCIAL_PRESETS
+  FINANCIAL_PRESETS,
 } from "@/lib/validations/financial_profile";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 
@@ -45,28 +45,34 @@ export function FinancialProfileForm({
     existing_monthly_obligations_inr: initialData?.existing_monthly_obligations_inr ?? 15000,
     monthly_living_expenses_inr: initialData?.monthly_living_expenses_inr ?? 40000,
     cibil_score: initialData?.cibil_score ?? 780,
-    assets: initialData?.assets && initialData.assets.length > 0 ? initialData.assets : [
-      {
-        asset_type: "residential_property",
-        estimated_value_inr: 6000000,
-        is_liquid: false,
-        description: "Self-occupied house",
-      },
-      {
-        asset_type: "savings_account",
-        estimated_value_inr: 800000,
-        is_liquid: true,
-        description: "Bank deposits",
-      },
-    ],
-    liabilities: initialData?.liabilities && initialData.liabilities.length > 0 ? initialData.liabilities : [
-      {
-        liability_type: "auto_loan",
-        outstanding_amount_inr: 300000,
-        monthly_emi_inr: 15000,
-        description: "Car Loan",
-      },
-    ],
+    assets:
+      initialData?.assets && initialData.assets.length > 0
+        ? initialData.assets
+        : [
+            {
+              asset_type: "residential_property",
+              estimated_value_inr: 6000000,
+              is_liquid: false,
+              description: "Self-occupied house",
+            },
+            {
+              asset_type: "savings_account",
+              estimated_value_inr: 800000,
+              is_liquid: true,
+              description: "Bank deposits",
+            },
+          ],
+    liabilities:
+      initialData?.liabilities && initialData.liabilities.length > 0
+        ? initialData.liabilities
+        : [
+            {
+              liability_type: "auto_loan",
+              outstanding_amount_inr: 300000,
+              monthly_emi_inr: 15000,
+              description: "Car Loan",
+            },
+          ],
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -153,7 +159,8 @@ export function FinancialProfileForm({
       return {
         ...prev,
         liabilities: updated,
-        existing_monthly_obligations_inr: totalEmis > 0 ? totalEmis : prev.existing_monthly_obligations_inr,
+        existing_monthly_obligations_inr:
+          totalEmis > 0 ? totalEmis : prev.existing_monthly_obligations_inr,
       };
     });
   };
@@ -220,9 +227,7 @@ export function FinancialProfileForm({
               onClick={() => applyPreset(preset.id)}
               className="text-left p-3 border-2 border-black bg-white hover:bg-neutral-50 shadow-[2px_2px_0px_0px_#000000] transition-all cursor-pointer group"
             >
-              <div className="font-black text-xs text-black uppercase">
-                {preset.name}
-              </div>
+              <div className="font-black text-xs text-black uppercase">{preset.name}</div>
               <div className="text-[11px] font-bold text-neutral-600 truncate mt-0.5">
                 {preset.subtitle}
               </div>
@@ -245,9 +250,7 @@ export function FinancialProfileForm({
                   CO-BORROWER INCOME & CASH FLOW
                 </h2>
               </div>
-              <span className="text-xs font-black uppercase text-neutral-600">
-                STEP 4 OF 6
-              </span>
+              <span className="text-xs font-black uppercase text-neutral-600">STEP 4 OF 6</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -328,10 +331,7 @@ export function FinancialProfileForm({
                 min={0}
                 value={formData.monthly_living_expenses_inr}
                 onChange={(e) =>
-                  handleFieldChange(
-                    "monthly_living_expenses_inr",
-                    parseFloat(e.target.value) || 0
-                  )
+                  handleFieldChange("monthly_living_expenses_inr", parseFloat(e.target.value) || 0)
                 }
                 error={errors.monthly_living_expenses_inr}
               />
@@ -347,12 +347,7 @@ export function FinancialProfileForm({
                   FAMILY ASSETS & WEALTH
                 </h3>
               </div>
-              <NeoButton
-                type="button"
-                variant="white"
-                size="sm"
-                onClick={addAsset}
-              >
+              <NeoButton type="button" variant="white" size="sm" onClick={addAsset}>
                 <Plus className="h-4 w-4" />
                 <span>ADD ASSET</span>
               </NeoButton>
@@ -360,10 +355,7 @@ export function FinancialProfileForm({
 
             <div className="space-y-4">
               {formData.assets.map((asset, index) => (
-                <div
-                  key={index}
-                  className="neo-box p-4 bg-[#FAF8F5] space-y-3"
-                >
+                <div key={index} className="neo-box p-4 bg-[#FAF8F5] space-y-3">
                   <div className="flex items-center justify-between pb-2 border-b-2 border-black">
                     <span className="text-xs font-black uppercase tracking-wider text-black">
                       ASSET ITEM #{index + 1}
@@ -443,12 +435,7 @@ export function FinancialProfileForm({
                   EXISTING FAMILY LIABILITIES
                 </h3>
               </div>
-              <NeoButton
-                type="button"
-                variant="white"
-                size="sm"
-                onClick={addLiability}
-              >
+              <NeoButton type="button" variant="white" size="sm" onClick={addLiability}>
                 <Plus className="h-4 w-4" />
                 <span>ADD DEBT</span>
               </NeoButton>
@@ -456,10 +443,7 @@ export function FinancialProfileForm({
 
             <div className="space-y-4">
               {formData.liabilities.map((liability, index) => (
-                <div
-                  key={index}
-                  className="neo-box p-4 bg-[#FAF8F5] space-y-3"
-                >
+                <div key={index} className="neo-box p-4 bg-[#FAF8F5] space-y-3">
                   <div className="flex items-center justify-between pb-2 border-b-2 border-black">
                     <span className="text-xs font-black uppercase tracking-wider text-black">
                       DEBT ITEM #{index + 1}
@@ -482,9 +466,7 @@ export function FinancialProfileForm({
                       </label>
                       <select
                         value={liability.liability_type}
-                        onChange={(e) =>
-                          updateLiability(index, "liability_type", e.target.value)
-                        }
+                        onChange={(e) => updateLiability(index, "liability_type", e.target.value)}
                         className="neo-input"
                       >
                         {Object.entries(LIABILITY_TYPE_LABELS).map(([val, lbl]) => (
@@ -516,11 +498,7 @@ export function FinancialProfileForm({
                       min={0}
                       value={liability.monthly_emi_inr}
                       onChange={(e) =>
-                        updateLiability(
-                          index,
-                          "monthly_emi_inr",
-                          parseFloat(e.target.value) || 0
-                        )
+                        updateLiability(index, "monthly_emi_inr", parseFloat(e.target.value) || 0)
                       }
                     />
                   </div>
@@ -531,11 +509,18 @@ export function FinancialProfileForm({
             {/* Footer Buttons */}
             <div className="pt-4 border-t-2 border-black flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
               {onBack ? (
-                <NeoButton type="button" variant="white" onClick={onBack} className="w-full sm:w-auto justify-center">
+                <NeoButton
+                  type="button"
+                  variant="white"
+                  onClick={onBack}
+                  className="w-full sm:w-auto justify-center"
+                >
                   <ArrowLeft className="h-4 w-4 shrink-0" />
                   <span>BACK TO FUNDING</span>
                 </NeoButton>
-              ) : <div />}
+              ) : (
+                <div />
+              )}
 
               <NeoButton
                 type="submit"
@@ -577,9 +562,7 @@ export function FinancialProfileForm({
               </div>
               <div className="flex justify-between py-1 border-b border-black">
                 <span className="text-neutral-600">Estimated Edu Loan EMI</span>
-                <span className="font-mono text-black">
-                  {formatCurrency(proposedLoanEmi)}/mo
-                </span>
+                <span className="font-mono text-black">{formatCurrency(proposedLoanEmi)}/mo</span>
               </div>
               <div className="flex justify-between py-1 border-b border-black">
                 <span className="text-neutral-600">Total Debt Service</span>
@@ -598,7 +581,11 @@ export function FinancialProfileForm({
               <div className="w-full h-3 border-2 border-black bg-white overflow-hidden">
                 <div
                   className={`h-full border-r-2 border-black ${
-                    foirPercent <= 50 ? "bg-[#86EFAC]" : foirPercent <= 65 ? "bg-[#FEF08A]" : "bg-[#F472B6]"
+                    foirPercent <= 50
+                      ? "bg-[#86EFAC]"
+                      : foirPercent <= 65
+                        ? "bg-[#FEF08A]"
+                        : "bg-[#F472B6]"
                   }`}
                   style={{ width: `${Math.min(100, foirPercent)}%` }}
                 />
@@ -619,7 +606,9 @@ export function FinancialProfileForm({
               </div>
               <div className="flex justify-between">
                 <span className="text-neutral-600">Total Liabilities</span>
-                <span className="font-mono text-neutral-800">{formatCurrency(totalLiabilitiesValue)}</span>
+                <span className="font-mono text-neutral-800">
+                  {formatCurrency(totalLiabilitiesValue)}
+                </span>
               </div>
               <div className="flex justify-between pt-1.5 border-t-2 border-black">
                 <span className="font-black uppercase text-[11px]">Net Worth</span>
@@ -630,7 +619,11 @@ export function FinancialProfileForm({
             {/* Status Advice Box */}
             <div
               className={`p-3 border-2 border-black text-xs font-bold shadow-[2px_2px_0px_0px_#000000] ${
-                foirPercent <= 50 ? "bg-[#86EFAC]" : foirPercent <= 65 ? "bg-[#FEF08A]" : "bg-[#F472B6]"
+                foirPercent <= 50
+                  ? "bg-[#86EFAC]"
+                  : foirPercent <= 65
+                    ? "bg-[#FEF08A]"
+                    : "bg-[#F472B6]"
               }`}
             >
               <div className="flex items-center gap-1 font-black text-black uppercase mb-1">
@@ -640,14 +633,18 @@ export function FinancialProfileForm({
                   <AlertTriangle className="h-3.5 w-3.5 stroke-[3]" />
                 )}
                 <span>
-                  {foirPercent <= 50 ? "PRIME FOIR HEALTH" : foirPercent <= 65 ? "CONDITIONAL STRESS" : "HIGH DEBT STRESS"}
+                  {foirPercent <= 50
+                    ? "PRIME FOIR HEALTH"
+                    : foirPercent <= 65
+                      ? "CONDITIONAL STRESS"
+                      : "HIGH DEBT STRESS"}
                 </span>
               </div>
               {foirPercent <= 50
                 ? "Co-borrower income easily backs proposed loan. Eligible for prime public bank slabs."
                 : foirPercent <= 65
-                ? "FOIR in review zone. Pledging property collateral will boost approval."
-                : "FOIR exceeds 65% bank cap. Consider adding collateral or second co-signer."}
+                  ? "FOIR in review zone. Pledging property collateral will boost approval."
+                  : "FOIR exceeds 65% bank cap. Consider adding collateral or second co-signer."}
             </div>
           </div>
         </div>

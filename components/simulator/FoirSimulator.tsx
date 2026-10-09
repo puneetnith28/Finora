@@ -42,7 +42,9 @@ export function FoirSimulator({
   const [interestRate, setInterestRate] = useState<number>(initialInterestRate);
   const [tenureYears, setTenureYears] = useState<number>(Math.round(initialTenureMonths / 12));
   const [monthlyIncome, setMonthlyIncome] = useState<number>(initialMonthlyIncome);
-  const [existingObligations, setExistingObligations] = useState<number>(initialExistingObligations);
+  const [existingObligations, setExistingObligations] = useState<number>(
+    initialExistingObligations
+  );
 
   const tenureMonths = tenureYears * 12;
 
@@ -75,9 +77,13 @@ export function FoirSimulator({
       suggestions.push("Add a co-borrower (parents/spouse) to expand monthly household income.");
       suggestions.push("Prepay or clear existing personal loans to free up FOIR capacity.");
     } else if (foirPct > 40) {
-      suggestions.push("FOIR is within standard NBFC/Private Bank limits; consider Prime PSU lenders.");
+      suggestions.push(
+        "FOIR is within standard NBFC/Private Bank limits; consider Prime PSU lenders."
+      );
     } else {
-      suggestions.push("Optimal FOIR profile. Maximum eligibility across top-tier education loan lenders.");
+      suggestions.push(
+        "Optimal FOIR profile. Maximum eligibility across top-tier education loan lenders."
+      );
     }
 
     return {
@@ -116,7 +122,8 @@ export function FoirSimulator({
             INTERACTIVE FOIR & EMI SIMULATOR
           </h2>
           <p className="text-xs sm:text-sm font-bold text-neutral-700">
-            Simulate loan sizing, interest slabs, and co-borrower income to test lender rule impacts.
+            Simulate loan sizing, interest slabs, and co-borrower income to test lender rule
+            impacts.
           </p>
         </div>
 
@@ -127,10 +134,10 @@ export function FoirSimulator({
                 result.status_badge === "Safe"
                   ? "mint"
                   : result.status_badge === "Moderate"
-                  ? "cyan"
-                  : result.status_badge === "Stretched"
-                  ? "yellow"
-                  : "pink"
+                    ? "cyan"
+                    : result.status_badge === "Stretched"
+                      ? "yellow"
+                      : "pink"
               }
             >
               {result.status_badge.toUpperCase()} ({result.foir_percentage}%)
@@ -270,9 +277,7 @@ export function FoirSimulator({
 
                 <div className="flex justify-between items-center py-1 border-b border-black">
                   <span className="text-neutral-600">Calculated FOIR</span>
-                  <span className="font-mono text-black font-black">
-                    {result.foir_percentage}%
-                  </span>
+                  <span className="font-mono text-black font-black">{result.foir_percentage}%</span>
                 </div>
 
                 <div className="flex justify-between items-center py-1 border-b border-black">
@@ -311,7 +316,8 @@ export function FoirSimulator({
             LENDER ELIGIBILITY TRANSITION MATRIX
           </h3>
           <p className="text-xs font-bold text-neutral-700 mt-0.5">
-            See how simulated loan amounts, interest rates, and FOIR ratios change eligibility across active lenders in real time.
+            See how simulated loan amounts, interest rates, and FOIR ratios change eligibility
+            across active lenders in real time.
           </p>
         </div>
 
@@ -357,7 +363,10 @@ export function FoirSimulator({
             const baselineFoir = 35;
             const baselineLoan = 2000000;
 
-            const baseMatch = baselineFoir <= lender.maxFoir && baselineLoan <= lender.maxLoan && inc >= lender.minIncome;
+            const baseMatch =
+              baselineFoir <= lender.maxFoir &&
+              baselineLoan <= lender.maxLoan &&
+              inc >= lender.minIncome;
             const baseStatus = baseMatch ? "Potential Match" : "Needs Review";
 
             let simStatus = "Potential Match";
@@ -387,20 +396,28 @@ export function FoirSimulator({
               >
                 <div>
                   <div className="flex items-start justify-between gap-1 mb-1">
-                    <span className="text-xs font-black text-black uppercase line-clamp-1">{lender.name}</span>
+                    <span className="text-xs font-black text-black uppercase line-clamp-1">
+                      {lender.name}
+                    </span>
                     <NeoBadge
                       variant={
                         simStatus === "Potential Match"
                           ? "mint"
                           : simStatus === "Needs Review"
-                          ? "yellow"
-                          : "pink"
+                            ? "yellow"
+                            : "pink"
                       }
                     >
-                      {simStatus === "Potential Match" ? "MATCH" : simStatus === "Needs Review" ? "REVIEW" : "FAIL"}
+                      {simStatus === "Potential Match"
+                        ? "MATCH"
+                        : simStatus === "Needs Review"
+                          ? "REVIEW"
+                          : "FAIL"}
                     </NeoBadge>
                   </div>
-                  <span className="text-[10px] font-bold text-neutral-600 block">{lender.type}</span>
+                  <span className="text-[10px] font-bold text-neutral-600 block">
+                    {lender.type}
+                  </span>
 
                   <div className="mt-2.5 pt-2.5 border-t-2 border-black space-y-1 text-[11px] font-bold">
                     <div className="flex justify-between">

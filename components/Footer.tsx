@@ -12,14 +12,13 @@ export function Footer() {
           <div className="flex h-7 w-7 items-center justify-center border-2 border-black bg-black text-[#FEF08A] shadow-[2px_2px_0px_0px_#000000]">
             <span className="font-black text-sm">F</span>
           </div>
-          <span className="font-black text-lg tracking-tight text-black uppercase">
-            FINORA.
-          </span>
+          <span className="font-black text-lg tracking-tight text-black uppercase">FINORA.</span>
         </div>
 
         {/* Right Info Note */}
         <div className="text-xs font-bold text-neutral-800 text-center sm:text-right">
-          Education Loan Underwriting Engine • This platform generates verifiable loan readiness audits.
+          Education Loan Underwriting Engine • This platform generates verifiable loan readiness
+          audits.
         </div>
       </div>
     </footer>

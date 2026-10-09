@@ -12,12 +12,9 @@ export const collateralItemSchema = z.object({
     "government_bonds",
     "other",
   ]),
-  ownership_status: z.enum([
-    "sole_owner",
-    "co_owned_parents",
-    "co_owned_third_party",
-    "ancestral",
-  ]).default("sole_owner"),
+  ownership_status: z
+    .enum(["sole_owner", "co_owned_parents", "co_owned_third_party", "ancestral"])
+    .default("sole_owner"),
   market_value_inr: z.number().min(0, "Market value must be 0 or greater"),
   existing_encumbrance_inr: z.number().min(0, "Encumbrance must be 0 or greater").default(0),
   property_city: z.string().optional().default(""),
@@ -35,14 +32,14 @@ export type CollateralItem = z.infer<typeof collateralItemSchema>;
 export type CollateralFormData = z.infer<typeof collateralListSchema>;
 
 export const COLLATERAL_HAIRCUTS: Record<string, number> = {
-  residential_property: 0.80, // 80% LTV eligibility
-  commercial_property: 0.70, // 70% LTV eligibility
-  non_agricultural_land: 0.60, // 60% LTV eligibility
-  fixed_deposit: 0.90, // 90% LTV eligibility
+  residential_property: 0.8, // 80% LTV eligibility
+  commercial_property: 0.7, // 70% LTV eligibility
+  non_agricultural_land: 0.6, // 60% LTV eligibility
+  fixed_deposit: 0.9, // 90% LTV eligibility
   lic_policy: 0.85, // 85% surrender value
   gold: 0.75, // 75% RBI gold norm
   government_bonds: 0.85,
-  other: 0.50,
+  other: 0.5,
 };
 
 export const COLLATERAL_TYPE_LABELS: Record<string, string> = {

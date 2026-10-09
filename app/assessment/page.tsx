@@ -10,13 +10,13 @@ import { FinancialProfileForm } from "@/components/assessment/FinancialProfileFo
 import { CollateralForm } from "@/components/assessment/CollateralForm";
 import { AssessmentReview } from "@/components/assessment/AssessmentReview";
 import { AssessmentResults } from "@/components/assessment/AssessmentResults";
-import { 
+import {
   type FullAssessmentResult,
   type StudentFormData,
   type StudyPlanFormData,
   type FundingSourceItem,
   type FinancialProfileFormData,
-  type CollateralItem 
+  type CollateralItem,
 } from "@/types";
 import { api, ApiClientError } from "@/lib/api";
 import { normalizeAssessmentResult } from "@/lib/utils";
@@ -98,7 +98,8 @@ function AssessmentContent() {
       setCurrentStep(2);
       setMaxStepUnlocked((prev) => Math.max(prev, 2));
     } catch (err: unknown) {
-      const message = err instanceof ApiClientError ? err.message : "Failed to save student profile.";
+      const message =
+        err instanceof ApiClientError ? err.message : "Failed to save student profile.";
       showAlert("error", message);
     } finally {
       setIsLoading(false);
@@ -116,7 +117,10 @@ function AssessmentContent() {
     setAlert(null);
     try {
       setStudyPlan(data);
-      const otherExpenses = (Number(data.insurance_original) || 0) + (Number(data.visa_fees_original) || 0) + (Number(data.miscellaneous_original) || 0);
+      const otherExpenses =
+        (Number(data.insurance_original) || 0) +
+        (Number(data.visa_fees_original) || 0) +
+        (Number(data.miscellaneous_original) || 0);
       const payload = {
         tuition_fee: Number(data.tuition_fees_original) || 0,
         living_expenses: Number(data.living_expenses_original) || 0,
@@ -163,7 +167,8 @@ function AssessmentContent() {
       setCurrentStep(4);
       setMaxStepUnlocked((prev) => Math.max(prev, 4));
     } catch (err: unknown) {
-      const message = err instanceof ApiClientError ? err.message : "Failed to save funding sources.";
+      const message =
+        err instanceof ApiClientError ? err.message : "Failed to save funding sources.";
       showAlert("error", message);
     } finally {
       setIsLoading(false);
@@ -187,7 +192,7 @@ function AssessmentContent() {
         monthly_living_expenses: Number(data.monthly_living_expenses_inr) || 0,
         requested_loan_amount: Number(fundingGapInr) || 4500000,
         loan_tenure_months: 120,
-        loan_interest_rate: 10.50,
+        loan_interest_rate: 10.5,
       });
 
       for (const asset of data.assets) {
@@ -213,7 +218,8 @@ function AssessmentContent() {
       setCurrentStep(5);
       setMaxStepUnlocked((prev) => Math.max(prev, 5));
     } catch (err: unknown) {
-      const message = err instanceof ApiClientError ? err.message : "Failed to save financial profile.";
+      const message =
+        err instanceof ApiClientError ? err.message : "Failed to save financial profile.";
       showAlert("error", message);
     } finally {
       setIsLoading(false);
@@ -244,7 +250,8 @@ function AssessmentContent() {
       setCurrentStep(6);
       setMaxStepUnlocked((prev) => Math.max(prev, 6));
     } catch (err: unknown) {
-      const message = err instanceof ApiClientError ? err.message : "Failed to save collateral assets.";
+      const message =
+        err instanceof ApiClientError ? err.message : "Failed to save collateral assets.";
       showAlert("error", message);
     } finally {
       setIsLoading(false);
@@ -294,9 +301,7 @@ function AssessmentContent() {
         {alert && (
           <div
             className={`p-4 border-2 border-black flex items-center justify-between gap-3 text-xs font-black shadow-[4px_4px_0px_0px_#000000] ${
-              alert.type === "success"
-                ? "bg-[#86EFAC] text-black"
-                : "bg-[#F472B6] text-black"
+              alert.type === "success" ? "bg-[#86EFAC] text-black" : "bg-[#F472B6] text-black"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -335,7 +340,8 @@ function AssessmentContent() {
                 LOAN READINESS ASSESSMENT
               </h1>
               <p className="text-xs sm:text-sm font-bold text-neutral-800 max-w-2xl">
-                Complete the 6 steps below to evaluate your candidate profile against all lender underwriting matrices.
+                Complete the 6 steps below to evaluate your candidate profile against all lender
+                underwriting matrices.
               </p>
             </div>
 
@@ -420,7 +426,9 @@ export default function AssessmentPage() {
       fallback={
         <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3">
           <Loader2 className="h-8 w-8 animate-spin text-black" />
-          <p className="text-xs font-black uppercase text-black">Loading Finora Assessment Engine...</p>
+          <p className="text-xs font-black uppercase text-black">
+            Loading Finora Assessment Engine...
+          </p>
         </div>
       }
     >

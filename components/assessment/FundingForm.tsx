@@ -1,21 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  Plus, 
-  Trash2, 
-  Sparkles, 
-  ArrowUpRight, 
-  ArrowLeft,
-  PieChart,
-  Check
-} from "lucide-react";
+import { Plus, Trash2, Sparkles, ArrowUpRight, ArrowLeft, PieChart, Check } from "lucide-react";
 import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
-import { 
-  type FundingSourceItem, 
-  FUNDING_SOURCE_LABELS, 
+import {
+  type FundingSourceItem,
+  FUNDING_SOURCE_LABELS,
   FUNDING_PRESETS,
-  fundingListSchema 
+  fundingListSchema,
 } from "@/lib/validations/funding";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 
@@ -77,11 +69,7 @@ export function FundingForm({
     setSources((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const updateSource = (
-    index: number,
-    field: keyof FundingSourceItem,
-    value: unknown
-  ) => {
+  const updateSource = (index: number, field: keyof FundingSourceItem, value: unknown) => {
     setSources((prev) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], [field]: value };
@@ -127,9 +115,7 @@ export function FundingForm({
               onClick={() => applyPreset(preset.id)}
               className="text-left p-3 border-2 border-black bg-white hover:bg-neutral-50 shadow-[2px_2px_0px_0px_#000000] transition-all cursor-pointer group"
             >
-              <div className="font-black text-xs text-black uppercase">
-                {preset.name}
-              </div>
+              <div className="font-black text-xs text-black uppercase">{preset.name}</div>
               <div className="text-[11px] font-bold text-neutral-600 truncate mt-0.5">
                 {preset.subtitle}
               </div>
@@ -151,12 +137,7 @@ export function FundingForm({
                   AVAILABLE FUNDING & CONTRIBUTIONS
                 </h2>
               </div>
-              <NeoButton
-                type="button"
-                variant="white"
-                size="sm"
-                onClick={addSource}
-              >
+              <NeoButton type="button" variant="white" size="sm" onClick={addSource}>
                 <Plus className="h-4 w-4" />
                 <span>ADD SOURCE</span>
               </NeoButton>
@@ -164,10 +145,7 @@ export function FundingForm({
 
             <div className="space-y-4">
               {sources.map((source, index) => (
-                <div
-                  key={index}
-                  className="neo-box p-4 bg-[#FAF8F5] space-y-3 relative group"
-                >
+                <div key={index} className="neo-box p-4 bg-[#FAF8F5] space-y-3 relative group">
                   <div className="flex items-center justify-between pb-2 border-b-2 border-black">
                     <span className="text-xs font-black uppercase tracking-wider text-black">
                       FUNDING ITEM #{index + 1}
@@ -222,7 +200,13 @@ export function FundingForm({
                         onChange={(e) => {
                           const curr = e.target.value;
                           const rate =
-                            curr === "USD" ? 84.5 : curr === "EUR" ? 92.0 : curr === "GBP" ? 107.5 : 1.0;
+                            curr === "USD"
+                              ? 84.5
+                              : curr === "EUR"
+                                ? 92.0
+                                : curr === "GBP"
+                                  ? 107.5
+                                  : 1.0;
                           updateSource(index, "currency", curr);
                           updateSource(index, "exchange_rate_to_inr", rate);
                         }}
@@ -260,7 +244,11 @@ export function FundingForm({
                   </div>
 
                   <div className="text-right text-xs font-mono font-black text-black">
-                    INR VALUE: {formatCurrency(Number(source.amount_original || 0) * Number(source.exchange_rate_to_inr || 1.0))}
+                    INR VALUE:{" "}
+                    {formatCurrency(
+                      Number(source.amount_original || 0) *
+                        Number(source.exchange_rate_to_inr || 1.0)
+                    )}
                   </div>
                 </div>
               ))}
@@ -275,11 +263,18 @@ export function FundingForm({
             {/* Footer Buttons */}
             <div className="pt-4 border-t-2 border-black flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
               {onBack ? (
-                <NeoButton type="button" variant="white" onClick={onBack} className="w-full sm:w-auto justify-center">
+                <NeoButton
+                  type="button"
+                  variant="white"
+                  onClick={onBack}
+                  className="w-full sm:w-auto justify-center"
+                >
                   <ArrowLeft className="h-4 w-4 shrink-0" />
                   <span>BACK TO COSTS</span>
                 </NeoButton>
-              ) : <div />}
+              ) : (
+                <div />
+              )}
 
               <NeoButton
                 type="submit"
@@ -308,9 +303,7 @@ export function FundingForm({
             <div className="space-y-2.5 text-xs font-bold">
               <div className="flex justify-between py-1 border-b border-black">
                 <span className="text-neutral-600">Total Program Cost</span>
-                <span className="font-mono text-black">
-                  {formatCurrency(totalCostInr)}
-                </span>
+                <span className="font-mono text-black">{formatCurrency(totalCostInr)}</span>
               </div>
               <div className="flex justify-between py-1 border-b border-black">
                 <span className="text-neutral-600">Available Self-Funding</span>
@@ -320,9 +313,7 @@ export function FundingForm({
               </div>
               <div className="flex justify-between py-1 border-b border-black">
                 <span className="text-neutral-600">Self-Funded Ratio</span>
-                <span className="font-mono text-black">
-                  {formatPercent(fundedRatio)}
-                </span>
+                <span className="font-mono text-black">{formatPercent(fundedRatio)}</span>
               </div>
             </div>
 

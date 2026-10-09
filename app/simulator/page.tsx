@@ -33,15 +33,18 @@ export default function SimulatorPage() {
         </div>
 
         {/* Informational Callout Cards */}
-        <div data-tour="foir-risk-benchmarks" className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+        <div
+          data-tour="foir-risk-benchmarks"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4"
+        >
           <div className="neo-box p-5 bg-white space-y-2">
             <h3 className="text-xs font-black uppercase text-black flex items-center gap-1.5">
               <ShieldCheck className="h-4 w-4" />
               <span>WHAT IS FOIR?</span>
             </h3>
             <p className="text-xs font-bold text-neutral-700 leading-relaxed">
-              Fixed Obligation to Income Ratio (FOIR) measures what percentage of the co-borrower’s monthly
-              income goes toward all debt obligations including the new education loan EMI.
+              Fixed Obligation to Income Ratio (FOIR) measures what percentage of the co-borrower’s
+              monthly income goes toward all debt obligations including the new education loan EMI.
             </p>
           </div>
 
@@ -52,7 +55,8 @@ export default function SimulatorPage() {
             </h3>
             <p className="text-xs font-bold text-neutral-700 leading-relaxed">
               Leading PSU lenders and private banks cap FOIR between <strong>40% to 50%</strong>.
-              Higher FOIR (&gt; 50%) requires additional collateral, longer tenure, or co-borrower additions.
+              Higher FOIR (&gt; 50%) requires additional collateral, longer tenure, or co-borrower
+              additions.
             </p>
           </div>
 
@@ -62,7 +66,8 @@ export default function SimulatorPage() {
               <span>RUN FULL ASSESSMENT</span>
             </h3>
             <p className="text-xs font-bold text-neutral-900 leading-relaxed">
-              Run a complete, 360° financial eligibility assessment matching against real lender rules.
+              Run a complete, 360° financial eligibility assessment matching against real lender
+              rules.
             </p>
             <div>
               <Link href="/assessment">

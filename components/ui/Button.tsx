@@ -31,18 +31,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       "inline-flex items-center justify-center font-black uppercase tracking-tight border-2 border-black transition-all active:translate-x-[2px] active:translate-y-[2px] disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
 
     const variants = {
-      primary:
-        "bg-black text-white hover:bg-neutral-800 shadow-[3px_3px_0px_#000000]",
-      secondary:
-        "bg-[#FEF08A] text-black hover:bg-[#FDE047] shadow-[3px_3px_0px_#000000]",
-      outline:
-        "bg-white text-black hover:bg-[#F3F4F6] shadow-[3px_3px_0px_#000000]",
-      ghost:
-        "bg-transparent border-transparent text-black hover:bg-black/5 active:bg-black/10",
-      danger:
-        "bg-[#FECDD3] text-black hover:bg-[#FDA4AF] shadow-[3px_3px_0px_#000000]",
-      accent:
-        "bg-[#86EFAC] text-black hover:bg-[#4ADE80] shadow-[3px_3px_0px_#000000]",
+      primary: "bg-black text-white hover:bg-neutral-800 shadow-[3px_3px_0px_#000000]",
+      secondary: "bg-[#FEF08A] text-black hover:bg-[#FDE047] shadow-[3px_3px_0px_#000000]",
+      outline: "bg-white text-black hover:bg-[#F3F4F6] shadow-[3px_3px_0px_#000000]",
+      ghost: "bg-transparent border-transparent text-black hover:bg-black/5 active:bg-black/10",
+      danger: "bg-[#FECDD3] text-black hover:bg-[#FDA4AF] shadow-[3px_3px_0px_#000000]",
+      accent: "bg-[#86EFAC] text-black hover:bg-[#4ADE80] shadow-[3px_3px_0px_#000000]",
     };
 
     const sizes = {

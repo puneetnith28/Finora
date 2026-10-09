@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
-import { 
-  X, 
-  ArrowRight, 
-  ArrowLeft, 
-  CheckCircle2, 
-  Compass, 
+import {
+  X,
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
+  Compass,
   Loader2,
   MapPin,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 import { useTour } from "@/lib/context/TourContext";
 
@@ -174,7 +174,7 @@ export function InteractiveSpotlightTour() {
     const targetCenterX = targetRect.left + targetRect.width / 2;
 
     const isExtraTall = targetRect.height > viewportHeight * 0.55;
-    const isExtraWide = targetRect.width > viewportWidth * 0.70;
+    const isExtraWide = targetRect.width > viewportWidth * 0.7;
 
     // For large containers (e.g. Receipt box, 6-step form, Lender matrix), dock safely to bottom-right
     if (isExtraTall || isExtraWide) {
@@ -192,7 +192,10 @@ export function InteractiveSpotlightTour() {
     const preferredPlacement = currentStep.placement || "bottom";
 
     if (preferredPlacement === "bottom" && spaceBelow >= 360) {
-      const left = Math.max(margin, Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin));
+      const left = Math.max(
+        margin,
+        Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin)
+      );
       return {
         position: "fixed",
         top: `${Math.round(targetRect.bottom + 12)}px`,
@@ -204,7 +207,10 @@ export function InteractiveSpotlightTour() {
     }
 
     if (preferredPlacement === "top" && spaceAbove >= 360) {
-      const left = Math.max(margin, Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin));
+      const left = Math.max(
+        margin,
+        Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin)
+      );
       return {
         position: "fixed",
         bottom: `${Math.round(viewportHeight - targetRect.top + 12)}px`,
@@ -217,7 +223,10 @@ export function InteractiveSpotlightTour() {
 
     // Fallback: place below if room, else above, else bottom-right corner
     if (spaceBelow >= 360) {
-      const left = Math.max(margin, Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin));
+      const left = Math.max(
+        margin,
+        Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin)
+      );
       return {
         position: "fixed",
         top: `${Math.round(targetRect.bottom + 12)}px`,
@@ -229,7 +238,10 @@ export function InteractiveSpotlightTour() {
     }
 
     if (spaceAbove >= 360) {
-      const left = Math.max(margin, Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin));
+      const left = Math.max(
+        margin,
+        Math.min(targetCenterX - popoverWidth / 2, viewportWidth - popoverWidth - margin)
+      );
       return {
         position: "fixed",
         bottom: `${Math.round(viewportHeight - targetRect.top + 12)}px`,
@@ -265,9 +277,13 @@ export function InteractiveSpotlightTour() {
   const paddingBox = isMobile ? 6 : 10;
 
   // Clamped bounds for mobile spotlight aperture
-  const spotlightX = targetRect ? Math.max(4, Math.min(targetRect.left - paddingBox, viewportWidth - 20)) : 0;
+  const spotlightX = targetRect
+    ? Math.max(4, Math.min(targetRect.left - paddingBox, viewportWidth - 20))
+    : 0;
   const spotlightY = targetRect ? Math.max(4, targetRect.top - paddingBox) : 0;
-  const spotlightW = targetRect ? Math.max(10, Math.min(targetRect.width + paddingBox * 2, viewportWidth - 8)) : 0;
+  const spotlightW = targetRect
+    ? Math.max(10, Math.min(targetRect.width + paddingBox * 2, viewportWidth - 8))
+    : 0;
   const spotlightH = targetRect ? Math.max(10, targetRect.height + paddingBox * 2) : 0;
 
   return (
@@ -333,7 +349,8 @@ export function InteractiveSpotlightTour() {
         onTouchEnd={handleTouchEnd}
         style={{
           ...popoverStyle,
-          transition: "top 0.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.4s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1), right 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s ease-out, max-height 0.3s ease-out, opacity 0.25s ease-out",
+          transition:
+            "top 0.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.4s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1), right 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s ease-out, max-height 0.3s ease-out, opacity 0.25s ease-out",
         }}
         className="neo-box-lg bg-[#FFFDF9] flex flex-col overflow-hidden shadow-[4px_4px_0px_0px_#000000] sm:shadow-[8px_8px_0px_0px_#000000] z-[9999]"
         role="dialog"
@@ -341,7 +358,9 @@ export function InteractiveSpotlightTour() {
         aria-labelledby="tour-step-title"
       >
         {/* Header Ribbon (flex-shrink: 0) */}
-        <div className={`shrink-0 p-2.5 sm:p-3.5 border-b-2 sm:border-b-3 border-black flex items-center justify-between ${bgVariantClass} transition-colors duration-200`}>
+        <div
+          className={`shrink-0 p-2.5 sm:p-3.5 border-b-2 sm:border-b-3 border-black flex items-center justify-between ${bgVariantClass} transition-colors duration-200`}
+        >
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
             <div className="w-6 h-6 sm:w-7 sm:h-7 bg-black text-white flex items-center justify-center border-2 border-black font-black text-xs shadow-[2px_2px_0px_0px_#000] shrink-0">
               <Compass className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#FEF08A]" />
@@ -396,10 +415,13 @@ export function InteractiveSpotlightTour() {
               </span>
             </div>
           ) : (
-            <div key={currentStep.id} className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-2 sm:space-y-2.5">
+            <div
+              key={currentStep.id}
+              className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-2 sm:space-y-2.5"
+            >
               {/* Title & Subtitle */}
               <div>
-                <h2 
+                <h2
                   id="tour-step-title"
                   className="text-sm sm:text-lg font-black uppercase tracking-tight text-black leading-tight"
                 >
@@ -422,7 +444,10 @@ export function InteractiveSpotlightTour() {
                 </span>
                 <ul className="space-y-1">
                   {currentStep.keyTakeaways.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-bold text-black">
+                    <li
+                      key={idx}
+                      className="flex items-start gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-bold text-black"
+                    >
                       <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 bg-[#86EFAC] border border-black flex items-center justify-center shrink-0 mt-0.5 shadow-[1px_1px_0px_#000]">
                         <CheckCircle2 className="h-2 w-2 sm:h-2.5 sm:w-2.5 text-black stroke-[3]" />
                       </span>
@@ -523,5 +548,3 @@ export function InteractiveSpotlightTour() {
     </div>
   );
 }
-
-

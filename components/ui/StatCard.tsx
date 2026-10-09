@@ -16,14 +16,7 @@ export interface StatCardProps {
   className?: string;
 }
 
-export function StatCard({
-  label,
-  value,
-  subtext,
-  badge,
-  icon,
-  className,
-}: StatCardProps) {
+export function StatCard({ label, value, subtext, badge, icon, className }: StatCardProps) {
   return (
     <div
       className={cn(
@@ -59,9 +52,7 @@ export function StatCard({
       </div>
 
       {subtext && (
-        <p className="text-[11px] font-bold text-black/70 mt-1.5 line-clamp-1">
-          {subtext}
-        </p>
+        <p className="text-[11px] font-bold text-black/70 mt-1.5 line-clamp-1">{subtext}</p>
       )}
     </div>
   );

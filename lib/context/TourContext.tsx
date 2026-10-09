@@ -31,18 +31,21 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
   const targetElementRef = useRef<HTMLElement | null>(null);
 
   // Navigate to a specific step, handling cross-page transitions
-  const executeStepTransition = useCallback((targetIndex: number) => {
-    const validIndex = Math.max(0, Math.min(targetIndex, TOUR_STEPS.length - 1));
-    const nextStepConfig = TOUR_STEPS[validIndex];
-    setCurrentStepIndex(validIndex);
+  const executeStepTransition = useCallback(
+    (targetIndex: number) => {
+      const validIndex = Math.max(0, Math.min(targetIndex, TOUR_STEPS.length - 1));
+      const nextStepConfig = TOUR_STEPS[validIndex];
+      setCurrentStepIndex(validIndex);
 
-    if (nextStepConfig.route && pathname !== nextStepConfig.route) {
-      setIsNavigating(true);
-      router.push(nextStepConfig.route);
-    } else {
-      setIsNavigating(false);
-    }
-  }, [pathname, router]);
+      if (nextStepConfig.route && pathname !== nextStepConfig.route) {
+        setIsNavigating(true);
+        router.push(nextStepConfig.route);
+      } else {
+        setIsNavigating(false);
+      }
+    },
+    [pathname, router]
+  );
 
   // When step changes or route changes, locate the element and smooth scroll
   useEffect(() => {
@@ -156,10 +159,13 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     };
   }, [isOpen]);
 
-  const startTour = useCallback((initialStepIndex = 0) => {
-    setIsOpen(true);
-    executeStepTransition(initialStepIndex);
-  }, [executeStepTransition]);
+  const startTour = useCallback(
+    (initialStepIndex = 0) => {
+      setIsOpen(true);
+      executeStepTransition(initialStepIndex);
+    },
+    [executeStepTransition]
+  );
 
   const closeTour = useCallback(() => {
     setIsOpen(false);
@@ -195,9 +201,12 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     }
   }, [currentStepIndex, executeStepTransition]);
 
-  const goToStep = useCallback((index: number) => {
-    executeStepTransition(index);
-  }, [executeStepTransition]);
+  const goToStep = useCallback(
+    (index: number) => {
+      executeStepTransition(index);
+    },
+    [executeStepTransition]
+  );
 
   // Keyboard navigation
   useEffect(() => {

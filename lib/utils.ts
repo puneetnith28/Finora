@@ -20,7 +20,7 @@ export function formatCurrency(
     return "₹0";
   }
   const numericAmount = typeof amount === "string" ? parseFloat(amount) : amount;
-  
+
   if (currency === "INR") {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -144,12 +144,25 @@ export function normalizeAssessmentResult(raw: unknown): import("@/types").FullA
   const foir = (finSummary.foir as Record<string, unknown>) || {};
   const ltv = (finSummary.ltv as Record<string, unknown>) || {};
 
-  const totalCost = Number(studyCost.total_cost_inr ?? rawObj.total_cost_inr ?? rawObj.total_study_cost ?? 0);
-  const totalFunding = Number(funding.total_funding_inr ?? rawObj.total_funding_inr ?? rawObj.available_funding ?? 0);
-  const rawGap = Number(fundingGap.funding_gap_inr ?? rawObj.funding_gap_inr ?? rawObj.funding_gap ?? (totalCost - totalFunding));
+  const totalCost = Number(
+    studyCost.total_cost_inr ?? rawObj.total_cost_inr ?? rawObj.total_study_cost ?? 0
+  );
+  const totalFunding = Number(
+    funding.total_funding_inr ?? rawObj.total_funding_inr ?? rawObj.available_funding ?? 0
+  );
+  const rawGap = Number(
+    fundingGap.funding_gap_inr ??
+      rawObj.funding_gap_inr ??
+      rawObj.funding_gap ??
+      totalCost - totalFunding
+  );
   const gap = Math.max(0, rawGap);
-  const netWorthVal = Number(netWorth.net_worth_inr ?? rawObj.net_worth_inr ?? rawObj.net_worth ?? 0);
-  const eligibleCollateral = Number(collateral.total_eligible_collateral_inr ?? rawObj.total_eligible_collateral_inr ?? 0);
+  const netWorthVal = Number(
+    netWorth.net_worth_inr ?? rawObj.net_worth_inr ?? rawObj.net_worth ?? 0
+  );
+  const eligibleCollateral = Number(
+    collateral.total_eligible_collateral_inr ?? rawObj.total_eligible_collateral_inr ?? 0
+  );
 
   let foirPct = 0;
   if (foir.foir_percentage != null) {
@@ -174,74 +187,108 @@ export function normalizeAssessmentResult(raw: unknown): import("@/types").FullA
   }
 
   const score = Number(finSummary.readiness_score ?? rawObj.readiness_score ?? 82);
-  const band =
-    String(finSummary.readiness_band ||
-    rawObj.readiness_band ||
-    (score >= 80 ? "Excellent" : score >= 65 ? "Strong" : score >= 45 ? "Moderate" : "Needs Review"));
+  const band = String(
+    finSummary.readiness_band ||
+      rawObj.readiness_band ||
+      (score >= 80
+        ? "Excellent"
+        : score >= 65
+          ? "Strong"
+          : score >= 45
+            ? "Moderate"
+            : "Needs Review")
+  );
 
   const rawMatches = Array.isArray(rawObj.lender_matches)
     ? (rawObj.lender_matches as Record<string, unknown>[])
     : Array.isArray(rawObj.lender_evaluations)
-    ? (rawObj.lender_evaluations as Record<string, unknown>[])
-    : Array.isArray(rawObj.rule_results)
-    ? (rawObj.rule_results as Record<string, unknown>[])
-    : [];
+      ? (rawObj.lender_evaluations as Record<string, unknown>[])
+      : Array.isArray(rawObj.rule_results)
+        ? (rawObj.rule_results as Record<string, unknown>[])
+        : [];
 
-  const lender_matches: import("@/types").LenderMatch[] = rawMatches.map((m: Record<string, unknown>, idx: number) => {
-    let outcome: "eligible" | "conditional" | "ineligible" = "conditional";
-    const rawOutcome = String(m.outcome_state || "").toLowerCase();
-    if (rawOutcome === "eligible" || rawOutcome === "potential_match" || rawOutcome === "match") {
-      outcome = "eligible";
-    } else if (rawOutcome === "ineligible" || rawOutcome === "not_a_match" || rawOutcome === "rejected") {
-      outcome = "ineligible";
-    } else {
-      outcome = "conditional";
+  const lender_matches: import("@/types").LenderMatch[] = rawMatches.map(
+    (m: Record<string, unknown>, idx: number) => {
+      let outcome: "eligible" | "conditional" | "ineligible" = "conditional";
+      const rawOutcome = String(m.outcome_state || "").toLowerCase();
+      if (rawOutcome === "eligible" || rawOutcome === "potential_match" || rawOutcome === "match") {
+        outcome = "eligible";
+      } else if (
+        rawOutcome === "ineligible" ||
+        rawOutcome === "not_a_match" ||
+        rawOutcome === "rejected"
+      ) {
+        outcome = "ineligible";
+      } else {
+        outcome = "conditional";
+      }
+
+      const ruleResults = Array.isArray(m.rule_results)
+        ? (m.rule_results as Record<string, unknown>[])
+        : [];
+      const passedRules = ruleResults.filter((r: Record<string, unknown>) => Boolean(r.passed));
+      const failedRules = ruleResults.filter((r: Record<string, unknown>) => !r.passed);
+
+      const rulesEvaluated = Number(
+        m.rules_evaluated ??
+          (ruleResults.length > 0
+            ? ruleResults.length
+            : (Number(m.passed_rules_count) || 0) + (Number(m.failed_rules_count) || 0))
+      );
+      const rulesPassed = Number(m.rules_passed ?? m.passed_rules_count ?? passedRules.length);
+      const rulesFailed = Number(m.rules_failed ?? m.failed_rules_count ?? failedRules.length);
+
+      let evaluatedCriteria = m.evaluated_criteria as
+        import("@/types").EvaluatedCriterion[] | undefined;
+      if (!evaluatedCriteria && ruleResults.length > 0) {
+        evaluatedCriteria = ruleResults.map((r: Record<string, unknown>) => ({
+          criterion_name: String(r.rule_name || r.rule_type || "Underwriting Rule"),
+          passed: Boolean(r.passed),
+          required: r.severity === "hard_constraint" || r.required !== false,
+          expected_value: String(r.expected_value || "Eligible threshold"),
+          actual_value: String(r.actual_value || "Evaluated"),
+          explanation: String(
+            r.reason || (r.passed ? "Meets lender criteria" : "Does not meet guideline")
+          ),
+        }));
+      }
+
+      const summaryReasons = Array.isArray(m.summary_reasons)
+        ? (m.summary_reasons as string[])
+        : [];
+
+      return {
+        lender_id: Number(m.lender_id ?? idx + 1),
+        lender_name: String(m.lender_name ?? `Lender #${idx + 1}`),
+        lender_type: String(m.lender_type ?? "Education Loan Specialist"),
+        outcome_state: outcome,
+        match_score: Number(
+          m.match_score ?? (outcome === "eligible" ? 95 : outcome === "conditional" ? 75 : 30)
+        ),
+        interest_rate_min: m.interest_rate_min != null ? Number(m.interest_rate_min) : undefined,
+        interest_rate_max: m.interest_rate_max != null ? Number(m.interest_rate_max) : undefined,
+        max_loan_amount_inr:
+          m.max_loan_amount_inr != null ? Number(m.max_loan_amount_inr) : undefined,
+        rules_evaluated: rulesEvaluated,
+        rules_passed: rulesPassed,
+        rules_failed: rulesFailed,
+        evaluated_criteria: evaluatedCriteria,
+        failed_rules: Array.isArray(m.failed_rules)
+          ? (m.failed_rules as import("@/types").FailedRuleAudit[])
+          : undefined,
+        passed_rules: Array.isArray(m.passed_rules)
+          ? (m.passed_rules as import("@/types").PassedRuleAudit[])
+          : undefined,
+        conditions: Array.isArray(m.conditions) ? (m.conditions as string[]) : summaryReasons,
+        remedial_actions: Array.isArray(m.remedial_actions)
+          ? (m.remedial_actions as string[])
+          : summaryReasons,
+        primary_reason:
+          (m.primary_reason as string) ||
+          (summaryReasons.length > 0 ? summaryReasons[0] : undefined),
+      };
     }
-
-    const ruleResults = Array.isArray(m.rule_results) ? (m.rule_results as Record<string, unknown>[]) : [];
-    const passedRules = ruleResults.filter((r: Record<string, unknown>) => Boolean(r.passed));
-    const failedRules = ruleResults.filter((r: Record<string, unknown>) => !r.passed);
-
-    const rulesEvaluated = Number(
-      m.rules_evaluated ?? (ruleResults.length > 0 ? ruleResults.length : (Number(m.passed_rules_count) || 0) + (Number(m.failed_rules_count) || 0))
-    );
-    const rulesPassed = Number(m.rules_passed ?? m.passed_rules_count ?? passedRules.length);
-    const rulesFailed = Number(m.rules_failed ?? m.failed_rules_count ?? failedRules.length);
-
-    let evaluatedCriteria = m.evaluated_criteria as import("@/types").EvaluatedCriterion[] | undefined;
-    if (!evaluatedCriteria && ruleResults.length > 0) {
-      evaluatedCriteria = ruleResults.map((r: Record<string, unknown>) => ({
-        criterion_name: String(r.rule_name || r.rule_type || "Underwriting Rule"),
-        passed: Boolean(r.passed),
-        required: r.severity === "hard_constraint" || r.required !== false,
-        expected_value: String(r.expected_value || "Eligible threshold"),
-        actual_value: String(r.actual_value || "Evaluated"),
-        explanation: String(r.reason || (r.passed ? "Meets lender criteria" : "Does not meet guideline")),
-      }));
-    }
-
-    const summaryReasons = Array.isArray(m.summary_reasons) ? (m.summary_reasons as string[]) : [];
-
-    return {
-      lender_id: Number(m.lender_id ?? idx + 1),
-      lender_name: String(m.lender_name ?? `Lender #${idx + 1}`),
-      lender_type: String(m.lender_type ?? "Education Loan Specialist"),
-      outcome_state: outcome,
-      match_score: Number(m.match_score ?? (outcome === "eligible" ? 95 : outcome === "conditional" ? 75 : 30)),
-      interest_rate_min: m.interest_rate_min != null ? Number(m.interest_rate_min) : undefined,
-      interest_rate_max: m.interest_rate_max != null ? Number(m.interest_rate_max) : undefined,
-      max_loan_amount_inr: m.max_loan_amount_inr != null ? Number(m.max_loan_amount_inr) : undefined,
-      rules_evaluated: rulesEvaluated,
-      rules_passed: rulesPassed,
-      rules_failed: rulesFailed,
-      evaluated_criteria: evaluatedCriteria,
-      failed_rules: Array.isArray(m.failed_rules) ? (m.failed_rules as import("@/types").FailedRuleAudit[]) : undefined,
-      passed_rules: Array.isArray(m.passed_rules) ? (m.passed_rules as import("@/types").PassedRuleAudit[]) : undefined,
-      conditions: Array.isArray(m.conditions) ? (m.conditions as string[]) : summaryReasons,
-      remedial_actions: Array.isArray(m.remedial_actions) ? (m.remedial_actions as string[]) : summaryReasons,
-      primary_reason: (m.primary_reason as string) || (summaryReasons.length > 0 ? summaryReasons[0] : undefined),
-    };
-  });
+  );
 
   return {
     id: Number(rawObj.id ?? rawObj.assessment_id ?? 1),
@@ -256,8 +303,10 @@ export function normalizeAssessmentResult(raw: unknown): import("@/types").FullA
     total_eligible_collateral_inr: eligibleCollateral,
     ltv_percentage: ltvPct,
     lender_matches,
-    disclaimer: String(rawObj.disclaimer || "Indicative assessment based on provided data. Not a guaranteed sanction or formal loan offer."),
+    disclaimer: String(
+      rawObj.disclaimer ||
+        "Indicative assessment based on provided data. Not a guaranteed sanction or formal loan offer."
+    ),
     created_at: rawObj.created_at ? String(rawObj.created_at) : undefined,
   };
 }
-

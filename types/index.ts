@@ -3,7 +3,11 @@
 export type { StudentFormData, StudentPreset } from "@/lib/validations/student";
 export type { StudyPlanFormData } from "@/lib/validations/study_plan";
 export type { FundingSourceItem, FundingFormData } from "@/lib/validations/funding";
-export type { FinancialProfileFormData, AssetItem, LiabilityItem } from "@/lib/validations/financial_profile";
+export type {
+  FinancialProfileFormData,
+  AssetItem,
+  LiabilityItem,
+} from "@/lib/validations/financial_profile";
 export type { CollateralItem, CollateralFormData } from "@/lib/validations/collateral";
 
 export interface ApiResponse<T> {

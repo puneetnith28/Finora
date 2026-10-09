@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  Download, 
-  RotateCcw, 
-  Sparkles,
-  ShieldCheck,
-  Filter,
-  ArrowRight
-} from "lucide-react";
+import { Download, RotateCcw, Sparkles, ShieldCheck, Filter, ArrowRight } from "lucide-react";
 import { formatCurrency, formatPercent, normalizeAssessmentResult } from "@/lib/utils";
 import { ExplainableLenderCard } from "@/components/assessment/ExplainableLenderCard";
 import { ReadinessScoreCard } from "@/components/assessment/ReadinessScoreCard";
@@ -31,16 +24,9 @@ export function AssessmentResults({ assessment: rawAssessment, onReset }: Assess
     return m.outcome_state === filter;
   });
 
-  const eligibleCount = matches.filter(
-    (m) => m.outcome_state === "eligible"
-  ).length;
-  const conditionalCount = matches.filter(
-    (m) => m.outcome_state === "conditional"
-  ).length;
-  const ineligibleCount = matches.filter(
-    (m) => m.outcome_state === "ineligible"
-  ).length;
-
+  const eligibleCount = matches.filter((m) => m.outcome_state === "eligible").length;
+  const conditionalCount = matches.filter((m) => m.outcome_state === "conditional").length;
+  const ineligibleCount = matches.filter((m) => m.outcome_state === "ineligible").length;
 
   return (
     <div className="space-y-10 pb-16">
@@ -58,12 +44,22 @@ export function AssessmentResults({ assessment: rawAssessment, onReset }: Assess
 
             <p className="text-sm sm:text-base font-medium text-white/90 max-w-2xl leading-relaxed">
               Based on your target university, study budget of{" "}
-              <strong className="text-[#FEF08A] font-mono font-black">{formatCurrency(assessment.total_cost_inr)}</strong>, 
-              co-borrower FOIR of{" "}
-              <strong className="text-[#FEF08A] font-mono font-black">{formatPercent(assessment.foir_percentage)}</strong>, 
-              and collateral LTV, your application qualifies for{" "}
-              <strong className="text-[#86EFAC] font-black">{eligibleCount} direct lender approvals</strong> and{" "}
-              <strong className="text-[#FEF08A] font-black">{conditionalCount} conditional options</strong>.
+              <strong className="text-[#FEF08A] font-mono font-black">
+                {formatCurrency(assessment.total_cost_inr)}
+              </strong>
+              , co-borrower FOIR of{" "}
+              <strong className="text-[#FEF08A] font-mono font-black">
+                {formatPercent(assessment.foir_percentage)}
+              </strong>
+              , and collateral LTV, your application qualifies for{" "}
+              <strong className="text-[#86EFAC] font-black">
+                {eligibleCount} direct lender approvals
+              </strong>{" "}
+              and{" "}
+              <strong className="text-[#FEF08A] font-black">
+                {conditionalCount} conditional options
+              </strong>
+              .
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
@@ -108,15 +104,21 @@ export function AssessmentResults({ assessment: rawAssessment, onReset }: Assess
       {/* 2. Key Underwriting Metrics Ribbon */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="neo-box p-4 bg-[#FFFDF9]">
-          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Total Budget</span>
+          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">
+            Total Budget
+          </span>
           <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
             {formatCurrency(assessment.total_cost_inr)}
           </div>
-          <span className="text-[11px] font-bold text-black/70 mt-1 block">Tuition + Living + Buffer</span>
+          <span className="text-[11px] font-bold text-black/70 mt-1 block">
+            Tuition + Living + Buffer
+          </span>
         </div>
 
         <div className="neo-box p-4 bg-[#FEF08A]">
-          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Funding Gap</span>
+          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">
+            Funding Gap
+          </span>
           <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
             {formatCurrency(assessment.funding_gap_inr)}
           </div>
@@ -126,30 +128,40 @@ export function AssessmentResults({ assessment: rawAssessment, onReset }: Assess
         </div>
 
         <div className="neo-box p-4 bg-[#FFFDF9]">
-          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Co-Borrower FOIR</span>
+          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">
+            Co-Borrower FOIR
+          </span>
           <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
             {formatPercent(assessment.foir_percentage)}
           </div>
-          <span className={`text-[10px] font-black uppercase px-1.5 py-0.5 mt-1 inline-block border border-black ${
-            assessment.foir_percentage <= 50 ? "bg-[#86EFAC]" : "bg-[#FEF08A]"
-          }`}>
+          <span
+            className={`text-[10px] font-black uppercase px-1.5 py-0.5 mt-1 inline-block border border-black ${
+              assessment.foir_percentage <= 50 ? "bg-[#86EFAC]" : "bg-[#FEF08A]"
+            }`}
+          >
             {assessment.foir_percentage <= 50 ? "✓ Safe FOIR (≤50%)" : "⚠ Elevated FOIR"}
           </span>
         </div>
 
         <div className="neo-box p-4 bg-[#BAE6FD]">
-          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Eligible Collateral</span>
+          <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">
+            Eligible Collateral
+          </span>
           <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
             {formatCurrency(assessment.total_eligible_collateral_inr)}
           </div>
           <span className="text-[10px] font-black uppercase px-1.5 py-0.5 mt-1 inline-block border border-black bg-white">
-            {assessment.total_eligible_collateral_inr > 0 ? "Secured Asset Base" : "Unsecured Evaluation"}
+            {assessment.total_eligible_collateral_inr > 0
+              ? "Secured Asset Base"
+              : "Unsecured Evaluation"}
           </span>
         </div>
       </div>
 
       {/* 2b. Transparent Multi-Dimensional Readiness Score Indicator */}
-      <ReadinessScoreCard assessment={assessment as unknown as import("@/types").FullAssessmentResult} />
+      <ReadinessScoreCard
+        assessment={assessment as unknown as import("@/types").FullAssessmentResult}
+      />
 
       {/* 2c. Interactive Financial Breakdown Charts */}
       <FinancialVisuals
@@ -233,10 +245,10 @@ export function AssessmentResults({ assessment: rawAssessment, onReset }: Assess
                 ((lender.rules_evaluated || 0) > 0
                   ? (lender.rules_passed || 0) / (lender.rules_evaluated || 1)
                   : lender.outcome_state === "eligible"
-                  ? 1.0
-                  : lender.outcome_state === "conditional"
-                  ? 0.75
-                  : 0.3),
+                    ? 1.0
+                    : lender.outcome_state === "conditional"
+                      ? 0.75
+                      : 0.3),
               interest_rate_min: lender.interest_rate_min,
               interest_rate_max: lender.interest_rate_max,
               max_loan_amount_inr: lender.max_loan_amount_inr,
@@ -262,17 +274,13 @@ export function AssessmentResults({ assessment: rawAssessment, onReset }: Assess
                   required: true,
                   expected_value: r.threshold ? String(r.threshold) : "Standard Criteria",
                   actual_value: r.actual_value ? String(r.actual_value) : "Current Value",
-                  explanation: r.reason || "Does not satisfy required lender underwriting guideline.",
+                  explanation:
+                    r.reason || "Does not satisfy required lender underwriting guideline.",
                 })),
               ],
             };
 
-            return (
-              <ExplainableLenderCard
-                key={lender.lender_id}
-                lender={normalizedLender}
-              />
-            );
+            return <ExplainableLenderCard key={lender.lender_id} lender={normalizedLender} />;
           })}
         </div>
       </div>

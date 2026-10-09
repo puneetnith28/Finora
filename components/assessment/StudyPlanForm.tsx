@@ -1,19 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  Calculator, 
-  Sparkles, 
-  ArrowUpRight, 
-  ArrowLeft,
-  Coins
-} from "lucide-react";
+import { Calculator, Sparkles, ArrowUpRight, ArrowLeft, Coins } from "lucide-react";
 import { NeoBadge, NeoButton, NeoInput } from "@/components/ui/NeoPrimitives";
-import { 
-  studyPlanSchema, 
-  type StudyPlanFormData, 
-  DEFAULT_EXCHANGE_RATES, 
-  STUDY_PLAN_PRESETS 
+import {
+  studyPlanSchema,
+  type StudyPlanFormData,
+  DEFAULT_EXCHANGE_RATES,
+  STUDY_PLAN_PRESETS,
 } from "@/lib/validations/study_plan";
 import { formatCurrency } from "@/lib/utils";
 
@@ -91,7 +85,8 @@ export function StudyPlanForm({
       ? Math.pow(1 + (Number(formData.inflation_rate_percent) || 0) / 100, durationYears - 1)
       : 1.0;
 
-  const totalOriginalWithInflation = totalOriginalBase * (durationYears > 1 ? (1 + inflationMultiplier) / 2 : 1.0);
+  const totalOriginalWithInflation =
+    totalOriginalBase * (durationYears > 1 ? (1 + inflationMultiplier) / 2 : 1.0);
   const totalInr = totalOriginalWithInflation * (Number(formData.exchange_rate_to_inr) || 1.0);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,9 +123,7 @@ export function StudyPlanForm({
               onClick={() => applyPreset(preset.id)}
               className="text-left p-3 border-2 border-black bg-white hover:bg-neutral-50 shadow-[2px_2px_0px_0px_#000000] transition-all cursor-pointer group"
             >
-              <div className="font-black text-xs text-black uppercase">
-                {preset.title}
-              </div>
+              <div className="font-black text-xs text-black uppercase">{preset.title}</div>
               <div className="text-[11px] font-bold text-neutral-600 truncate mt-0.5">
                 {preset.subtitle}
               </div>
@@ -152,9 +145,7 @@ export function StudyPlanForm({
                   STUDY PLAN & COST PARAMETERS
                 </h2>
               </div>
-              <span className="text-xs font-black uppercase text-neutral-600">
-                STEP 2 OF 6
-              </span>
+              <span className="text-xs font-black uppercase text-neutral-600">STEP 2 OF 6</span>
             </div>
 
             {/* Currency & Exchange Rate Bar */}
@@ -183,7 +174,9 @@ export function StudyPlanForm({
                 type="number"
                 step="0.01"
                 value={formData.exchange_rate_to_inr}
-                onChange={(e) => handleChange("exchange_rate_to_inr", parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleChange("exchange_rate_to_inr", parseFloat(e.target.value) || 0)
+                }
                 error={errors.exchange_rate_to_inr}
               />
 
@@ -193,7 +186,9 @@ export function StudyPlanForm({
                 min={1}
                 max={72}
                 value={formData.duration_months}
-                onChange={(e) => handleChange("duration_months", parseInt(e.target.value, 10) || 12)}
+                onChange={(e) =>
+                  handleChange("duration_months", parseInt(e.target.value, 10) || 12)
+                }
                 error={errors.duration_months}
               />
             </div>
@@ -210,7 +205,9 @@ export function StudyPlanForm({
                   type="number"
                   min={0}
                   value={formData.tuition_fees_original}
-                  onChange={(e) => handleChange("tuition_fees_original", parseFloat(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleChange("tuition_fees_original", parseFloat(e.target.value) || 0)
+                  }
                   error={errors.tuition_fees_original}
                   required
                 />
@@ -220,7 +217,9 @@ export function StudyPlanForm({
                   type="number"
                   min={0}
                   value={formData.living_expenses_original}
-                  onChange={(e) => handleChange("living_expenses_original", parseFloat(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleChange("living_expenses_original", parseFloat(e.target.value) || 0)
+                  }
                   error={errors.living_expenses_original}
                   required
                 />
@@ -230,7 +229,9 @@ export function StudyPlanForm({
                   type="number"
                   min={0}
                   value={formData.travel_expenses_original}
-                  onChange={(e) => handleChange("travel_expenses_original", parseFloat(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleChange("travel_expenses_original", parseFloat(e.target.value) || 0)
+                  }
                   error={errors.travel_expenses_original}
                 />
 
@@ -239,7 +240,9 @@ export function StudyPlanForm({
                   type="number"
                   min={0}
                   value={formData.insurance_original}
-                  onChange={(e) => handleChange("insurance_original", parseFloat(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleChange("insurance_original", parseFloat(e.target.value) || 0)
+                  }
                   error={errors.insurance_original}
                 />
 
@@ -248,7 +251,9 @@ export function StudyPlanForm({
                   type="number"
                   min={0}
                   value={formData.visa_fees_original}
-                  onChange={(e) => handleChange("visa_fees_original", parseFloat(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleChange("visa_fees_original", parseFloat(e.target.value) || 0)
+                  }
                   error={errors.visa_fees_original}
                 />
 
@@ -257,7 +262,9 @@ export function StudyPlanForm({
                   type="number"
                   min={0}
                   value={formData.miscellaneous_original}
-                  onChange={(e) => handleChange("miscellaneous_original", parseFloat(e.target.value) || 0)}
+                  onChange={(e) =>
+                    handleChange("miscellaneous_original", parseFloat(e.target.value) || 0)
+                  }
                   error={errors.miscellaneous_original}
                 />
               </div>
@@ -272,7 +279,9 @@ export function StudyPlanForm({
                 min={0}
                 max={25}
                 value={formData.inflation_rate_percent}
-                onChange={(e) => handleChange("inflation_rate_percent", parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleChange("inflation_rate_percent", parseFloat(e.target.value) || 0)
+                }
                 error={errors.inflation_rate_percent}
               />
             </div>
@@ -280,11 +289,18 @@ export function StudyPlanForm({
             {/* Footer Buttons */}
             <div className="pt-4 border-t-2 border-black flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
               {onBack ? (
-                <NeoButton type="button" variant="white" onClick={onBack} className="w-full sm:w-auto justify-center">
+                <NeoButton
+                  type="button"
+                  variant="white"
+                  onClick={onBack}
+                  className="w-full sm:w-auto justify-center"
+                >
                   <ArrowLeft className="h-4 w-4 shrink-0" />
                   <span>BACK TO PROFILE</span>
                 </NeoButton>
-              ) : <div />}
+              ) : (
+                <div />
+              )}
 
               <NeoButton
                 type="submit"
@@ -320,13 +336,15 @@ export function StudyPlanForm({
               <div className="flex justify-between py-1 border-b border-black">
                 <span className="text-neutral-600">Living Expenses</span>
                 <span className="font-mono text-black">
-                  {formData.currency} {Number(formData.living_expenses_original || 0).toLocaleString()}
+                  {formData.currency}{" "}
+                  {Number(formData.living_expenses_original || 0).toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between py-1 border-b border-black">
                 <span className="text-neutral-600">Travel, Visa & Misc</span>
                 <span className="font-mono text-black">
-                  {formData.currency} {(
+                  {formData.currency}{" "}
+                  {(
                     Number(formData.travel_expenses_original || 0) +
                     Number(formData.insurance_original || 0) +
                     Number(formData.visa_fees_original || 0) +
@@ -350,7 +368,8 @@ export function StudyPlanForm({
                 {formatCurrency(totalInr)}
               </span>
               <span className="text-[10px] font-bold text-neutral-300 block pt-1">
-                Includes {formData.duration_months} mo duration & {formData.inflation_rate_percent}% inflation
+                Includes {formData.duration_months} mo duration & {formData.inflation_rate_percent}%
+                inflation
               </span>
             </div>
           </div>

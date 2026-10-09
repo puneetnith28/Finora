@@ -21,7 +21,11 @@ export function HeroSection() {
         {/* Left Editorial Headline */}
         <div className="lg:col-span-7 space-y-6 sm:space-y-8">
           <div className="flex items-center gap-2">
-            <NeoBadge variant="pink" rotate="left" className="shadow-[3px_3px_0px_0px_#000000] text-xs sm:text-sm font-black px-3 py-1">
+            <NeoBadge
+              variant="pink"
+              rotate="left"
+              className="shadow-[3px_3px_0px_0px_#000000] text-xs sm:text-sm font-black px-3 py-1"
+            >
               ONE REPORT. CONNECTED CONTEXT.
             </NeoBadge>
             <span className="hidden sm:inline-block text-xs font-black bg-black text-[#FEF08A] px-2 py-0.5 border border-black shadow-[2px_2px_0px_0px_#000000]">
@@ -38,27 +42,31 @@ export function HeroSection() {
           </h1>
 
           <p className="text-base sm:text-xl font-bold text-black max-w-xl leading-snug">
-            A student plans study-abroad funding. Finora&apos;s deterministic engine verifies 
-            multi-currency budgets, FOIR debt ratios, collateral haircuts, and lender criteria, 
-            then generates an explainable receipt.
+            A student plans study-abroad funding. Finora&apos;s deterministic engine verifies
+            multi-currency budgets, FOIR debt ratios, collateral haircuts, and lender criteria, then
+            generates an explainable receipt.
           </p>
 
           <div className="pt-2 flex flex-col sm:flex-row sm:items-center gap-4">
             <div data-tour="hero-cta">
               <Link href="/assessment">
-                <NeoButton variant="primary" size="lg" className="text-sm sm:text-base font-black px-6 py-3.5 shadow-[4px_4px_0px_0px_#000000]">
+                <NeoButton
+                  variant="primary"
+                  size="lg"
+                  className="text-sm sm:text-base font-black px-6 py-3.5 shadow-[4px_4px_0px_0px_#000000]"
+                >
                   <span>EXPLORE THE RECORDED HANDOFF</span>
                   <ArrowUpRight className="h-5 w-5" />
                 </NeoButton>
               </Link>
             </div>
 
-            <button
+            {/* <button
               onClick={scrollToReceipt}
               className="text-xs sm:text-sm font-black uppercase underline underline-offset-4 hover:bg-black hover:text-[#FEF08A] px-3 py-2 transition-colors border border-transparent hover:border-black"
             >
               See Live Audit Breakdown ↓
-            </button>
+            </button> */}
           </div>
 
           <div className="flex items-center gap-2 text-xs font-black text-neutral-800 pt-1">
@@ -80,8 +88,8 @@ export function HeroSection() {
               </span>
             </div>
             <p className="text-xs sm:text-sm font-black text-black leading-snug">
-              Large study deficits fail outright without collateral. Hand this to the lender 
-              matrix and verify the exact underwriting verdict.
+              Large study deficits fail outright without collateral. Hand this to the lender matrix
+              and verify the exact underwriting verdict.
             </p>
             <span className="text-[10px] font-bold text-neutral-700 block mt-3 uppercase tracking-wide">
               Report summary, synthesized for lender review
@@ -91,7 +99,9 @@ export function HeroSection() {
           {/* Card 2: White Receipt Box */}
           <div className="neo-box-lg p-5 sm:p-6 bg-white space-y-4 shadow-[6px_6px_0px_0px_#000000] border-3 border-black">
             <div className="flex items-center justify-between">
-              <NeoBadge variant="mint" className="font-black text-xs">RECORDED RESULT</NeoBadge>
+              <NeoBadge variant="mint" className="font-black text-xs">
+                RECORDED RESULT
+              </NeoBadge>
               <NeoBadge variant="yellow" rotate="right" className="font-black text-xs">
                 READ BACK ✓
               </NeoBadge>
@@ -137,20 +147,36 @@ export function HeroSection() {
       <div className="max-w-7xl mx-auto w-full pt-8 sm:pt-10 border-t-2 border-black/30 mt-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           <div className="bg-white/80 border-2 border-black p-2.5 sm:p-3 shadow-[2px_2px_0px_0px_#000000]">
-            <span className="text-[10px] font-bold text-neutral-600 block uppercase">01 / CALCULATION</span>
-            <span className="text-xs sm:text-sm font-black text-black block">Deterministic Engine</span>
+            <span className="text-[10px] font-bold text-neutral-600 block uppercase">
+              01 / CALCULATION
+            </span>
+            <span className="text-xs sm:text-sm font-black text-black block">
+              Deterministic Engine
+            </span>
           </div>
           <div className="bg-white/80 border-2 border-black p-2.5 sm:p-3 shadow-[2px_2px_0px_0px_#000000]">
-            <span className="text-[10px] font-bold text-neutral-600 block uppercase">02 / CURRENCIES</span>
-            <span className="text-xs sm:text-sm font-black text-black block">Live FX Normalization</span>
+            <span className="text-[10px] font-bold text-neutral-600 block uppercase">
+              02 / CURRENCIES
+            </span>
+            <span className="text-xs sm:text-sm font-black text-black block">
+              Live FX Normalization
+            </span>
           </div>
           <div className="bg-white/80 border-2 border-black p-2.5 sm:p-3 shadow-[2px_2px_0px_0px_#000000]">
-            <span className="text-[10px] font-bold text-neutral-600 block uppercase">03 / POLICY RULES</span>
-            <span className="text-xs sm:text-sm font-black text-black block">4 Benchmark Lenders</span>
+            <span className="text-[10px] font-bold text-neutral-600 block uppercase">
+              03 / POLICY RULES
+            </span>
+            <span className="text-xs sm:text-sm font-black text-black block">
+              4 Benchmark Lenders
+            </span>
           </div>
           <div className="bg-white/80 border-2 border-black p-2.5 sm:p-3 shadow-[2px_2px_0px_0px_#000000]">
-            <span className="text-[10px] font-bold text-neutral-600 block uppercase">04 / AUDIT TRAIL</span>
-            <span className="text-xs sm:text-sm font-black text-black block">Tamper-Proof Receipt</span>
+            <span className="text-[10px] font-bold text-neutral-600 block uppercase">
+              04 / AUDIT TRAIL
+            </span>
+            <span className="text-xs sm:text-sm font-black text-black block">
+              Tamper-Proof Receipt
+            </span>
           </div>
         </div>
       </div>

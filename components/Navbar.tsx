@@ -3,15 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  Building2, 
-  FileText, 
-  Calculator,
-  Menu, 
-  X, 
-  ArrowUpRight,
-  Compass
-} from "lucide-react";
+import { Building2, FileText, Calculator, Menu, X, ArrowUpRight, Compass } from "lucide-react";
 import { NeoBadge, NeoButton } from "./ui/NeoPrimitives";
 import { useTour } from "@/lib/context/TourContext";
 
@@ -43,9 +35,7 @@ export function Navbar() {
               <span className="font-black text-lg tracking-tighter">F</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="font-black text-xl tracking-tight text-black uppercase">
-                FINORA
-              </span>
+              <span className="font-black text-xl tracking-tight text-black uppercase">FINORA</span>
               <span className="inline-block h-3.5 w-1.5 bg-[#FEF08A] border-r-2 border-black" />
             </div>
           </Link>

@@ -26,7 +26,10 @@ export function PillarsSection() {
   ];
 
   return (
-    <section data-tour="pillars-section" className="w-full bg-[#FFFDF9] border-b-2 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+    <section
+      data-tour="pillars-section"
+      className="w-full bg-[#FFFDF9] border-b-2 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8"
+    >
       <div className="max-w-7xl mx-auto space-y-10">
         <div>
           <NeoBadge variant="pink" rotate="left">

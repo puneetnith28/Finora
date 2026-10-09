@@ -64,45 +64,45 @@ export function FaqSection() {
   return (
     <section className="w-full bg-[#FFFDF9] border-b-2 border-black py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Title */}
-          <div className="lg:col-span-4 space-y-3">
-            <NeoBadge variant="cyan">A FEW HONEST ANSWERS</NeoBadge>
-            <h3 className="text-3xl sm:text-4xl font-black text-black uppercase tracking-tight">
-              WHAT TO KNOW.
-            </h3>
-            <p className="text-xs sm:text-sm font-bold text-neutral-800 leading-relaxed">
-              A transparent education loan platform with verifiable audit trails you can inspect.
-            </p>
-          </div>
+        {/* Left Title */}
+        <div className="lg:col-span-4 space-y-3">
+          <NeoBadge variant="cyan">A FEW HONEST ANSWERS</NeoBadge>
+          <h3 className="text-3xl sm:text-4xl font-black text-black uppercase tracking-tight">
+            WHAT TO KNOW.
+          </h3>
+          <p className="text-xs sm:text-sm font-bold text-neutral-800 leading-relaxed">
+            A transparent education loan platform with verifiable audit trails you can inspect.
+          </p>
+        </div>
 
-          {/* Right Accordion List */}
-          <div className="lg:col-span-8 border-t-2 border-black">
-            {FAQS.map((faq) => {
-              const isOpen = openId === faq.id;
-              return (
-                <div key={faq.id} className="border-b-2 border-black">
-                  <button
-                    onClick={() => toggle(faq.id)}
-                    className="w-full py-4 text-left flex items-center justify-between gap-4 font-black text-xs sm:text-sm uppercase tracking-tight hover:bg-neutral-50 transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2 text-black">
-                      <span className="text-[10px] transform transition-transform">
-                        {isOpen ? "▼" : "►"}
-                      </span>
-                      <span>{faq.question}</span>
-                    </div>
-                  </button>
+        {/* Right Accordion List */}
+        <div className="lg:col-span-8 border-t-2 border-black">
+          {FAQS.map((faq) => {
+            const isOpen = openId === faq.id;
+            return (
+              <div key={faq.id} className="border-b-2 border-black">
+                <button
+                  onClick={() => toggle(faq.id)}
+                  className="w-full py-4 text-left flex items-center justify-between gap-4 font-black text-xs sm:text-sm uppercase tracking-tight hover:bg-neutral-50 transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center gap-2 text-black">
+                    <span className="text-[10px] transform transition-transform">
+                      {isOpen ? "▼" : "►"}
+                    </span>
+                    <span>{faq.question}</span>
+                  </div>
+                </button>
 
-                  {isOpen && (
-                    <div className="pb-4 pt-1 pr-6 pl-4 text-xs font-bold text-neutral-800 leading-relaxed">
-                      <p className="bg-[#FEF08A] p-3 border-2 border-black shadow-[2px_2px_0px_0px_#000000]">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                {isOpen && (
+                  <div className="pb-4 pt-1 pr-6 pl-4 text-xs font-bold text-neutral-800 leading-relaxed">
+                    <p className="bg-[#FEF08A] p-3 border-2 border-black shadow-[2px_2px_0px_0px_#000000]">
+                      {faq.answer}
+                    </p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

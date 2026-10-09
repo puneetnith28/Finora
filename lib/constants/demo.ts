@@ -44,9 +44,18 @@ export const CANONICAL_DEMO_PERSONAS: DemoPersona[] = [
     profile: "CIBIL 780 • Co-borrower ₹1.6L/mo • ₹60L Property",
     verdict: "UNANIMOUS TIER-1 BANK APPROVAL (9.2%)",
     trail: [
-      { app: "01 / Currency & Tuition", result: "Verified SEVP $48,000 tuition @ 85.0 INR conversion" },
-      { app: "02 / Co-Borrower FOIR", result: "Monthly Income ₹1,60,000 against ₹8,000 existing EMIs" },
-      { app: "03 / Underwriting Sync", result: "Direct match against SBI Global Ed-Vantage & HDFC Credila criteria" },
+      {
+        app: "01 / Currency & Tuition",
+        result: "Verified SEVP $48,000 tuition @ 85.0 INR conversion",
+      },
+      {
+        app: "02 / Co-Borrower FOIR",
+        result: "Monthly Income ₹1,60,000 against ₹8,000 existing EMIs",
+      },
+      {
+        app: "03 / Underwriting Sync",
+        result: "Direct match against SBI Global Ed-Vantage & HDFC Credila criteria",
+      },
     ],
   },
   {
@@ -66,9 +75,15 @@ export const CANONICAL_DEMO_PERSONAS: DemoPersona[] = [
     profile: "CIBIL 725 • Co-borrower ₹95k/mo • No Collateral",
     verdict: "ELIGIBLE FOR SPECIALIST UNSECURED NBFCs",
     trail: [
-      { app: "01 / Budget Audit", result: "£32,000 full tuition + London living allowance @ 108.0 INR" },
+      {
+        app: "01 / Budget Audit",
+        result: "£32,000 full tuition + London living allowance @ 108.0 INR",
+      },
       { app: "02 / Debt Burden", result: "FOIR 42% — within standard NBFC risk allowance" },
-      { app: "03 / Sanction Pathway", result: "Unsecured education loan approved by Avanse & HDFC Credila with 0 collateral" },
+      {
+        app: "03 / Sanction Pathway",
+        result: "Unsecured education loan approved by Avanse & HDFC Credila with 0 collateral",
+      },
     ],
   },
   {
@@ -88,7 +103,10 @@ export const CANONICAL_DEMO_PERSONAS: DemoPersona[] = [
     profile: "€0 Tuition • €4k Award • ₹15L Fixed Deposit",
     verdict: "LOW BORROWING GAP • SCORE 96/100",
     trail: [
-      { app: "01 / Blocked Account", result: "€12,000 mandatory living deposit + €4,000 scholarship offset" },
+      {
+        app: "01 / Blocked Account",
+        result: "€12,000 mandatory living deposit + €4,000 scholarship offset",
+      },
       { app: "02 / Debt Burden", result: "FOIR 24% — lowest tier risk category" },
       { app: "03 / Collateral Backing", result: "Liquid FD collateral with 90% haircut allowance" },
     ],
@@ -111,8 +129,14 @@ export const CANONICAL_DEMO_PERSONAS: DemoPersona[] = [
     verdict: "FOIR 78% WARNING • REMEDIAL ACTION REQUIRED",
     trail: [
       { app: "01 / Budget Audit", result: "CAD $45,000 tuition @ 62.0 INR conversion" },
-      { app: "02 / Debt Burden Flag", result: "High FOIR (78%) exceeds maximum 50% bank risk ceiling" },
-      { app: "03 / Remedial Engine", result: "Action Plan: Add second co-borrower or extend loan tenure to 15 years" },
+      {
+        app: "02 / Debt Burden Flag",
+        result: "High FOIR (78%) exceeds maximum 50% bank risk ceiling",
+      },
+      {
+        app: "03 / Remedial Engine",
+        result: "Action Plan: Add second co-borrower or extend loan tenure to 15 years",
+      },
     ],
   },
   {
@@ -133,8 +157,14 @@ export const CANONICAL_DEMO_PERSONAS: DemoPersona[] = [
     verdict: "CONDITIONAL • OCR DISCREPANCY DETECTED",
     trail: [
       { app: "01 / OCR Ingestion", result: "AUD $42,000 tuition scanned from offer letter" },
-      { app: "02 / Document Audit", result: "Property deed verification pending title search verification" },
-      { app: "03 / Conditional Sanction", result: "Preliminary sanction subject to collateral legal search" },
+      {
+        app: "02 / Document Audit",
+        result: "Property deed verification pending title search verification",
+      },
+      {
+        app: "03 / Conditional Sanction",
+        result: "Preliminary sanction subject to collateral legal search",
+      },
     ],
   },
 ];

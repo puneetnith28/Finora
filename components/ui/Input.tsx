@@ -12,7 +12,10 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = "text", label, error, helperText, leftIcon, rightIcon, id, ...props }, ref) => {
+  (
+    { className, type = "text", label, error, helperText, leftIcon, rightIcon, id, ...props },
+    ref
+  ) => {
     const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
 
     return (
@@ -48,15 +51,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 flex items-center text-black">
-              {rightIcon}
-            </div>
+            <div className="absolute right-3 flex items-center text-black">{rightIcon}</div>
           )}
         </div>
         {error && <p className="text-xs text-[#E11D48] font-bold">{error}</p>}
-        {!error && helperText && (
-          <p className="text-xs text-black/60 font-medium">{helperText}</p>
-        )}
+        {!error && helperText && <p className="text-xs text-black/60 font-medium">{helperText}</p>}
       </div>
     );
   }
@@ -106,9 +105,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             : children}
         </select>
         {error && <p className="text-xs text-[#E11D48] font-bold">{error}</p>}
-        {!error && helperText && (
-          <p className="text-xs text-black/60 font-medium">{helperText}</p>
-        )}
+        {!error && helperText && <p className="text-xs text-black/60 font-medium">{helperText}</p>}
       </div>
     );
   }

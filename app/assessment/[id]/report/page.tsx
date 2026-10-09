@@ -6,14 +6,11 @@ import {
   Download,
   ArrowLeft,
   Calendar,
-  Sparkles,
   Sliders,
   CheckCircle2,
   FileText,
   AlertCircle,
   Loader2,
-  ShieldCheck,
-  Building2,
 } from "lucide-react";
 import { ReadinessScoreCard } from "@/components/assessment/ReadinessScoreCard";
 import { FinancialVisuals } from "@/components/assessment/FinancialVisuals";
@@ -84,9 +81,7 @@ function ReportContent({ params }: ReportPageProps) {
         <div className="p-4 bg-[#FECDD3] border-3 border-black w-16 h-16 mx-auto flex items-center justify-center shadow-[4px_4px_0px_#000000]">
           <AlertCircle className="h-8 w-8 text-black stroke-[2.5]" />
         </div>
-        <h1 className="text-3xl font-black uppercase text-black">
-          Report Dossier Not Available
-        </h1>
+        <h1 className="text-3xl font-black uppercase text-black">Report Dossier Not Available</h1>
         <p className="text-sm font-bold text-black/70 max-w-md mx-auto">
           {error || "We could not find the assessment report you requested."}
         </p>
@@ -172,7 +167,8 @@ function ReportContent({ params }: ReportPageProps) {
               </div>
 
               <p className="text-xs sm:text-sm font-medium text-white/80 max-w-2xl leading-relaxed pt-1">
-                Deterministic readiness evaluation based on published Indian public bank, private bank, and USD fintech underwriting matrices.
+                Deterministic readiness evaluation based on published Indian public bank, private
+                bank, and USD fintech underwriting matrices.
               </p>
             </div>
 
@@ -195,15 +191,21 @@ function ReportContent({ params }: ReportPageProps) {
         {/* Underwriting Metrics Ribbon */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="neo-box p-4 bg-[#FFFDF9]">
-            <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Study Budget</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">
+              Study Budget
+            </span>
             <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
               {formatCurrency(assessment.total_cost_inr)}
             </div>
-            <span className="text-[11px] font-bold text-black/70 mt-1 block">Normalized Program Cost</span>
+            <span className="text-[11px] font-bold text-black/70 mt-1 block">
+              Normalized Program Cost
+            </span>
           </div>
 
           <div className="neo-box p-4 bg-[#FEF08A]">
-            <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Net Loan Gap</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">
+              Net Loan Gap
+            </span>
             <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
               {formatCurrency(assessment.funding_gap_inr)}
             </div>
@@ -213,24 +215,32 @@ function ReportContent({ params }: ReportPageProps) {
           </div>
 
           <div className="neo-box p-4 bg-[#FFFDF9]">
-            <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Co-Borrower FOIR</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">
+              Co-Borrower FOIR
+            </span>
             <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
               {formatPercent(assessment.foir_percentage)}
             </div>
-            <span className={`text-[10px] font-black uppercase px-1.5 py-0.5 mt-1 inline-block border border-black ${
-              (assessment.foir_percentage ?? 40) <= 50 ? "bg-[#86EFAC]" : "bg-[#FEF08A]"
-            }`}>
+            <span
+              className={`text-[10px] font-black uppercase px-1.5 py-0.5 mt-1 inline-block border border-black ${
+                (assessment.foir_percentage ?? 40) <= 50 ? "bg-[#86EFAC]" : "bg-[#FEF08A]"
+              }`}
+            >
               {(assessment.foir_percentage ?? 40) <= 50 ? "Safe FOIR (≤50%)" : "Elevated Ratio"}
             </span>
           </div>
 
           <div className="neo-box p-4 bg-[#BAE6FD]">
-            <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">Eligible Collateral</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-black/60 block">
+              Eligible Collateral
+            </span>
             <div className="text-xl sm:text-2xl font-black font-mono text-black mt-1">
               {formatCurrency(assessment.total_eligible_collateral_inr || 0)}
             </div>
             <span className="text-[10px] font-black uppercase px-1.5 py-0.5 mt-1 inline-block border border-black bg-white">
-              {(assessment.total_eligible_collateral_inr || 0) > 0 ? "Secured Asset Base" : "Unsecured Evaluation"}
+              {(assessment.total_eligible_collateral_inr || 0) > 0
+                ? "Secured Asset Base"
+                : "Unsecured Evaluation"}
             </span>
           </div>
         </div>
@@ -257,8 +267,8 @@ function ReportContent({ params }: ReportPageProps) {
               Lender Underwriting Matrix
             </h2>
             <p className="text-xs sm:text-sm font-bold text-black/70">
-              Evaluated against public underwriting criteria: {eligibleLenders.length} Direct Approvals,{" "}
-              {conditionalLenders.length} Conditional.
+              Evaluated against public underwriting criteria: {eligibleLenders.length} Direct
+              Approvals, {conditionalLenders.length} Conditional.
             </p>
           </div>
 
@@ -281,16 +291,26 @@ function ReportContent({ params }: ReportPageProps) {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div className="p-3 bg-[#86EFAC] border-2 border-black shadow-[2px_2px_0px_#000000]">
-              <span className="font-black uppercase block text-black">Academic Admission Proof</span>
-              <span className="text-[11px] font-bold text-black/80 block mt-0.5">Offer Letter & I-20 Form Verified</span>
+              <span className="font-black uppercase block text-black">
+                Academic Admission Proof
+              </span>
+              <span className="text-[11px] font-bold text-black/80 block mt-0.5">
+                Offer Letter & I-20 Form Verified
+              </span>
             </div>
             <div className="p-3 bg-[#86EFAC] border-2 border-black shadow-[2px_2px_0px_#000000]">
-              <span className="font-black uppercase block text-black">Co-Borrower Income Slips</span>
-              <span className="text-[11px] font-bold text-black/80 block mt-0.5">Salary Slips & Form 16 Cross-Checked</span>
+              <span className="font-black uppercase block text-black">
+                Co-Borrower Income Slips
+              </span>
+              <span className="text-[11px] font-bold text-black/80 block mt-0.5">
+                Salary Slips & Form 16 Cross-Checked
+              </span>
             </div>
             <div className="p-3 bg-[#86EFAC] border-2 border-black shadow-[2px_2px_0px_#000000]">
               <span className="font-black uppercase block text-black">Collateral Title Deed</span>
-              <span className="text-[11px] font-bold text-black/80 block mt-0.5">Valuation & Encumbrance Verified</span>
+              <span className="text-[11px] font-bold text-black/80 block mt-0.5">
+                Valuation & Encumbrance Verified
+              </span>
             </div>
           </div>
         </div>

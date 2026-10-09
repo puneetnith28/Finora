@@ -6,10 +6,21 @@ export const studyPlanSchema = z.object({
   travel_expenses_original: z.number().min(0, "Travel expenses must be 0 or greater").default(0),
   insurance_original: z.number().min(0, "Insurance must be 0 or greater").default(0),
   visa_fees_original: z.number().min(0, "Visa fees must be 0 or greater").default(0),
-  miscellaneous_original: z.number().min(0, "Miscellaneous expenses must be 0 or greater").default(0),
+  miscellaneous_original: z
+    .number()
+    .min(0, "Miscellaneous expenses must be 0 or greater")
+    .default(0),
   currency: z.string().min(2, "Currency is required").default("USD"),
-  duration_months: z.number().min(1, "Duration must be at least 1 month").max(72, "Duration cannot exceed 72 months").default(24),
-  inflation_rate_percent: z.number().min(0, "Inflation rate cannot be negative").max(30, "Inflation rate cannot exceed 30%").default(5.0),
+  duration_months: z
+    .number()
+    .min(1, "Duration must be at least 1 month")
+    .max(72, "Duration cannot exceed 72 months")
+    .default(24),
+  inflation_rate_percent: z
+    .number()
+    .min(0, "Inflation rate cannot be negative")
+    .max(30, "Inflation rate cannot exceed 30%")
+    .default(5.0),
   exchange_rate_to_inr: z.number().min(0.01, "Exchange rate must be positive"),
 });
 

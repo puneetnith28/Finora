@@ -33,10 +33,7 @@ class ApiClient {
   private baseUrl: string;
   private defaultTimeoutMs: number;
 
-  constructor(
-    baseUrl?: string,
-    defaultTimeoutMs: number = 15000
-  ) {
+  constructor(baseUrl?: string, defaultTimeoutMs: number = 15000) {
     if (baseUrl !== undefined) {
       this.baseUrl = baseUrl.replace(/\/$/, "");
     } else if (process.env.NEXT_PUBLIC_API_URL) {

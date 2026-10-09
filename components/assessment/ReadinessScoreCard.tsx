@@ -9,7 +9,7 @@ import {
   TrendingUp,
   Sparkles,
   ArrowUpRight,
-  Info
+  Info,
 } from "lucide-react";
 import { NeoBadge } from "@/components/ui/NeoPrimitives";
 import { FullAssessmentResult } from "@/types";
@@ -23,52 +23,56 @@ export function ReadinessScoreCard({ assessment }: ReadinessScoreCardProps) {
   const score = typeof assessment?.readiness_score === "number" ? assessment.readiness_score : 82;
   const band = assessment?.readiness_band || "Good";
 
-  const foirVal = typeof assessment?.foir_percentage === "number" 
-    ? assessment.foir_percentage 
-    : (assessment?.foir_percentage ? parseFloat(String(assessment.foir_percentage)) : 40);
+  const foirVal =
+    typeof assessment?.foir_percentage === "number"
+      ? assessment.foir_percentage
+      : assessment?.foir_percentage
+        ? parseFloat(String(assessment.foir_percentage))
+        : 40;
 
-  const totalCostVal = typeof assessment?.total_cost_inr === "number"
-    ? assessment.total_cost_inr
-    : (assessment?.total_cost_inr ? parseFloat(String(assessment.total_cost_inr)) : 0);
+  const totalCostVal =
+    typeof assessment?.total_cost_inr === "number"
+      ? assessment.total_cost_inr
+      : assessment?.total_cost_inr
+        ? parseFloat(String(assessment.total_cost_inr))
+        : 0;
 
-  const totalFundingVal = typeof assessment?.total_funding_inr === "number"
-    ? assessment.total_funding_inr
-    : (assessment?.total_funding_inr ? parseFloat(String(assessment.total_funding_inr)) : 0);
+  const totalFundingVal =
+    typeof assessment?.total_funding_inr === "number"
+      ? assessment.total_funding_inr
+      : assessment?.total_funding_inr
+        ? parseFloat(String(assessment.total_funding_inr))
+        : 0;
 
-  const collateralVal = typeof assessment?.total_eligible_collateral_inr === "number"
-    ? assessment.total_eligible_collateral_inr
-    : (assessment?.total_eligible_collateral_inr ? parseFloat(String(assessment.total_eligible_collateral_inr)) : 0);
+  const collateralVal =
+    typeof assessment?.total_eligible_collateral_inr === "number"
+      ? assessment.total_eligible_collateral_inr
+      : assessment?.total_eligible_collateral_inr
+        ? parseFloat(String(assessment.total_eligible_collateral_inr))
+        : 0;
 
-  const ltvVal = typeof assessment?.ltv_percentage === "number"
-    ? assessment.ltv_percentage
-    : (assessment?.ltv_percentage ? parseFloat(String(assessment.ltv_percentage)) : null);
+  const ltvVal =
+    typeof assessment?.ltv_percentage === "number"
+      ? assessment.ltv_percentage
+      : assessment?.ltv_percentage
+        ? parseFloat(String(assessment.ltv_percentage))
+        : null;
 
   const fundingCoverage =
     totalCostVal > 0
-      ? Math.min(
-          100,
-          Math.max(
-            15,
-            Math.round((totalFundingVal / totalCostVal) * 100)
-          )
-        )
+      ? Math.min(100, Math.max(15, Math.round((totalFundingVal / totalCostVal) * 100)))
       : 80;
 
   const foirScore =
     foirVal <= FOIR_THRESHOLDS.PRIME_MAX
       ? 95
       : foirVal <= FOIR_THRESHOLDS.STANDARD_MAX
-      ? 80
-      : foirVal <= FOIR_THRESHOLDS.ELEVATED_MAX
-      ? 55
-      : 30;
+        ? 80
+        : foirVal <= FOIR_THRESHOLDS.ELEVATED_MAX
+          ? 55
+          : 30;
 
-  const collateralScore =
-    collateralVal > 0
-      ? ltvVal && ltvVal <= 70
-        ? 95
-        : 75
-      : 45;
+  const collateralScore = collateralVal > 0 ? (ltvVal && ltvVal <= 70 ? 95 : 75) : 45;
 
   const totalMatches = assessment?.lender_matches?.length || 1;
   const eligibleMatches =
@@ -156,7 +160,8 @@ export function ReadinessScoreCard({ assessment }: ReadinessScoreCardProps) {
             FINANCIAL READINESS SCORECARD
           </h2>
           <p className="text-xs sm:text-sm font-bold text-neutral-800 max-w-xl leading-relaxed">
-            A transparent score computed across 5 core underwriting dimensions. Every point is auditable and tied directly to lender eligibility rules.
+            A transparent score computed across 5 core underwriting dimensions. Every point is
+            auditable and tied directly to lender eligibility rules.
           </p>
         </div>
 
@@ -166,9 +171,7 @@ export function ReadinessScoreCard({ assessment }: ReadinessScoreCardProps) {
             <span className="text-4xl font-black font-mono text-[#FEF08A] block">
               {score.toFixed(0)}
             </span>
-            <span className="text-[10px] font-black text-white uppercase block">
-              OUT OF 100
-            </span>
+            <span className="text-[10px] font-black text-white uppercase block">OUT OF 100</span>
           </div>
           <div className="space-y-1">
             <NeoBadge variant="yellow">{band.toUpperCase()}</NeoBadge>
@@ -193,8 +196,8 @@ export function ReadinessScoreCard({ assessment }: ReadinessScoreCardProps) {
                 isHigh
                   ? "bg-[#F0FDF4] shadow-[3px_3px_0px_0px_#86EFAC]"
                   : isMid
-                  ? "bg-[#FEFCE8] shadow-[3px_3px_0px_0px_#FEF08A]"
-                  : "bg-[#FFF1F2] shadow-[3px_3px_0px_0px_#FECDD3]"
+                    ? "bg-[#FEFCE8] shadow-[3px_3px_0px_0px_#FEF08A]"
+                    : "bg-[#FFF1F2] shadow-[3px_3px_0px_0px_#FECDD3]"
               }`}
             >
               <div>
@@ -212,19 +215,13 @@ export function ReadinessScoreCard({ assessment }: ReadinessScoreCardProps) {
                 <div className="h-2 w-full bg-white border border-black mt-2 overflow-hidden">
                   <div
                     className={`h-full ${
-                      isHigh
-                        ? "bg-[#86EFAC]"
-                        : isMid
-                        ? "bg-[#FEF08A]"
-                        : "bg-[#FECDD3]"
+                      isHigh ? "bg-[#86EFAC]" : isMid ? "bg-[#FEF08A]" : "bg-[#FECDD3]"
                     }`}
                     style={{ width: `${dim.score}%` }}
                   />
                 </div>
 
-                <p className="text-xs font-bold text-black mt-2 leading-tight">
-                  {dim.desc}
-                </p>
+                <p className="text-xs font-bold text-black mt-2 leading-tight">{dim.desc}</p>
               </div>
 
               <div className="pt-2 border-t border-black/10">

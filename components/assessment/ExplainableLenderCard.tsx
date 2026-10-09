@@ -72,10 +72,12 @@ export function ExplainableLenderCard({
 
   // Derive remedial actions from failed criteria
   const failedCriteria = lender.evaluated_criteria?.filter((c) => !c.passed) || [];
-  const remedialSuggestions = lender.remedial_suggestions || failedCriteria.map((fc) => {
-    const name = fc.criterion_name.replace(/_/g, " ").toLowerCase();
-    return `Review requirement for ${name}: Current value does not meet the lender's benchmark of ${fc.expected_value || "the required threshold"}.`;
-  });
+  const remedialSuggestions =
+    lender.remedial_suggestions ||
+    failedCriteria.map((fc) => {
+      const name = fc.criterion_name.replace(/_/g, " ").toLowerCase();
+      return `Review requirement for ${name}: Current value does not meet the lender's benchmark of ${fc.expected_value || "the required threshold"}.`;
+    });
 
   return (
     <div
@@ -83,10 +85,10 @@ export function ExplainableLenderCard({
         isEligible
           ? "bg-white shadow-[6px_6px_0px_#86EFAC]"
           : isConditional
-          ? "bg-white shadow-[6px_6px_0px_#FEF08A]"
-          : isIneligible
-          ? "bg-white shadow-[6px_6px_0px_#FECDD3]"
-          : "bg-white shadow-[6px_6px_0px_#BAE6FD]"
+            ? "bg-white shadow-[6px_6px_0px_#FEF08A]"
+            : isIneligible
+              ? "bg-white shadow-[6px_6px_0px_#FECDD3]"
+              : "bg-white shadow-[6px_6px_0px_#BAE6FD]"
       }`}
     >
       {/* Top Bar / Header */}
@@ -97,10 +99,10 @@ export function ExplainableLenderCard({
               isEligible
                 ? "bg-[#86EFAC]"
                 : isConditional
-                ? "bg-[#FEF08A]"
-                : isIneligible
-                ? "bg-[#FECDD3]"
-                : "bg-[#BAE6FD]"
+                  ? "bg-[#FEF08A]"
+                  : isIneligible
+                    ? "bg-[#FECDD3]"
+                    : "bg-[#BAE6FD]"
             }`}
           >
             <Building2 className="w-6 h-6 text-black stroke-[2.5]" />
@@ -118,7 +120,8 @@ export function ExplainableLenderCard({
                 {lender.lender_type?.replace(/_/g, " ") || "EDUCATION FINANCIER"}
               </span>
               <span className="inline-flex items-center gap-1 text-xs font-bold text-black bg-white px-2 py-0.5 border border-black">
-                <Percent className="h-3 w-3 stroke-[3]" /> Match: {(lender.match_score * 100).toFixed(0)}%
+                <Percent className="h-3 w-3 stroke-[3]" /> Match:{" "}
+                {(lender.match_score * 100).toFixed(0)}%
               </span>
             </div>
           </div>
@@ -127,7 +130,9 @@ export function ExplainableLenderCard({
         {/* Indicative Terms Pill Boxes */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0 flex-wrap w-full lg:w-auto">
           <div className="bg-[#FFFDF9] border-2 border-black px-3 sm:px-3.5 py-1.5 sm:py-2 shadow-[2px_2px_0px_#000000] flex-1 sm:flex-initial text-center sm:text-left min-w-[120px]">
-            <span className="text-black/60 block text-[9px] sm:text-[10px] font-black uppercase tracking-wider">Rate</span>
+            <span className="text-black/60 block text-[9px] sm:text-[10px] font-black uppercase tracking-wider">
+              Rate
+            </span>
             <span className="font-mono font-black text-black text-xs sm:text-sm">
               {lender.interest_rate_min ? `${lender.interest_rate_min.toFixed(2)}%` : "9.50%"} -{" "}
               {lender.interest_rate_max ? `${lender.interest_rate_max.toFixed(2)}%` : "12.75%"}
@@ -135,7 +140,9 @@ export function ExplainableLenderCard({
           </div>
 
           <div className="bg-[#FFFDF9] border-2 border-black px-3 sm:px-3.5 py-1.5 sm:py-2 shadow-[2px_2px_0px_#000000] flex-1 sm:flex-initial text-center sm:text-left min-w-[120px]">
-            <span className="text-black/60 block text-[9px] sm:text-[10px] font-black uppercase tracking-wider">Max Cap</span>
+            <span className="text-black/60 block text-[9px] sm:text-[10px] font-black uppercase tracking-wider">
+              Max Cap
+            </span>
             <span className="font-mono font-black text-black text-xs sm:text-sm">
               {formatCurrency(lender.max_loan_amount_inr || 7500000)}
             </span>
@@ -146,9 +153,14 @@ export function ExplainableLenderCard({
             className="neo-btn bg-[#F3F4F6] text-black text-xs font-black uppercase py-2 px-3 flex items-center justify-center gap-1.5 w-full sm:w-auto"
           >
             {isExpanded ? (
-              <>Hide Audit <ChevronUp className="w-4 h-4 stroke-[3]" /></>
+              <>
+                Hide Audit <ChevronUp className="w-4 h-4 stroke-[3]" />
+              </>
             ) : (
-              <>View Audit ({lender.evaluated_criteria?.length || 0}) <ChevronDown className="w-4 h-4 stroke-[3]" /></>
+              <>
+                View Audit ({lender.evaluated_criteria?.length || 0}){" "}
+                <ChevronDown className="w-4 h-4 stroke-[3]" />
+              </>
             )}
           </button>
         </div>
@@ -162,8 +174,8 @@ export function ExplainableLenderCard({
             (isEligible
               ? "All mandatory and primary credit underwriting rules satisfied."
               : isConditional
-              ? "Eligible with condition: review collateral coverage and co-borrower obligations."
-              : "Does not meet one or more mandatory eligibility thresholds.")}
+                ? "Eligible with condition: review collateral coverage and co-borrower obligations."
+                : "Does not meet one or more mandatory eligibility thresholds.")}
         </p>
       </div>
 
@@ -189,11 +201,7 @@ export function ExplainableLenderCard({
                 <div
                   key={idx}
                   className={`p-3.5 border-2 border-black text-xs flex flex-col justify-between gap-2.5 shadow-[2px_2px_0px_#000000] ${
-                    crit.passed
-                      ? "bg-[#F0FDF4]"
-                      : crit.required
-                      ? "bg-[#FFF1F2]"
-                      : "bg-[#FEFCE8]"
+                    crit.passed ? "bg-[#F0FDF4]" : crit.required ? "bg-[#FFF1F2]" : "bg-[#FEFCE8]"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -211,9 +219,7 @@ export function ExplainableLenderCard({
                     </div>
                     <span
                       className={`text-[9px] font-black px-1.5 py-0.5 border border-black uppercase ${
-                        crit.required
-                          ? "bg-[#FECDD3] text-black"
-                          : "bg-[#E5E7EB] text-black"
+                        crit.required ? "bg-[#FECDD3] text-black" : "bg-[#E5E7EB] text-black"
                       }`}
                     >
                       {crit.required ? "Mandatory" : "Optional"}
@@ -223,7 +229,9 @@ export function ExplainableLenderCard({
                   {/* Actual vs Required Benchmark */}
                   <div className="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-black/20">
                     <div>
-                      <span className="text-black/60 block text-[9px] font-bold uppercase tracking-wider">Candidate</span>
+                      <span className="text-black/60 block text-[9px] font-bold uppercase tracking-wider">
+                        Candidate
+                      </span>
                       <span className="font-mono font-bold text-black">
                         {crit.actual_value !== undefined && crit.actual_value !== null
                           ? String(crit.actual_value)
@@ -231,7 +239,9 @@ export function ExplainableLenderCard({
                       </span>
                     </div>
                     <div>
-                      <span className="text-black/60 block text-[9px] font-bold uppercase tracking-wider">Benchmark</span>
+                      <span className="text-black/60 block text-[9px] font-bold uppercase tracking-wider">
+                        Benchmark
+                      </span>
                       <span className="font-mono font-bold text-black">
                         {crit.expected_value || "—"}
                       </span>
@@ -273,7 +283,8 @@ export function ExplainableLenderCard({
           <div className="flex items-center gap-2 text-[11px] font-bold text-black bg-[#BAE6FD] p-2.5 border-2 border-black">
             <span className="font-mono font-black">ℹ AUDIT:</span>
             <span>
-              Lender guidelines evaluated deterministically against current published underwriting thresholds.
+              Lender guidelines evaluated deterministically against current published underwriting
+              thresholds.
             </span>
           </div>
         </div>

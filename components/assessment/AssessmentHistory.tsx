@@ -2,13 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { 
-  History, 
-  ArrowRight, 
-  Calendar, 
-  FileText, 
-  Loader2 
-} from "lucide-react";
+import { History, ArrowRight, Calendar, FileText, Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 import { FullAssessmentResult } from "@/types";
@@ -60,9 +54,12 @@ export function AssessmentHistory({ studentId: propStudentId }: AssessmentHistor
     return (
       <div className="neo-box p-6 text-center space-y-2 bg-[#FFFDF9]">
         <History className="h-8 w-8 text-black mx-auto stroke-[2.5]" />
-        <h4 className="text-sm font-black uppercase tracking-tight text-black">Initial Assessment Run</h4>
+        <h4 className="text-sm font-black uppercase tracking-tight text-black">
+          Initial Assessment Run
+        </h4>
         <p className="text-xs font-bold text-black/70">
-          This is the candidate&apos;s initial assessment run. Future evaluations will be recorded in this audit timeline.
+          This is the candidate&apos;s initial assessment run. Future evaluations will be recorded
+          in this audit timeline.
         </p>
       </div>
     );
@@ -135,25 +132,33 @@ export function AssessmentHistory({ studentId: propStudentId }: AssessmentHistor
                 {/* Key Metrics Summary */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 text-xs border-t border-black/20">
                   <div>
-                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">Score</span>
+                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">
+                      Score
+                    </span>
                     <span className="font-mono font-black text-black text-sm">
                       {score.toFixed(0)}/100
                     </span>
                   </div>
                   <div>
-                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">Budget</span>
+                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">
+                      Budget
+                    </span>
                     <span className="font-mono font-bold text-black">
                       {formatCurrency(item.total_cost_inr)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">Gap</span>
+                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">
+                      Gap
+                    </span>
                     <span className="font-mono font-bold text-black">
                       {formatCurrency(item.funding_gap_inr)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">FOIR</span>
+                    <span className="text-black/60 block text-[9px] font-black uppercase tracking-wider">
+                      FOIR
+                    </span>
                     <span className="font-mono font-bold text-black">
                       {formatPercent(item.foir_percentage)}
                     </span>

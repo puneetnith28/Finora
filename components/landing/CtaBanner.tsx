@@ -22,8 +22,8 @@ export function CtaBanner() {
           </h2>
 
           <p className="text-xs sm:text-sm font-bold text-neutral-300 max-w-md mx-auto leading-relaxed">
-            Run a deterministic loan readiness evaluation. Calculate your funding gap, 
-            co-borrower FOIR, and see which lenders match with zero ambiguity.
+            Run a deterministic loan readiness evaluation. Calculate your funding gap, co-borrower
+            FOIR, and see which lenders match with zero ambiguity.
           </p>
 
           <div className="pt-2 flex justify-center">
