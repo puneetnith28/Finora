@@ -343,9 +343,9 @@ export function AssessmentReview({
       </div>
 
       {/* Action Footer */}
-      <div className="flex justify-between items-center pt-6 border-t-2 border-black">
-        <NeoButton variant="white" size="md" onClick={onBack}>
-          <ArrowLeft className="h-4 w-4" />
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 pt-6 border-t-2 border-black">
+        <NeoButton variant="white" size="md" onClick={onBack} className="w-full sm:w-auto justify-center">
+          <ArrowLeft className="h-4 w-4 shrink-0" />
           <span>BACK TO COLLATERAL</span>
         </NeoButton>
 
@@ -354,8 +354,9 @@ export function AssessmentReview({
           size="lg"
           onClick={onRunAssessment}
           disabled={!isReadyForAssessment || isLoading}
+          className="w-full sm:w-auto justify-center"
         >
-          <Play className="h-4 w-4 fill-current" />
+          <Play className="h-4 w-4 fill-current shrink-0" />
           <span>{isLoading ? "EVALUATING..." : "RUN FULL ASSESSMENT ENGINE"}</span>
         </NeoButton>
       </div>

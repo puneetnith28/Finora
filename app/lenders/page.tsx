@@ -101,8 +101,8 @@ export default function LendersPage() {
             </p>
           </div>
 
-          <Link href="/assessment" className="shrink-0">
-            <button className="neo-btn bg-black text-white text-xs sm:text-sm font-black uppercase py-3 px-5 flex items-center gap-2">
+          <Link href="/assessment" className="w-full md:w-auto shrink-0">
+            <button className="neo-btn bg-black text-white text-xs sm:text-sm font-black uppercase py-3 px-5 flex items-center justify-center gap-2 w-full">
               Evaluate Candidate Profile <ArrowRight className="h-4 w-4 stroke-[3]" />
             </button>
           </Link>

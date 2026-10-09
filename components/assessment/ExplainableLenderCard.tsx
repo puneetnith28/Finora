@@ -125,25 +125,25 @@ export function ExplainableLenderCard({
         </div>
 
         {/* Indicative Terms Pill Boxes */}
-        <div className="flex items-center gap-3 sm:gap-4 shrink-0 flex-wrap">
-          <div className="bg-[#FFFDF9] border-2 border-black px-3.5 py-2 shadow-[2px_2px_0px_#000000]">
-            <span className="text-black/60 block text-[10px] font-black uppercase tracking-wider">Rate</span>
-            <span className="font-mono font-black text-black text-sm">
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0 flex-wrap w-full lg:w-auto">
+          <div className="bg-[#FFFDF9] border-2 border-black px-3 sm:px-3.5 py-1.5 sm:py-2 shadow-[2px_2px_0px_#000000] flex-1 sm:flex-initial text-center sm:text-left min-w-[120px]">
+            <span className="text-black/60 block text-[9px] sm:text-[10px] font-black uppercase tracking-wider">Rate</span>
+            <span className="font-mono font-black text-black text-xs sm:text-sm">
               {lender.interest_rate_min ? `${lender.interest_rate_min.toFixed(2)}%` : "9.50%"} -{" "}
               {lender.interest_rate_max ? `${lender.interest_rate_max.toFixed(2)}%` : "12.75%"}
             </span>
           </div>
 
-          <div className="bg-[#FFFDF9] border-2 border-black px-3.5 py-2 shadow-[2px_2px_0px_#000000]">
-            <span className="text-black/60 block text-[10px] font-black uppercase tracking-wider">Max Cap</span>
-            <span className="font-mono font-black text-black text-sm">
+          <div className="bg-[#FFFDF9] border-2 border-black px-3 sm:px-3.5 py-1.5 sm:py-2 shadow-[2px_2px_0px_#000000] flex-1 sm:flex-initial text-center sm:text-left min-w-[120px]">
+            <span className="text-black/60 block text-[9px] sm:text-[10px] font-black uppercase tracking-wider">Max Cap</span>
+            <span className="font-mono font-black text-black text-xs sm:text-sm">
               {formatCurrency(lender.max_loan_amount_inr || 7500000)}
             </span>
           </div>
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="neo-btn bg-[#F3F4F6] text-black text-xs font-black uppercase py-2 px-3 flex items-center gap-1.5"
+            className="neo-btn bg-[#F3F4F6] text-black text-xs font-black uppercase py-2 px-3 flex items-center justify-center gap-1.5 w-full sm:w-auto"
           >
             {isExpanded ? (
               <>Hide Audit <ChevronUp className="w-4 h-4 stroke-[3]" /></>

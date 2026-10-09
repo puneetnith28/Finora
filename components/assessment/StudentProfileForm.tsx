@@ -276,15 +276,16 @@ export function StudentProfileForm({
         </div>
 
         {/* Submit Footer */}
-        <div className="pt-4 border-t-2 border-black flex justify-end">
+        <div className="pt-4 border-t-2 border-black flex flex-col sm:flex-row sm:justify-end gap-3">
           <NeoButton
             type="submit"
             variant="primary"
             size="lg"
             disabled={isLoading}
+            className="w-full sm:w-auto justify-center"
           >
             <span>{isLoading ? "SAVING..." : "SAVE & PROCEED TO STUDY PLAN"}</span>
-            <ArrowUpRight className="h-4 w-4" />
+            <ArrowUpRight className="h-4 w-4 shrink-0" />
           </NeoButton>
         </div>
       </div>

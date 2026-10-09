@@ -31,7 +31,7 @@ export function ReceiptSection() {
             <div className="flex items-center gap-3">
               <NeoBadge variant="mint">RECORDED STATUS: COMPLETE</NeoBadge>
             </div>
-            <div className="text-right">
+            <div className="text-left sm:text-right">
               <span className="text-xs font-black text-black block">OCTOBER 8, 2026</span>
               <span className="text-[11px] font-bold text-neutral-600">
                 Deterministic Engine • 4 Verified Underwriting Records

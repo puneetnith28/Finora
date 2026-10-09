@@ -66,17 +66,17 @@ export function AssessmentResults({ assessment: rawAssessment, onReset }: Assess
               <strong className="text-[#FEF08A] font-black">{conditionalCount} conditional options</strong>.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
               <button
                 onClick={() => window.print()}
-                className="neo-btn bg-[#FEF08A] text-black text-xs font-black uppercase py-2.5 px-4 flex items-center gap-2"
+                className="neo-btn bg-[#FEF08A] text-black text-xs font-black uppercase py-2.5 px-4 flex items-center justify-center gap-2 w-full sm:w-auto"
               >
                 <Download className="h-4 w-4 stroke-[2.5]" />
                 Print Dossier PDF
               </button>
               <button
                 onClick={onReset}
-                className="neo-btn bg-white text-black text-xs font-black uppercase py-2.5 px-4 flex items-center gap-2"
+                className="neo-btn bg-white text-black text-xs font-black uppercase py-2.5 px-4 flex items-center justify-center gap-2 w-full sm:w-auto"
               >
                 <RotateCcw className="h-4 w-4 stroke-[2.5]" />
                 Start New Assessment

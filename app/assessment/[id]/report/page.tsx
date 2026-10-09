@@ -124,9 +124,9 @@ function ReportContent({ params }: ReportPageProps) {
             <span>Back to Assessment Wizard</span>
           </Link>
 
-          <div className="flex items-center gap-3">
-            <Link href="/simulator">
-              <button className="neo-btn bg-white text-black text-xs font-black uppercase py-2 px-3 flex items-center gap-1.5">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
+            <Link href="/simulator" className="w-full sm:w-auto">
+              <button className="neo-btn bg-white text-black text-xs font-black uppercase py-2 px-3 flex items-center justify-center gap-1.5 w-full">
                 <Sliders className="h-3.5 w-3.5 stroke-[2.5]" />
                 FOIR Simulator
               </button>
@@ -134,7 +134,7 @@ function ReportContent({ params }: ReportPageProps) {
 
             <button
               onClick={() => window.print()}
-              className="neo-btn bg-[#FEF08A] text-black text-xs font-black uppercase py-2 px-3.5 flex items-center gap-1.5"
+              className="neo-btn bg-[#FEF08A] text-black text-xs font-black uppercase py-2 px-3.5 flex items-center justify-center gap-1.5 w-full sm:w-auto"
             >
               <Download className="h-3.5 w-3.5 stroke-[2.5]" />
               Print / Save Dossier PDF

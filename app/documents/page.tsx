@@ -151,28 +151,28 @@ export default function DocumentsPage() {
         </div>
 
         {/* Upload Zone */}
-        <div className="neo-box p-6 bg-[#FFFDF9]">
+        <div className="neo-box p-4 sm:p-6 bg-[#FFFDF9]">
           <form onSubmit={handleFileUpload} className="space-y-4">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-[#86EFAC] border-2 border-black flex items-center justify-center font-black shadow-[2px_2px_0px_#000000] shrink-0">
-                  <UploadCloud className="h-6 w-6 text-black stroke-[2.5]" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#86EFAC] border-2 border-black flex items-center justify-center font-black shadow-[2px_2px_0px_#000000] shrink-0">
+                  <UploadCloud className="h-5 w-5 sm:h-6 sm:w-6 text-black stroke-[2.5]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black uppercase tracking-tight text-black">
+                  <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-black">
                     Upload Underwriting Evidence
                   </h3>
-                  <span className="text-xs font-bold text-black/60 block">
+                  <span className="text-[11px] sm:text-xs font-bold text-black/60 block">
                     Supported: PDF, JPG, PNG (Max 10MB per document)
                   </span>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full lg:w-auto">
                 <select
                   value={selectedDocType}
                   onChange={(e) => setSelectedDocType(e.target.value)}
-                  className="neo-input text-xs font-bold py-2 px-3 bg-white"
+                  className="neo-input text-xs font-bold py-2 px-3 bg-white w-full sm:w-auto"
                 >
                   <option value="admission_letter">Admission Offer Letter</option>
                   <option value="passport">Passport / National ID</option>
@@ -184,17 +184,19 @@ export default function DocumentsPage() {
                   <option value="other">Other Supporting Document</option>
                 </select>
 
-                <input
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={(e) => setFileToUpload(e.target.files?.[0] || null)}
-                  className="text-xs font-bold text-black file:mr-2 file:py-2 file:px-3 file:border-2 file:border-black file:text-xs file:font-black file:uppercase file:bg-[#FEF08A] file:cursor-pointer file:shadow-[2px_2px_0px_#000000] cursor-pointer"
-                />
+                <div className="w-full sm:w-auto overflow-hidden">
+                  <input
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(e) => setFileToUpload(e.target.files?.[0] || null)}
+                    className="w-full text-xs font-bold text-black file:mr-2 file:py-2 file:px-3 file:border-2 file:border-black file:text-xs file:font-black file:uppercase file:bg-[#FEF08A] file:cursor-pointer file:shadow-[2px_2px_0px_#000000] cursor-pointer"
+                  />
+                </div>
 
                 <button
                   type="submit"
                   disabled={uploading || !fileToUpload}
-                  className="neo-btn bg-[#86EFAC] text-black text-xs font-black uppercase py-2.5 px-4 flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="neo-btn bg-[#86EFAC] text-black text-xs font-black uppercase py-2.5 px-4 flex items-center justify-center gap-2 disabled:opacity-50 w-full sm:w-auto shrink-0"
                 >
                   <Plus className="h-4 w-4 stroke-[3]" />
                   {uploading ? "Verifying..." : "Upload"}

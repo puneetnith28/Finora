@@ -529,10 +529,10 @@ export function FinancialProfileForm({
             </div>
 
             {/* Footer Buttons */}
-            <div className="pt-4 border-t-2 border-black flex items-center justify-between">
+            <div className="pt-4 border-t-2 border-black flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3">
               {onBack ? (
-                <NeoButton type="button" variant="white" onClick={onBack}>
-                  <ArrowLeft className="h-4 w-4" />
+                <NeoButton type="button" variant="white" onClick={onBack} className="w-full sm:w-auto justify-center">
+                  <ArrowLeft className="h-4 w-4 shrink-0" />
                   <span>BACK TO FUNDING</span>
                 </NeoButton>
               ) : <div />}
@@ -542,9 +542,10 @@ export function FinancialProfileForm({
                 variant="primary"
                 size="lg"
                 disabled={isLoading}
+                className="w-full sm:w-auto justify-center"
               >
                 <span>{isLoading ? "SAVING..." : "SAVE & PROCEED TO COLLATERAL"}</span>
-                <ArrowUpRight className="h-4 w-4" />
+                <ArrowUpRight className="h-4 w-4 shrink-0" />
               </NeoButton>
             </div>
           </div>
