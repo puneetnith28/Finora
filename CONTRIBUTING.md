@@ -127,3 +127,6 @@ When modifying any service in [`backend/app/services/`](file:///home/puneetyadav
 
 Finora uses GitHub Dependabot to keep frontend (`npm`) and backend (`pip`) packages secure and up to date. Dependabot runs automated weekly scans against both manifests (`package.json` in the repository root and `requirements.txt` in `/backend`) and opens version-update or security-fix pull requests when updates are available.
 
+Eligible patch and minor version updates are configured for automated squash merging once all required CI test and lint checks pass. Major version updates require manual review and testing.
+
+
