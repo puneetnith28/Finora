@@ -49,3 +49,6 @@ jobs:
         run: |
           ruff check backend
           pytest backend/tests
+
+      - name: Validate Database Migrations
+        run: alembic -c backend/alembic.ini current
