@@ -118,6 +118,8 @@ Every domain topic is governed by an authoritative, verified technical specifica
 - ⚙️ **[Environment & Configuration Reference](docs/CONFIGURATION.md)** — Complete dictionary of environment variables across frontend, backend, Docker, and cloud deployments.
 - 🚀 **[Production & Local Deployment Runbook](docs/DEPLOYMENT.md)** — Step-by-step deployment guide for Vercel, Render, and Docker Compose with automated curl smoke tests.
 - 🔒 **[Security Architecture & Privacy Policy](docs/SECURITY_AND_PRIVACY.md)** — HTTP security response headers, CORS filters, magic-byte binary inspection, and data isolation controls.
+- 🛡 **[Security Policy & Vulnerability Disclosure](SECURITY.md)** — Vulnerability reporting guidelines, supported versions, and credential rotation protocols.
+- 🛠 **[Maintenance & Operations Guide](docs/MAINTENANCE.md)** — Automated CI/CD pipelines, CodeQL security scanning, Dependabot governance, and incident recovery.
 - 🧪 **[Quality Assurance & Test Matrix](docs/TESTING.md)** — 131-test pytest matrix, type-checking rules, linting configurations, and verification commands.
 - 📋 **[Technical Requirements Document (TRD)](docs/TRD.md)** — Full technical requirements, functional specifications, and technology stack rationales.
 - 🗺 **[Application Flow & User Journeys](docs/APP_FLOW.md)** — 6-step wizard state machine, 14-step spotlight onboarding tour, and recovery flows.
