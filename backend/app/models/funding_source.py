@@ -17,8 +17,11 @@ if TYPE_CHECKING:
 class FundingSourceType(enum.StrEnum):
     SAVINGS = "savings"
     SCHOLARSHIP = "scholarship"
+    SPONSORSHIP = "sponsorship"
     FAMILY_CONTRIBUTION = "family_contribution"
     FAMILY_SUPPORT = "family_support"
+    FIXED_DEPOSIT = "fixed_deposit"
+    PROVIDENT_FUND = "provident_fund"
     FEES_PAID = "fees_paid"
     FEES_ALREADY_PAID = "fees_already_paid"
     EDUCATION_GRANT = "education_grant"
