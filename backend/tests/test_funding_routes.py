@@ -88,3 +88,47 @@ def test_funding_routes_lifecycle(client: TestClient) -> None:
     # 8. Verify only 1 funding item remains
     res_list_after = client.get(f"/api/students/{student_id}/funding")
     assert len(res_list_after.json()) == 1
+
+
+def test_all_funding_source_types_accepted(client: TestClient) -> None:
+    """Verify that all funding source dropdown options are accepted without 422 Unprocessable Content."""
+    st_res = client.post(
+        "/api/students",
+        json={
+            "name": "Arjun Sharma",
+            "email": "arjun.sharma@example.com",
+            "country_of_origin": "India",
+            "target_country": "USA",
+            "target_university": "MIT",
+            "target_course": "MS CS",
+        },
+    )
+    assert st_res.status_code == 201
+    student_id = st_res.json()["id"]
+
+    source_types = [
+        "savings",
+        "scholarship",
+        "sponsorship",
+        "family_support",
+        "family_contribution",
+        "fixed_deposit",
+        "provident_fund",
+        "fees_paid",
+        "fees_already_paid",
+        "education_grant",
+        "other",
+    ]
+
+    for st in source_types:
+        payload = {
+            "source_type": st,
+            "amount_original": "50000.00",
+            "currency": "INR",
+            "exchange_rate_to_inr": "1.0",
+            "verified": True,
+        }
+        res = client.post(f"/api/students/{student_id}/funding-sources", json=payload)
+        assert res.status_code == 201, f"Failed for source_type={st}: {res.text}"
+        assert res.json()["source_type"] == st
+

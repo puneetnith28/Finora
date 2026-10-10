@@ -87,3 +87,20 @@ def test_funding_source_schema_validation():
     # Invalid source type
     with pytest.raises(ValidationError):
         FundingSourceCreate(**{**valid_data, "source_type": "lottery"})
+
+
+def test_all_enum_types_valid():
+    """Verify all FundingSourceType values are valid in FundingSourceCreate."""
+    for ftype in FundingSourceType:
+        data = {
+            "student_id": 1,
+            "source_type": ftype.value,
+            "amount_original": 100000,
+            "currency": "INR",
+            "exchange_rate_to_inr": 1.0,
+            "amount_inr": 100000,
+            "verified": True,
+        }
+        schema = FundingSourceCreate(**data)
+        assert schema.source_type == ftype
+
