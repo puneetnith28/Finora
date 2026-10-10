@@ -129,4 +129,13 @@ Finora uses GitHub Dependabot to keep frontend (`npm`) and backend (`pip`) packa
 
 Eligible patch and minor version updates are configured for automated squash merging once all required CI test and lint checks pass. Major version updates require manual review and testing.
 
+---
+
+## 7. Issue & Vulnerability Reporting
+
+- **Bug Reports:** Use our structured [Bug Report Template](https://github.com/puneetnith28/Finora/issues/new?template=bug_report.yml) to provide reproduction steps and affected subsystems.
+- **Feature Requests:** Submit proposed additions via the [Feature Request Template](https://github.com/puneetnith28/Finora/issues/new?template=feature_request.yml).
+- **Security Disclosures:** For security vulnerabilities or potential data leaks, do not open public issues. Follow the private reporting process outlined in [SECURITY.md](SECURITY.md).
+
+
 

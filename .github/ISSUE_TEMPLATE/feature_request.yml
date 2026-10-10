@@ -1,0 +1,71 @@
+name: "Feature Request"
+description: "Suggest a new feature, lender underwriting rule, or improvement for Finora"
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an improvement to Finora!
+
+  - type: textarea
+    id: problem_statement
+    attributes:
+      label: "Problem or Need"
+      description: "What problem or opportunity does this feature address?"
+      placeholder: "e.g., Counselors need to export assessment dossiers with customized co-branding or currency options."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: "Proposed Solution"
+      description: "Describe how you envision this feature working in Finora."
+      placeholder: "Add an optional export modal allowing co-branding toggle..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_benefit
+    attributes:
+      label: "Expected Benefits & Value"
+      description: "How does this benefit students, parents, or education counselors?"
+      placeholder: "Improves student understanding of loan requirements before applying..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "Acceptance Criteria"
+      description: "What specific criteria determine when this feature is successfully delivered?"
+      placeholder: |
+        - [ ] Criterion 1: Export modal supports toggles
+        - [ ] Criterion 2: Backend tests cover new calculation options
+    validations:
+      required: false
+
+  - type: dropdown
+    id: impacted_area
+    attributes:
+      label: "Impacted Component"
+      description: "Which area will be modified?"
+      options:
+        - "Assessment Engine & Rules"
+        - "Frontend UI / User Experience"
+        - "Backend REST API"
+        - "Document Processing & OCR"
+        - "Lender Criteria Dataset"
+        - "Documentation"
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact_analysis
+    attributes:
+      label: "Potential Impact on Existing Functionality"
+      description: "Are there any backward-compatibility considerations or mathematical constraints to preserve?"
+      placeholder: "Does not modify core FOIR calculation formulas."
+    validations:
+      required: false
