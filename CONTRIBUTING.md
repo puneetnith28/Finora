@@ -120,3 +120,10 @@ When modifying any service in [`backend/app/services/`](file:///home/puneetyadav
    - The problem being solved or feature added.
    - The verified test coverage.
    - Any documentation files updated.
+
+---
+
+## 6. Dependency Maintenance
+
+Finora uses GitHub Dependabot to keep frontend (`npm`) and backend (`pip`) packages secure and up to date. Dependabot runs automated weekly scans against both manifests (`package.json` in the repository root and `requirements.txt` in `/backend`) and opens version-update or security-fix pull requests when updates are available.
+
