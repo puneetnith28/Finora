@@ -1,0 +1,78 @@
+name: "Deployment Health Verification"
+
+on:
+  schedule:
+    - cron: "0 8 * * *" # Daily check at 08:00 UTC
+  workflow_dispatch:
+    inputs:
+      frontend_url:
+        description: "Frontend base URL to verify"
+        required: false
+        default: "https://finora-pi-rust.vercel.app"
+      backend_url:
+        description: "Backend base URL to verify"
+        required: false
+        default: "https://finora-backend-7pe7.onrender.com"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-deployments:
+    name: Verify Live Service Health
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    env:
+      FRONTEND_URL: ${{ inputs.frontend_url || 'https://finora-pi-rust.vercel.app' }}
+      BACKEND_URL: ${{ inputs.backend_url || 'https://finora-backend-7pe7.onrender.com' }}
+
+    steps:
+      - name: Verify Frontend Web Availability
+        run: |
+          echo "Checking Frontend: $FRONTEND_URL"
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$FRONTEND_URL" || echo "000")
+          if [ "$STATUS_CODE" -ge 200 ] && [ "$STATUS_CODE" -lt 400 ]; then
+            echo "✅ Frontend returned HTTP $STATUS_CODE (Healthy)"
+          else
+            echo "❌ Frontend returned HTTP $STATUS_CODE (Expected 2xx/3xx)"
+            exit 1
+          fi
+
+      - name: Verify Backend Liveness & Readiness (/health and /health/db)
+        run: |
+          echo "Checking Backend Liveness: $BACKEND_URL/health"
+          MAX_RETRIES=3
+          RETRY_DELAY=10
+          SUCCESS=0
+
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES..."
+            HTTP_CODE=$(curl -s -o /tmp/backend_health.json -w "%{http_code}" --max-time 20 "$BACKEND_URL/health" || echo "000")
+            if [ "$HTTP_CODE" -eq 200 ]; then
+              echo "✅ Backend /health returned HTTP 200"
+              cat /tmp/backend_health.json
+              echo ""
+              SUCCESS=1
+              break
+            else
+              echo "⚠️ Attempt $i failed with HTTP $HTTP_CODE (cold start or temporary delay). Retrying in ${RETRY_DELAY}s..."
+              sleep $RETRY_DELAY
+            fi
+          done
+
+          if [ "$SUCCESS" -ne 1 ]; then
+            echo "❌ Backend /health failed after $MAX_RETRIES attempts"
+            exit 1
+          fi
+
+          echo "Checking Backend Database Readiness: $BACKEND_URL/health/db"
+          DB_HTTP_CODE=$(curl -s -o /tmp/backend_db_health.json -w "%{http_code}" --max-time 15 "$BACKEND_URL/health/db" || echo "000")
+          if [ "$DB_HTTP_CODE" -eq 200 ]; then
+            echo "✅ Backend /health/db returned HTTP 200"
+            cat /tmp/backend_db_health.json
+            echo ""
+          else
+            echo "❌ Backend /health/db returned HTTP $DB_HTTP_CODE (Database connectivity failed)"
+            exit 1
+          fi
