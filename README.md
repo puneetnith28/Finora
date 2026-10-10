@@ -12,17 +12,13 @@
 
 ---
 
-## 🌐 Live Production Deployments & Service Endpoints
+## 🎬 Product Demo Video
 
-Finora is deployed in production across a decoupled multi-cloud topology (Next.js on Vercel Edge + FastAPI on Render):
+Watch the comprehensive product demonstration of Finora covering student assessment, multi-currency study plan calculator, financial profile & FOIR stress simulator, pre-underwriting document OCR intelligence, and the counselor underwriting audit report:
 
-| Environment / Service | Platform | Endpoint URL | Status |
-| :--- | :--- | :--- | :--- |
-| **Production Web Application** | Vercel | [https://finora-pi-rust.vercel.app](https://finora-pi-rust.vercel.app) | **Live & Operational** |
-| **Backend Core REST API** | Render | [https://finora-backend-7pe7.onrender.com](https://finora-backend-7pe7.onrender.com) | **Live & Operational** |
-| **Service Liveness Check** | FastAPI `/health` | [https://finora-backend-7pe7.onrender.com/health](https://finora-backend-7pe7.onrender.com/health) | `{"status": "healthy"}` |
-| **Database Readiness Check** | Engine `/health/db` | [https://finora-backend-7pe7.onrender.com/health/db](https://finora-backend-7pe7.onrender.com/health/db) | `{"database": "connected"}` |
-| **Interactive OpenAPI Documentation** | Swagger UI | [https://finora-backend-7pe7.onrender.com/docs](https://finora-backend-7pe7.onrender.com/docs) | **Live & Interactive** |
+[![Finora Product Demonstration](https://img.youtube.com/vi/UusHGlCwY7s/maxresdefault.jpg)](https://youtu.be/UusHGlCwY7s)
+
+> 📺 **Direct Link:** [Watch Finora Product Walkthrough on YouTube](https://youtu.be/UusHGlCwY7s)
 
 ---
 
@@ -94,6 +90,20 @@ Finora's deterministic rule engine is seeded directly from the benchmark dataset
 | **Auxilo Finserve** | 10.00% | 10.25% | **650** | Flexible specialist NBFC criteria. Max loan ₹75 Lakhs. Max FOIR: 65%. |
 
 > **⚠️ Indicative Decision-Support Notice:** Finora is an educational assessment and preparation tool based on deterministic underwriting rules. It does not issue formal loan guarantees or sanction letters.
+
+---
+
+## 🌐 Live Production Deployments & Service Endpoints
+
+Finora is deployed in production across a decoupled multi-cloud topology (Next.js on Vercel Edge + FastAPI on Render):
+
+| Environment / Service | Platform | Endpoint URL | Status |
+| :--- | :--- | :--- | :--- |
+| **Production Web Application** | Vercel | [https://finora-pi-rust.vercel.app](https://finora-pi-rust.vercel.app) | **Live & Operational** |
+| **Backend Core REST API** | Render | [https://finora-backend-7pe7.onrender.com](https://finora-backend-7pe7.onrender.com) | **Live & Operational** |
+| **Service Liveness Check** | FastAPI `/health` | [https://finora-backend-7pe7.onrender.com/health](https://finora-backend-7pe7.onrender.com/health) | `{"status": "healthy"}` |
+| **Database Readiness Check** | Engine `/health/db` | [https://finora-backend-7pe7.onrender.com/health/db](https://finora-backend-7pe7.onrender.com/health/db) | `{"database": "connected"}` |
+| **Interactive OpenAPI Documentation** | Swagger UI | [https://finora-backend-7pe7.onrender.com/docs](https://finora-backend-7pe7.onrender.com/docs) | **Live & Interactive** |
 
 ---
 
